@@ -4,7 +4,7 @@ from pathlib import Path
 
 import numpy as np
 
-from LiouvilleSpectroscopyV7 import (
+from SolverV8 import (
     LiouvilleSpectroscopySolver,
     SpectroscopyPlotter,
     standard_nq_protocol,
@@ -103,8 +103,8 @@ protocol = standard_nq_protocol(
 
 
 
-omega_2q   = np.linspace(-3.18,-2.88, 100)
-omega_emit = np.linspace(1.38, 1.68, 100)
+omega_2q   = np.linspace(-3.18,-2.88, 50)
+omega_emit = np.linspace(1.38, 1.68, 50)
 delays = {
     interval.name: 0.0
     for interval in protocol.intervals
@@ -137,11 +137,12 @@ plot_result = plotter.plot_pathways_multiorder(
         "omega_2q": "2Q energy (eV)",
         "omega_emit": "Emission energy (eV)",
     },
-    include_diagrams=True,
+    include_diagrams=False,
     display_diagrams=False,
     save_pdf=save_pdf,
     output_directory=output_directory if save_pdf else None,
     spectrum_pdf_name="chi5_pathways_and_total_detection_phase_0.pdf",
+    show=True,
 )
 
 print("Plotted panels:", plot_result.panel_names)
