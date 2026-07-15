@@ -1,0 +1,71 @@
+Test: etape_2
+Run label: step2_dimerisation_control_Eta_0p001_Veff_0p02_delta_0p05_C1_0
+Active case: dimerisation_control
+
+Effective bright-dark mixing
+----------------------------
+V_BD_eff = V0 + lambda_delta * delta + lambda_C * C1
+V0: 0.01
+lambda_delta: 0.2
+delta: 0.05
+lambda_C: 0.0
+C1: 0.0
+V_BD_eff: 0.020000000000000004
+
+Model parameters
+----------------
+Delta_dark: 0.9
+Delta_Bright: 1.0
+mu_B: 1.0
+mu_D: 0.0
+V0: 0.01
+lambda_delta: 0.2
+lambda_C: 0.0
+delta_source: external
+delta_external: 0.05
+C1: 0.0
+N_k: 1
+n_bosons: 1
+T: 1.0
+T_SP_0: 14.0
+B: 0.0
+J: 1.0
+delta_0: 0.01
+beta: 0.5
+spin_mode_scale: 0.0
+Lambda_SOC: 0.0
+a_dimer: 1.0
+alpha_dimerisation: 0.01
+parity: odd
+gamma_orb: 0.0
+gamma_spin: 0.0
+label: step2_dimerisation_control
+
+Solver parameters
+-----------------
+T: 0.0
+Eta: 0.001
+backend: dense
+parallel_backend: threading
+n_jobs: -1
+
+Spectrum parameters
+-------------------
+N_w: 161
+tau2: 3.0
+omega1_min: -1.04385164807
+omega1_max: 1.04385164807
+omega3_min: 0.9638516480699999
+omega3_max: 1.04385164807
+plot_pathways: ['R1', 'R2', 'R3']
+plot_totals: ['rephasing']
+view: real
+normalization: individual
+
+Files
+-----
+Spectrum PDF: None
+Spectrum data: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\nonrephasing_analysis\ZoomData\etape_2\dimerisation_control\Data\step2_dimerisation_control_Eta_0p001_Veff_0p02_delta_0p05_C1_0_S_data.npz
+Summary JSON: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\nonrephasing_analysis\ZoomData\etape_2\dimerisation_control\Summaries\step2_dimerisation_control_Eta_0p001_Veff_0p02_delta_0p05_C1_0_summary.json
+
+Validation status: PENDING PHASE 2

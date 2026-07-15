@@ -1,0 +1,6 @@
+PASS: The low-temperature lattice reference has finite delta and g_Q_eff.
+PASS: The high-temperature lattice-off control has delta = 0, g_Q_eff = 0, and finite C1.
+PASS: The high-field control suppresses the lattice channel while keeping finite C1.
+PASS: The high-temperature C1-static control produces a persistent scalar mixing channel with delta = 0.
+LowT lattice vs highT lattice-off relative max difference: 6.758e-01.
+HighT lattice-off vs highT C1-static relative max difference: 5.982e-01.

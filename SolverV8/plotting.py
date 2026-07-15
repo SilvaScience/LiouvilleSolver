@@ -4,7 +4,9 @@ import math
 from pathlib import Path
 import re
 
+import matplotlib.cm as cm
 import matplotlib.pyplot as plt
+from matplotlib.colors import Normalize, TwoSlopeNorm
 import numpy as np
 
 from .models import PathwayPlotResult, SpectrumResult
@@ -32,6 +34,136 @@ class SpectroscopyPlotter:
 
     def _apply_detection_phase(self, data):
         return np.exp(1j * self.detection_phase) * np.asarray(data)
+
+    @staticmethod
+    def _axis_vector(values, *, name):
+        values = np.asarray(values, dtype=float)
+        if values.ndim == 1:
+            return values
+        if values.ndim == 2:
+            if name == "x":
+                return values[0, :]
+            if name == "y":
+                return values[:, 0]
+        raise ValueError(f"{name}_values must be a one- or two-dimensional array.")
+
+    @staticmethod
+    def _index_range(values, lower, upper):
+        values = np.asarray(values, dtype=float)
+        lo, hi = sorted((float(lower), float(upper)))
+        indices = np.flatnonzero((values >= lo) & (values <= hi))
+        if indices.size == 0:
+            raise ValueError(
+                f"No axis samples fall inside bounds ({lower}, {upper})."
+            )
+        return slice(int(indices[0]), int(indices[-1]) + 1)
+
+    @staticmethod
+    def _signed_log_scale(values):
+        values = np.asarray(values, dtype=float)
+        return np.sign(values) * np.log10(np.abs(values) + 1.0)
+
+    @classmethod
+    def _normalize_panel(cls, values):
+        scale = float(np.max(np.abs(values)))
+        if not np.isfinite(scale):
+            raise ValueError("Spectrum contains non-finite values.")
+        if scale == 0:
+            return values
+        return values / scale
+
+    def _prepare_contour_spectra(
+        self,
+        spectra_list,
+        x_values,
+        y_values,
+        *,
+        plot_quadrant,
+        zoom_bounds,
+        invert_y,
+    ):
+        if spectra_list is None:
+            raise ValueError("spectra_list is required.")
+        spectra = [np.asarray(item) for item in spectra_list]
+        if not spectra:
+            raise ValueError("spectra_list must contain at least one spectrum.")
+
+        x_axis = self._axis_vector(x_values, name="x")
+        y_axis = self._axis_vector(y_values, name="y")
+        expected_shape = (y_axis.size, x_axis.size)
+        for index, values in enumerate(spectra):
+            if values.shape != expected_shape:
+                raise ValueError(
+                    f"Spectrum {index} has shape {values.shape}; "
+                    f"expected {expected_shape}."
+                )
+
+        quadrant_key = str(plot_quadrant).lower()
+        if quadrant_key == "zoom":
+            if zoom_bounds is None:
+                raise ValueError("zoom_bounds is required for plot_quadrant='Zoom'.")
+            if len(zoom_bounds) != 4:
+                raise ValueError(
+                    "zoom_bounds must contain (x_min, x_max, y_min, y_max)."
+                )
+            x_slice = self._index_range(x_axis, zoom_bounds[0], zoom_bounds[1])
+            y_slice = self._index_range(y_axis, zoom_bounds[2], zoom_bounds[3])
+        elif quadrant_key in {"1", "2", "3", "4"}:
+            x_zero = int(np.argmin(np.abs(x_axis)))
+            y_zero = int(np.argmin(np.abs(y_axis)))
+            x_slices = {
+                "1": slice(x_zero, None),
+                "2": slice(None, x_zero + 1),
+                "3": slice(None, x_zero + 1),
+                "4": slice(x_zero, None),
+            }
+            y_slices = {
+                "1": slice(y_zero, None),
+                "2": slice(y_zero, None),
+                "3": slice(None, y_zero + 1),
+                "4": slice(None, y_zero + 1),
+            }
+            x_slice = x_slices[quadrant_key]
+            y_slice = y_slices[quadrant_key]
+        elif quadrant_key == "all":
+            x_slice = slice(None)
+            y_slice = slice(None)
+        else:
+            raise ValueError("plot_quadrant must be 'All', 'Zoom', '1', '2', '3', or '4'.")
+
+        x_axis = x_axis[x_slice]
+        y_axis = y_axis[y_slice]
+        spectra = [values[y_slice, x_slice] for values in spectra]
+        if invert_y:
+            y_axis = -y_axis[::-1]
+            spectra = [np.flip(values, axis=0) for values in spectra]
+
+        scan_range = [
+            float(np.min(x_axis)),
+            float(np.max(x_axis)),
+            float(np.min(y_axis)),
+            float(np.max(y_axis)),
+        ]
+        return x_axis, y_axis, spectra, scan_range
+
+    @staticmethod
+    def _draw_diagonals(ax, scan_range, diagonals, *, color="black"):
+        if diagonals[0]:
+            ax.plot(
+                [scan_range[0], scan_range[1]],
+                [scan_range[3], scan_range[2]],
+                "--",
+                color=color,
+                linewidth=0.5,
+            )
+        if diagonals[1]:
+            ax.plot(
+                [scan_range[0], scan_range[1]],
+                [scan_range[2], scan_range[3]],
+                "--",
+                color=color,
+                linewidth=0.5,
+            )
 
     @staticmethod
     def _plot_subplot(ax, w, data, levels, cmap, title, xlabel, ylabel, vmin):
@@ -136,6 +268,293 @@ class SpectroscopyPlotter:
         if show:
             plt.show()
         return fig, ax
+
+    def plot_contourf_multi_spectra(
+        self,
+        spectra_list,
+        x_values=None,
+        y_values=None,
+        labels=None,
+        title_list=None,
+        scale="linear",
+        color_map="Spectral_r",
+        abs_color_map=None,
+        normalization="panel",
+        plot_sum=True,
+        plot_quadrant="All",
+        invert_y=False,
+        diagonals=(True, True),
+        zoom_bounds=None,
+        levels=12,
+        contour_lines=True,
+        line_color="black",
+        linewidth=0.4,
+        line_alpha=0.7,
+        save_path=None,
+        show=True,
+    ):
+        """Plot complex spectra with the contour style used by QuDPy helpers.
+
+        Each input spectrum is displayed as one row with real, imaginary, and
+        absolute-value panels.  The method applies this plotter's detection
+        phase before splitting those components.
+
+        Parameters
+        ----------
+        spectra_list : sequence of array_like
+            Complex spectra with shape ``(len(y_values), len(x_values))``.
+        x_values, y_values : array_like or None
+            Frequency axes.  One-dimensional axes are preferred.  Two-
+            dimensional mesh arrays are accepted for compatibility with older
+            plotting helpers.  If omitted, ``self.w_list`` is used for both.
+        normalization : {"panel", "row", "none"}
+            ``"panel"`` normalizes every real/imag/abs panel independently;
+            ``"row"`` normalizes the three panels of each spectrum by a common
+            row scale; ``"none"`` keeps raw amplitudes with a shared row
+            colorbar.
+        plot_quadrant : {"All", "Zoom", "1", "2", "3", "4"}
+            Select a quadrant using the axis sample nearest zero, or crop to
+            ``zoom_bounds=(x_min, x_max, y_min, y_max)``.
+        """
+        if x_values is None:
+            x_values = self.w_list
+        if y_values is None:
+            y_values = self.w_list
+        if x_values is None or y_values is None:
+            raise ValueError("x_values and y_values are required when w_list is not set.")
+
+        levels = int(levels)
+        if levels < 2:
+            raise ValueError("levels must be at least two.")
+
+        x_axis, y_axis, spectra, scan_range = self._prepare_contour_spectra(
+            spectra_list,
+            x_values,
+            y_values,
+            plot_quadrant=plot_quadrant,
+            zoom_bounds=zoom_bounds,
+            invert_y=invert_y,
+        )
+        spectra = [self._apply_detection_phase(values) for values in spectra]
+
+        if title_list is None:
+            row_titles = [str(index + 1) for index in range(len(spectra))]
+        else:
+            row_titles = [str(title) for title in title_list]
+            if len(row_titles) != len(spectra):
+                raise ValueError("title_list must match spectra_list length.")
+
+        if plot_sum:
+            spectra = [*spectra, sum(spectra)]
+            row_titles = [*row_titles, "Total"]
+
+        scale_key = str(scale).lower()
+        if scale_key not in {"linear", "log"}:
+            raise ValueError("scale must be 'linear' or 'log'.")
+
+        rows = []
+        for spectrum in spectra:
+            real = np.real(spectrum)
+            imag = np.imag(spectrum)
+            absolute = np.abs(spectrum)
+            if scale_key == "log":
+                real = self._signed_log_scale(real)
+                imag = self._signed_log_scale(imag)
+                absolute = np.log10(absolute + 1.0)
+            rows.append([real, imag, absolute])
+
+        normalization_key = str(normalization).lower()
+        if normalization_key not in {"panel", "row", "none"}:
+            raise ValueError("normalization must be 'panel', 'row', or 'none'.")
+        if normalization_key == "panel":
+            rows = [
+                [self._normalize_panel(values) for values in row]
+                for row in rows
+            ]
+        elif normalization_key == "row":
+            normalized_rows = []
+            for row in rows:
+                row_scale = max(float(np.max(np.abs(values))) for values in row)
+                if not np.isfinite(row_scale):
+                    raise ValueError("Spectrum contains non-finite values.")
+                if row_scale == 0:
+                    row_scale = 1.0
+                normalized_rows.append([values / row_scale for values in row])
+            rows = normalized_rows
+        else:
+            for row in rows:
+                if not all(np.all(np.isfinite(values)) for values in row):
+                    raise ValueError("Spectrum contains non-finite values.")
+
+        with plt.rc_context({
+            "font.family": "sans-serif",
+            "font.sans-serif": ["Arial", "DejaVu Sans"],
+            "font.size": 12,
+        }):
+            figure, axes = plt.subplots(
+                len(rows),
+                4,
+                figsize=(20, 5 * len(rows)),
+                gridspec_kw={"width_ratios": [1, 1, 1, 0.06]},
+                squeeze=False,
+            )
+
+            component_titles = ("real", "imag", "abs")
+            x_label, y_label = labels if labels else (r"$\omega_3$", r"$\omega_1$")
+            abs_color_map = color_map if abs_color_map is None else abs_color_map
+
+            for row_index, row in enumerate(rows):
+                if normalization_key in {"panel", "row"}:
+                    signed_norm = TwoSlopeNorm(vmin=-1.0, vcenter=0.0, vmax=1.0)
+                    abs_norm = Normalize(vmin=0.0, vmax=1.0)
+                    colorbar_norm = signed_norm
+                    ticks = [-1, -0.5, 0, 0.5, 1]
+                else:
+                    signed_limit = max(
+                        float(np.max(np.abs(values))) for values in row[:2]
+                    )
+                    if signed_limit == 0:
+                        signed_limit = np.finfo(float).eps
+                    abs_limit = float(np.max(row[2]))
+                    if abs_limit == 0:
+                        abs_limit = np.finfo(float).eps
+                    signed_norm = TwoSlopeNorm(
+                        vmin=-signed_limit, vcenter=0.0, vmax=signed_limit
+                    )
+                    abs_norm = Normalize(vmin=0.0, vmax=abs_limit)
+                    colorbar_norm = signed_norm
+                    ticks = np.linspace(-signed_limit, signed_limit, 5)
+
+                for column, values in enumerate(row):
+                    ax = axes[row_index, column]
+                    norm = abs_norm if column == 2 else signed_norm
+                    cmap = abs_color_map if column == 2 else color_map
+                    contour = ax.contourf(
+                        x_axis,
+                        y_axis,
+                        values,
+                        levels=levels,
+                        cmap=cmap,
+                        norm=norm,
+                    )
+                    if contour_lines:
+                        ax.contour(
+                            x_axis,
+                            y_axis,
+                            values,
+                            levels=levels,
+                            colors=line_color,
+                            linewidths=linewidth,
+                            alpha=line_alpha,
+                        )
+                    self._draw_diagonals(
+                        ax,
+                        scan_range,
+                        diagonals,
+                        color=line_color,
+                    )
+                    ax.set_title(f"{row_titles[row_index]} {component_titles[column]}")
+                    ax.set_xlabel(x_label)
+                    ax.set_ylabel(y_label)
+                    ax.set_aspect("equal")
+                    ax.tick_params(
+                        direction="in",
+                        length=6,
+                        width=1.4,
+                        top=True,
+                        right=True,
+                    )
+
+                cax = axes[row_index, 3]
+                scalar_mappable = cm.ScalarMappable(
+                    norm=colorbar_norm,
+                    cmap=color_map,
+                )
+                scalar_mappable.set_array([])
+                colorbar = figure.colorbar(scalar_mappable, cax=cax)
+                colorbar.set_ticks(ticks)
+
+            figure.tight_layout()
+            if save_path:
+                figure.savefig(save_path, dpi=300, bbox_inches="tight")
+            if show:
+                plt.show()
+        return figure, axes
+
+    def plot_spectrum_result_contours(
+        self,
+        result,
+        spectra="components",
+        names=None,
+        totals="auto",
+        labels=None,
+        title_list=None,
+        **kwargs,
+    ):
+        """Plot a ``SpectrumResult`` using ``plot_contourf_multi_spectra``.
+
+        Parameters
+        ----------
+        result : SpectrumResult
+            Two-dimensional solver output.
+        spectra : {"components", "pathways"} or mapping
+            Select whether to plot component totals or individual pathways.
+        names : sequence or None
+            Names to extract from ``result.components`` or ``result.pathways``.
+            Defaults to all component names, or all pathway names.
+        totals : {"auto", "selected", None, False}
+            Only used when ``spectra="pathways"``.  It mirrors
+            ``plot_pathways_multiorder`` and can add component or selected
+            totals to the plotted rows.
+        """
+        if not isinstance(result, SpectrumResult):
+            raise TypeError("result must be a SpectrumResult.")
+        if len(result.axis_names) != 2 or len(result.axis_values) != 2:
+            raise ValueError("A two-frequency SpectrumResult is required.")
+
+        source_key = str(spectra).lower() if isinstance(spectra, str) else None
+        if source_key == "components":
+            source = result.components
+            selected_names = tuple(source) if names is None else tuple(names)
+            selected = {name: np.asarray(source[name]) for name in selected_names}
+        elif source_key == "pathways":
+            selected_names = self._selected_pathway_names(result, names or "all")
+            selected = {
+                name: np.asarray(result.pathways[name])
+                for name in selected_names
+            }
+            selected.update(self._selected_totals(result, selected_names, totals))
+        elif hasattr(spectra, "items"):
+            selected = {str(name): np.asarray(values) for name, values in spectra.items()}
+        else:
+            raise ValueError("spectra must be 'components', 'pathways', or a mapping.")
+
+        y_values = np.asarray(result.axis_values[0], dtype=float)
+        x_values = np.asarray(result.axis_values[1], dtype=float)
+        expected_shape = (y_values.size, x_values.size)
+        for name, values in selected.items():
+            if values.shape != expected_shape:
+                raise ValueError(
+                    f"Spectrum {name!r} has shape {values.shape}; "
+                    f"expected {expected_shape}."
+                )
+
+        if title_list is None:
+            title_list = tuple(selected)
+        if labels is None:
+            labels = (
+                result.axis_names[1],
+                result.axis_names[0],
+            )
+        kwargs.setdefault("plot_sum", False)
+        return self.plot_contourf_multi_spectra(
+            list(selected.values()),
+            x_values=x_values,
+            y_values=y_values,
+            labels=labels,
+            title_list=title_list,
+            **kwargs,
+        )
 
     @staticmethod
     def _selected_pathway_names(result, pathways):

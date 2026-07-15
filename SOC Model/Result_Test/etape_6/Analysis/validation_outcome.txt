@@ -1,0 +1,2 @@
+PASS: nonzero g_Q changes the full rephasing norm relative to g_Q=0 (relative change 6.304e-01).
+PASS: sideband/main-cross ratio varies across omega_Q (relative spread 3.292e-01).

@@ -1,0 +1,7 @@
+case_a,case_b,max_abs_difference,relative_max_difference,l2_difference,same_shape
+highB_lattice_suppressed,highT_C1_static,607759.628272903,0.598204933205034,1016098.1987083207,True
+highB_lattice_suppressed,highT_lattice_off_C1_finite,0.0,0.0,0.0,True
+highB_lattice_suppressed,lowT_lattice_dynamic,288721.3957669534,0.6758337536230136,721754.098818321,True
+highT_C1_static,highT_lattice_off_C1_finite,607759.628272903,0.598204933205034,1016098.1987083207,True
+highT_C1_static,lowT_lattice_dynamic,588765.4387476367,0.5795093546445844,642354.4012771213,True
+highT_lattice_off_C1_finite,lowT_lattice_dynamic,288721.3957669534,0.6758337536230136,721754.098818321,True

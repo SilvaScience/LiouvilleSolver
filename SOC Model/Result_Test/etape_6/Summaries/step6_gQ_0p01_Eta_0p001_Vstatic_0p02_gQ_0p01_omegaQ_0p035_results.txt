@@ -1,0 +1,43 @@
+Test: etape_6
+Run label: step6_gQ_0p01_Eta_0p001_Vstatic_0p02_gQ_0p01_omegaQ_0p035
+Active case: gQ_0p01
+Scan family: gQ_scan
+
+Dynamic phonon parameter scan
+-----------------------------
+H_mix = V_BD_static L_BD + g_Q Q L_BD
+V_BD_static is fixed; g_Q and omega_Q are the scanned parameters.
+V_BD_static: 0.02
+g_Q: 0.01
+omega_Q: 0.035
+E_minus: 0.8961483519286549
+E_plus: 1.003851648071345
+
+Numerical observables
+---------------------
+rephasing_max_abs: 427207.718198705
+rephasing_l2_norm: 622490.4735217597
+
+Solver parameters
+-----------------
+T: 0.0
+Eta: 0.001
+backend: dense
+parallel_backend: threading
+n_jobs: -1
+
+Spectrum parameters
+-------------------
+N_w: 120
+tau2: 3.0
+plot_pathways: ['R1', 'R2', 'R3']
+plot_totals: ['rephasing']
+view: real
+
+Files
+-----
+Spectrum PDF: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\etape_6\Figures\gQ_scan\step6_gQ_0p01\step6_gQ_0p01_Eta_0p001_Vstatic_0p02_gQ_0p01_omegaQ_0p035.pdf
+Spectrum data: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\etape_6\Data\step6_gQ_0p01_Eta_0p001_Vstatic_0p02_gQ_0p01_omegaQ_0p035_S_data.npz
+Summary JSON: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\etape_6\Summaries\step6_gQ_0p01_Eta_0p001_Vstatic_0p02_gQ_0p01_omegaQ_0p035_summary.json
+
+Validation status: PENDING PHASE 2

@@ -1,0 +1,70 @@
+run_id: step02__scenario-000__minimal_bright_dark__V0-0p01eV
+source_notebook: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_2_0\SOC_steps_1_2_minimal_bright_dark.ipynb
+scan_name: scenario
+index: 0
+scenario: minimal_bright_dark
+value: 0.01 eV
+timestamp: 2026-07-13T10:46:29
+
+frequency_quadrants:
+  rephasing: omega1_min=-1.1, omega1_max=-0.8, omega3_min=0.8, omega3_max=1.1
+  unrephasing: omega1_min=0.8, omega1_max=1.1, omega3_min=0.8, omega3_max=1.1
+
+fixed_physical_parameters:
+  Delta_dark: 0.9
+  Delta_Bright: 1.0
+  mu_B: 1.0
+  mu_D: 0.0
+  V0: 0.01
+  lambda_delta: 0.0
+  Lambda_SOC: 0.0
+  N_k: 1
+  n_bosons: 1
+  T: 1.0
+  T_SP_0: 14.0
+  B: 0.0
+  J: 1.0
+  delta_0: 0.0
+  beta: 0.5
+  spin_mode_scale: 0.0
+  a_dimer: 1.0
+  alpha_dimerisation: 0.01
+  parity: odd
+  gamma_orb: 0.0
+  gamma_spin: 0.0
+  label: minimal_bright_dark
+
+solver_parameters:
+  T: 0.0
+  Eta: 0.001
+  backend: dense
+  parallel_backend: threading
+  n_jobs: -1
+
+spectrum_parameters:
+  N_w: 300
+  tau2: 3.0
+
+k_integration:
+  N_k: 1
+  k_min: 0.0
+  k_max: 0.0
+  weight_sum: 1.0
+  delta: 0.0
+
+pathways:
+  R1: component=rephasing, interactions=('Bu', 'Ku', 'Bd'), coherence_orders=(-1, 0, 1)
+  R2: component=rephasing, interactions=('Bu', 'Bd', 'Ku'), coherence_orders=(-1, 0, 1)
+  R3: component=rephasing, interactions=('Bu', 'Ku', 'Ku'), coherence_orders=(-1, 0, 1)
+  R4: component=unrephasing, interactions=('Ku', 'Bu', 'Ku'), coherence_orders=(1, 0, 1)
+  R5: component=unrephasing, interactions=('Ku', 'Bu', 'Bd'), coherence_orders=(1, 0, 1)
+  R6: component=unrephasing, interactions=('Ku', 'Kd', 'Ku'), coherence_orders=(1, 0, 1)
+
+generated_files:
+  spectra: Data\step02__scenario-000__minimal_bright_dark__V0-0p01eV_spectra.npz
+  rephasing_real: Figures\step02__scenario-000__minimal_bright_dark__V0-0p01eV_rephasing_real.png
+  rephasing_imag: Figures\step02__scenario-000__minimal_bright_dark__V0-0p01eV_rephasing_imag.png
+  rephasing_abs: Figures\step02__scenario-000__minimal_bright_dark__V0-0p01eV_rephasing_abs.png
+  unrephasing_real: Figures\step02__scenario-000__minimal_bright_dark__V0-0p01eV_unrephasing_real.png
+  unrephasing_imag: Figures\step02__scenario-000__minimal_bright_dark__V0-0p01eV_unrephasing_imag.png
+  unrephasing_abs: Figures\step02__scenario-000__minimal_bright_dark__V0-0p01eV_unrephasing_abs.png

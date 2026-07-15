@@ -1,0 +1,5 @@
+PASS spectra_file_exists: Data\step02__scenario-000__minimal_bright_dark__V0-0p01eV_spectra.npz
+PASS spectra_arrays_finite: all component arrays finite = True
+PASS mandatory_figures_exist: rephasing/unrephasing real, imag, abs figures exist = True
+PASS quadrant_convention: rephasing omega1 < 0, unrephasing omega1 > 0, omega3 > 0 = True
+INCONCLUSIVE physical_trend_validation: only one minimal bright-dark scenario was generated; no control or scan exists for trend-level validation.

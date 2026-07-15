@@ -1,0 +1,88 @@
+{
+  "test": "etape_5",
+  "run_label": "step5_T_lattice_T_13_T_13_B_0_Eta_0p001_Vstatic_0p0137796_delta_0p00267261_C1_m0p350074_gQ_0p00377964",
+  "active_case_key": "T_lattice_T_13",
+  "scan_family": "temperature_lattice_dynamic",
+  "scan_variable": "T",
+  "scan_value": 13.0,
+  "channel": "lattice_dynamic",
+  "model_parameters": {
+    "Delta_dark": 0.9,
+    "Delta_Bright": 1.0,
+    "mu_B": 1.0,
+    "mu_D": 0.0,
+    "V0": 0.01,
+    "lambda_delta": 1.414213562373095,
+    "lambda_C": 0.0,
+    "n_bosons": 3,
+    "omega_Q": 0.035,
+    "g_Q0": 0.01,
+    "g_Q_source": "delta_scaled",
+    "g_Q_external": 0.0,
+    "T_SP_0": 14.0,
+    "delta_0": 0.01,
+    "beta": 0.5,
+    "alpha_field": 0.004,
+    "T_ref": 7.0,
+    "B_ref": 0.0,
+    "C1_lowT": -0.443,
+    "C1_highT": -0.25,
+    "C1_field_scale": 0.0015,
+    "T": 13.0,
+    "B": 0.0,
+    "N_k": 1,
+    "gamma_orb": 0.0,
+    "gamma_phonon": 0.0,
+    "label": "step5_T_lattice_T_13",
+    "scan_family": "temperature_lattice_dynamic",
+    "scan_variable": "T",
+    "scan_value": 13.0,
+    "channel": "lattice_dynamic"
+  },
+  "solver_parameters": {
+    "T": 0.0,
+    "Eta": 0.001,
+    "backend": "dense",
+    "parallel_backend": "threading",
+    "n_jobs": -1
+  },
+  "derived": {
+    "T": 13.0,
+    "B": 0.0,
+    "T_SP": 14.0,
+    "delta": 0.0026726124191242435,
+    "C1": -0.3500740740740741,
+    "delta_ref": 0.007071067811865476,
+    "C1_highT_ref": -0.3294705882352941,
+    "V_BD_static": 0.013779644730092272,
+    "omega_Q": 0.035,
+    "g_Q_eff": 0.0037796447300922713,
+    "N_k": 1,
+    "weight_sum": 1.0,
+    "hilbert_dimension": 9
+  },
+  "spectrum_parameters": {
+    "N_w": 90,
+    "tau2": 3.0,
+    "omega1_min": -1.35,
+    "omega1_max": -0.65,
+    "omega3_min": 0.65,
+    "omega3_max": 1.35,
+    "plot_pathways": [
+      "R1",
+      "R2",
+      "R3"
+    ],
+    "plot_totals": [
+      "rephasing"
+    ],
+    "view": "real",
+    "normalization": "individual"
+  },
+  "files": {
+    "spectrum_pdf": "C:\\Users\\falve\\OneDrive\\Documents\\GitHub\\LiouvilleSolver\\SOC Model\\Result_Test\\etape_5\\Figures\\temperature_lattice_dynamic\\step5_T_lattice_T_13\\step5_T_lattice_T_13_T_13_B_0_Eta_0p001_Vstatic_0p0137796_delta_0p00267261_C1_m0p350074_gQ_0p00377964.pdf",
+    "data_npz": "C:\\Users\\falve\\OneDrive\\Documents\\GitHub\\LiouvilleSolver\\SOC Model\\Result_Test\\etape_5\\Data\\step5_T_lattice_T_13_T_13_B_0_Eta_0p001_Vstatic_0p0137796_delta_0p00267261_C1_m0p350074_gQ_0p00377964_S_data.npz",
+    "summary_txt": "C:\\Users\\falve\\OneDrive\\Documents\\GitHub\\LiouvilleSolver\\SOC Model\\Result_Test\\etape_5\\Summaries\\step5_T_lattice_T_13_T_13_B_0_Eta_0p001_Vstatic_0p0137796_delta_0p00267261_C1_m0p350074_gQ_0p00377964_results.txt"
+  },
+  "validation_status": "PENDING PHASE 2"
+}

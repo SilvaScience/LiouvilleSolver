@@ -1,0 +1,79 @@
+run_id: step04__scenario-003__highT_C1_static__T-20K_B-0p0T
+source_code: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_2_0\code\step04_validation_protocol_result_2_0.py
+scan_name: scenario
+index: 3
+scenario: highT_C1_static
+value: 20.0 K_B-0p0T
+timestamp: 2026-07-13T11:01:47
+
+frequency_quadrants:
+  rephasing: omega1_min=-1.1, omega1_max=-0.8, omega3_min=0.8, omega3_max=1.1
+  unrephasing: omega1_min=0.8, omega1_max=1.1, omega3_min=0.8, omega3_max=1.1
+
+trend_model:
+  H_mix: V_BD_static L_BD + g_Q_eff Q L_BD
+  V_BD_static: V0 + lambda_delta * delta(T,B) + lambda_C * C1(T,B)
+  g_Q_eff: g_Q0 * delta(T,B) / delta_ref when g_Q_source = delta_scaled
+  T_SP: 14.0
+  delta: 0.0
+  C1: -0.3294705882352941
+  V_BD_static: 0.02
+  omega_Q: 0.035
+  g_Q_eff: 0.0
+
+fixed_physical_parameters:
+  Delta_dark: 0.9
+  Delta_Bright: 1.0
+  mu_B: 1.0
+  mu_D: 0.0
+  V0: 0.01
+  lambda_delta: 0.0
+  lambda_C: -0.030351722906623815
+  n_bosons: 3
+  omega_Q: 0.035
+  g_Q0: 0.01
+  g_Q_source: off
+  g_Q_external: 0.0
+  T_SP_0: 14.0
+  delta_0: 0.01
+  beta: 0.5
+  alpha_field: 0.004
+  T_ref: 7.0
+  B_ref: 0.0
+  C1_lowT: -0.443
+  C1_highT: -0.25
+  C1_field_scale: 0.0015
+  T: 20.0
+  B: 0.0
+  N_k: 1
+  gamma_orb: 0.0
+  gamma_phonon: 0.0
+  label: highT_C1_static
+
+solver_parameters:
+  T: 0.0
+  Eta: 0.001
+  backend: dense
+  parallel_backend: threading
+  n_jobs: -1
+
+spectrum_parameters:
+  N_w: 300
+  tau2: 3.0
+
+pathways:
+  R1: component=rephasing, interactions=('Bu', 'Ku', 'Bd'), coherence_orders=(-1, 0, 1)
+  R2: component=rephasing, interactions=('Bu', 'Bd', 'Ku'), coherence_orders=(-1, 0, 1)
+  R3: component=rephasing, interactions=('Bu', 'Ku', 'Ku'), coherence_orders=(-1, 0, 1)
+  R4: component=unrephasing, interactions=('Ku', 'Bu', 'Ku'), coherence_orders=(1, 0, 1)
+  R5: component=unrephasing, interactions=('Ku', 'Bu', 'Bd'), coherence_orders=(1, 0, 1)
+  R6: component=unrephasing, interactions=('Ku', 'Kd', 'Ku'), coherence_orders=(1, 0, 1)
+
+generated_files:
+  spectra: Data\step04__scenario-003__highT_C1_static__T-20K_B-0p0T_spectra.npz
+  rephasing_real: Figures\step04__scenario-003__highT_C1_static__T-20K_B-0p0T_rephasing_real.png
+  rephasing_imag: Figures\step04__scenario-003__highT_C1_static__T-20K_B-0p0T_rephasing_imag.png
+  rephasing_abs: Figures\step04__scenario-003__highT_C1_static__T-20K_B-0p0T_rephasing_abs.png
+  unrephasing_real: Figures\step04__scenario-003__highT_C1_static__T-20K_B-0p0T_unrephasing_real.png
+  unrephasing_imag: Figures\step04__scenario-003__highT_C1_static__T-20K_B-0p0T_unrephasing_imag.png
+  unrephasing_abs: Figures\step04__scenario-003__highT_C1_static__T-20K_B-0p0T_unrephasing_abs.png

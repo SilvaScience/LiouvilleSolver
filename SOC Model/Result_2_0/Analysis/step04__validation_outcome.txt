@@ -1,0 +1,8 @@
+PASS: lowT_lattice_dynamic has finite delta and g_Q_eff.
+PASS: highT_lattice_off_C1_finite has delta = 0, g_Q_eff = 0, and finite C1.
+PASS: highB_lattice_suppressed has delta = 0, g_Q_eff = 0, and finite C1.
+PASS: highT_C1_static keeps delta = 0 and restores static mixing through C1.
+lowT_lattice_dynamic rephasing integral_abs: 231.90894
+highT_lattice_off_C1_finite rephasing integral_abs: 250.11056
+highB_lattice_suppressed rephasing integral_abs: 250.11056
+highT_C1_static rephasing integral_abs: 240.22711

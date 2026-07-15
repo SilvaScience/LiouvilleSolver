@@ -1,0 +1,20 @@
+Validation outcome for result_3_0
+===================================
+
+Criterion 1 - H_spin Hermitian and dimension 2^N: PASS
+  maximum Hermitian residual: 0.000e+00
+  dimensions: [64]
+
+Criterion 2 - mandatory spectra/data/figures generated: PASS
+  data files present: True
+  figure files present: True
+
+Criterion 3 - component-specific frequency quadrants: PASS
+  rephasing uses omega1 < 0, omega3 > 0; unrephasing uses omega1 > 0, omega3 > 0.
+
+Criterion 4 - exact spin-chain C1 is finite and injected into V_BD: PASS
+  SOC_workbench: C1=-0.49862998, delta=0.00707107, V_BD=0.02266997 eV
+
+Evidence files:
+  metrics: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\result_3_0\Analysis\step03__spin_chain_exact_metrics.csv
+  comparison: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\result_3_0\Analysis\step03__spin_chain_exact_comparison.png

@@ -1,0 +1,25 @@
+Step 6 analysis: dynamic phonon parameter scans
+================================================
+Result root: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\etape_6
+Component: S_component_rephasing
+Window half-width (eV): 0.025
+
+gQ_scan
+-------
+g_Q=0: V_BD_static=0.02, g_Q=0, omega_Q=0.035, cross_abs_area_sum=16.266623, cross_to_diag_ratio=0.12700311, sideband_to_main_cross_ratio=2.3291147, rephasing_l2_norm_full=1196548.3
+g_Q=0.0025: V_BD_static=0.02, g_Q=0.0025, omega_Q=0.035, cross_abs_area_sum=15.927155, cross_to_diag_ratio=0.1279044, sideband_to_main_cross_ratio=2.3441875, rephasing_l2_norm_full=1144064.9
+g_Q=0.005: V_BD_static=0.02, g_Q=0.005, omega_Q=0.035, cross_abs_area_sum=14.997807, cross_to_diag_ratio=0.13090005, sideband_to_main_cross_ratio=2.3896038, rephasing_l2_norm_full=1000153.4
+g_Q=0.01: V_BD_static=0.02, g_Q=0.01, omega_Q=0.035, cross_abs_area_sum=12.554241, cross_to_diag_ratio=0.14542282, sideband_to_main_cross_ratio=2.5491783, rephasing_l2_norm_full=622490.47
+g_Q=0.015: V_BD_static=0.02, g_Q=0.015, omega_Q=0.035, cross_abs_area_sum=11.978064, cross_to_diag_ratio=0.17081022, sideband_to_main_cross_ratio=2.4683079, rephasing_l2_norm_full=442197.7
+g_Q=0.02: V_BD_static=0.02, g_Q=0.02, omega_Q=0.035, cross_abs_area_sum=18.471655, cross_to_diag_ratio=0.20167393, sideband_to_main_cross_ratio=1.9823442, rephasing_l2_norm_full=776221.73
+
+omegaQ_scan
+-----------
+omega_Q=0.02: V_BD_static=0.02, g_Q=0.01, omega_Q=0.02, cross_abs_area_sum=13.137004, cross_to_diag_ratio=0.13415588, sideband_to_main_cross_ratio=3.3784823, rephasing_l2_norm_full=803047.26
+omega_Q=0.035: V_BD_static=0.02, g_Q=0.01, omega_Q=0.035, cross_abs_area_sum=12.554241, cross_to_diag_ratio=0.14542282, sideband_to_main_cross_ratio=2.5491783, rephasing_l2_norm_full=622490.47
+omega_Q=0.05: V_BD_static=0.02, g_Q=0.01, omega_Q=0.05, cross_abs_area_sum=11.581389, cross_to_diag_ratio=0.15503817, sideband_to_main_cross_ratio=2.2662156, rephasing_l2_norm_full=478459.53
+omega_Q=0.07: V_BD_static=0.02, g_Q=0.01, omega_Q=0.07, cross_abs_area_sum=11.157339, cross_to_diag_ratio=0.16037639, sideband_to_main_cross_ratio=3.1413349, rephasing_l2_norm_full=441797.6
+
+Interpretation
+--------------
+Compare the g_Q=0 static reference against nonzero g_Q values at fixed V_BD_static and omega_Q.  Then compare omega_Q points at fixed g_Q.

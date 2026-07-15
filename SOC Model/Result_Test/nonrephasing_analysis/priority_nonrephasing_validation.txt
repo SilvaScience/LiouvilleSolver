@@ -1,0 +1,4 @@
+PASS: Step 6 nonrephasing ratio changes across dynamic phonon scans (un/re L2 range 7.181e-03 to 1.184e-02).
+PASS: Step 3 nonrephasing keeps the static controls degenerate (2.299e-16) and separates the dynamic phonon case (3.702e-01).
+PASS: Step 5 nonrephasing analysis reaches the intended controls: lattice-off at high T/high B, with finite C1 in the high-T C1-static case.
+PASS: Step 2 nonrephasing confirms scalar degeneracy between dimerisation and C1 controls at matched V_BD_eff.

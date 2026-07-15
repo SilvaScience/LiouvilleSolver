@@ -1,0 +1,7 @@
+scenario_a,scenario_b,relative_max_difference_rephasing,max_abs_difference_rephasing
+highB_lattice_suppressed,highT_C1_static,0.8923842660614576,1610976.4818529126
+highB_lattice_suppressed,highT_lattice_off_C1_finite,0.0,0.0
+highB_lattice_suppressed,lowT_lattice_dynamic,0.9428813676074387,1676126.4554248245
+highT_C1_static,highT_lattice_off_C1_finite,0.8923842660614576,1610976.4818529126
+highT_C1_static,lowT_lattice_dynamic,0.5259383004571948,949449.9905087757
+highT_lattice_off_C1_finite,lowT_lattice_dynamic,0.9428813676074387,1676126.4554248245

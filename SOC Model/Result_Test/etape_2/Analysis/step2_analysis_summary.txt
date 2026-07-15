@@ -1,0 +1,24 @@
+Step 2 analysis: constant SOC vs dimerisation vs local spin correlation
+======================================================================
+Result root: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\etape_2
+Component: S_component_rephasing
+Window half-width (eV): 0.025
+
+Cross-window metrics
+--------------------
+dimerisation_control: V_BD_eff=0.02, delta=0.05, C1=0, cross_abs_area_sum=13.682378, cross_to_diag_ratio=0.10578829, max_abs=33405.307
+soc_constant: V_BD_eff=0.01, delta=0, C1=0, cross_abs_area_sum=10.21004, cross_to_diag_ratio=0.12059007, max_abs=9991.8927
+spin_correlation_control: V_BD_eff=0.02, delta=0, C1=-0.443, cross_abs_area_sum=13.682378, cross_to_diag_ratio=0.10578829, max_abs=33405.307
+
+Pairwise spectrum differences
+-----------------------------
+dimerisation_control vs soc_constant: max_abs_difference=729594.28, relative_max_difference=0.65747964, l2_difference=1076497.3
+dimerisation_control vs spin_correlation_control: max_abs_difference=2.910383e-11, relative_max_difference=2.6227146e-17, l2_difference=4.3037059e-11
+soc_constant vs spin_correlation_control: max_abs_difference=729594.28, relative_max_difference=0.65747964, l2_difference=1076497.3
+
+Interpretation
+--------------
+The dimerisation and local spin-correlation cases were run at matched V_BD_eff = 0.02. In this static phenomenological model, the Hamiltonian depends on delta and C1 only through V_BD_eff.
+Their direct spectrum difference is therefore the decisive control: relative max difference = 2.623e-17.
+Conclusion: Step 2 separates constant mixing from enhanced effective mixing, but it does not separate the microscopic origin of the enhanced mixing when delta and C1 only enter through the same scalar V_BD_eff.
+To distinguish phonon/dimerisation physics from local spin-correlation physics, the next model must add a mechanism that changes more than the static scalar mixing, for example a dynamic phonon coordinate, a k-sector dependence, a separate lineshape/dephasing channel, or distinct T/B trends.

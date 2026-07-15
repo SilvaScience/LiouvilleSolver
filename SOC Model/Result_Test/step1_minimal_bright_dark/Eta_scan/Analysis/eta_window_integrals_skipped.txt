@@ -1,0 +1,6 @@
+Latest analysis run: 2026-07-10 14:37.
+Analyzed files: 40.
+Skipped files: 0.
+
+This file previously contained an obsolete numpy.trapz error log. The current
+analysis script uses numpy.trapezoid and completed without skipped data files.

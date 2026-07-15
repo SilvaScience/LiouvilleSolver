@@ -1,0 +1,4 @@
+case_a,case_b,max_abs_difference,relative_max_difference,l2_difference,same_shape
+dimerisation_control,soc_constant,729594.2838798673,0.6574796401516027,1076497.330235191,True
+dimerisation_control,spin_correlation_control,2.9103830456733704e-11,2.6227146235259246e-17,4.303705926133199e-11,True
+soc_constant,spin_correlation_control,729594.2838798673,0.6574796401516027,1076497.3302351912,True

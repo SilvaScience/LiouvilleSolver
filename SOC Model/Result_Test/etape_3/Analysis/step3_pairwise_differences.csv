@@ -1,0 +1,4 @@
+case_a,case_b,max_abs_difference,relative_max_difference,l2_difference,same_shape
+dynamic_dimerisation_phonon,static_dimerisation,364806.9074843079,0.5456804228186474,422273.0437228407,True
+dynamic_dimerisation_phonon,static_spin_correlation,364806.9074843079,0.5456804228186474,422273.0437228407,True
+static_dimerisation,static_spin_correlation,7.332580706405269e-12,1.0968119457538494e-17,1.5340328848278007e-11,True

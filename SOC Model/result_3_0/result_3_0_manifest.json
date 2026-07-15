@@ -1,0 +1,11 @@
+{
+  "source_notebook": "C:\\Users\\falve\\OneDrive\\Documents\\GitHub\\LiouvilleSolver\\SOC Model\\Result_Test\\etape_3\\step3_dynamic_dimerisation_phonon.ipynb",
+  "generated_script": "C:\\Users\\falve\\OneDrive\\Documents\\GitHub\\LiouvilleSolver\\SOC Model\\result_3_0\\code\\SOC_workbench.py",
+  "generated_notebook": "C:\\Users\\falve\\OneDrive\\Documents\\GitHub\\LiouvilleSolver\\SOC Model\\result_3_0\\code\\SOC_workbench.ipynb",
+  "parameter_source": "model_params",
+  "output_stem": "SOC_workbench",
+  "metrics_file": "C:\\Users\\falve\\OneDrive\\Documents\\GitHub\\LiouvilleSolver\\SOC Model\\result_3_0\\Analysis\\step03__spin_chain_exact_metrics.csv",
+  "comparison_figure": "C:\\Users\\falve\\OneDrive\\Documents\\GitHub\\LiouvilleSolver\\SOC Model\\result_3_0\\Analysis\\step03__spin_chain_exact_comparison.png",
+  "validation_outcome": "C:\\Users\\falve\\OneDrive\\Documents\\GitHub\\LiouvilleSolver\\SOC Model\\result_3_0\\Analysis\\step03__spin_chain_exact_validation_outcome.txt",
+  "report": "C:\\Users\\falve\\OneDrive\\Documents\\GitHub\\LiouvilleSolver\\SOC Model\\result_3_0\\report\\SOC_workbench_rapport.tex"
+}

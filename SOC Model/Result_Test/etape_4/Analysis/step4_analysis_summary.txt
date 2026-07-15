@@ -1,0 +1,28 @@
+Step 4 analysis: independent temperature and field trends
+==========================================================
+Result root: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\etape_4
+Component: S_component_rephasing
+Window half-width (eV): 0.025
+
+Main metrics
+------------
+lowT_lattice_dynamic: T=7, B=0, T_SP=14, delta=0.0070710678, C1=-0.37866667, g_Q_eff=0.01, V_BD_static=0.02, cross_abs_area_sum=12.554241, cross_to_diag_ratio=0.14542282, sideband_to_main_cross_ratio=2.5491783
+highT_lattice_off_C1_finite: T=20, B=0, T_SP=14, delta=0, C1=-0.32947059, g_Q_eff=0, V_BD_static=0.01, cross_abs_area_sum=10.919127, cross_to_diag_ratio=0.12876331, sideband_to_main_cross_ratio=2.6614808
+highB_lattice_suppressed: T=7, B=15, T_SP=1.4, delta=0, C1=-0.34619938, g_Q_eff=0, V_BD_static=0.01, cross_abs_area_sum=10.919127, cross_to_diag_ratio=0.12876331, sideband_to_main_cross_ratio=2.6614808
+highT_C1_static: T=20, B=0, T_SP=14, delta=0, C1=-0.32947059, g_Q_eff=0, V_BD_static=0.02, cross_abs_area_sum=16.266623, cross_to_diag_ratio=0.12700311, sideband_to_main_cross_ratio=2.3291147
+
+Pairwise spectrum differences
+-----------------------------
+highB_lattice_suppressed vs highT_C1_static: max_abs_difference=607759.63, relative_max_difference=0.59820493, l2_difference=1016098.2
+highB_lattice_suppressed vs highT_lattice_off_C1_finite: max_abs_difference=0, relative_max_difference=0, l2_difference=0
+highB_lattice_suppressed vs lowT_lattice_dynamic: max_abs_difference=288721.4, relative_max_difference=0.67583375, l2_difference=721754.1
+highT_C1_static vs highT_lattice_off_C1_finite: max_abs_difference=607759.63, relative_max_difference=0.59820493, l2_difference=1016098.2
+highT_C1_static vs lowT_lattice_dynamic: max_abs_difference=588765.44, relative_max_difference=0.57950935, l2_difference=642354.4
+highT_lattice_off_C1_finite vs lowT_lattice_dynamic: max_abs_difference=288721.4, relative_max_difference=0.67583375, l2_difference=721754.1
+
+Interpretation
+--------------
+The low-temperature lattice case has finite delta and finite g_Q_eff. The high-temperature and high-field lattice-off controls have delta = 0 and g_Q_eff = 0 while C1 remains finite.
+The main cross-window area changes from 12.554241 to 10.919127 in the high-temperature lattice-off control.
+In the high-field lattice-suppressed control the same metric is 10.919127.
+The high-temperature C1-static control keeps delta = 0 but gives cross_abs_area_sum=16.266623; any feature that survives in this control is not unique to the dimerised phase.

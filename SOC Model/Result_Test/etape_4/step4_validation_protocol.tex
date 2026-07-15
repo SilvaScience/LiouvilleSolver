@@ -1,0 +1,173 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs}
+
+\title{Step 4 Validation Protocol: Independent Temperature and Field Trends}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Purpose of the test}
+Step 3 showed that a dynamic dimerisation/phonon coordinate can produce a
+nonlinear response that is distinct from a purely scalar bright-dark mixing.
+Step 4 tests the trend-level interpretation needed before assigning a measured
+feature to spin-Peierls physics.  The control is:
+\begin{equation}
+\delta(T,B) \rightarrow 0
+\quad\mathrm{above\ the\ spin\!-\!Peierls\ transition},
+\end{equation}
+while the local spin correlation proxy remains finite,
+\begin{equation}
+C_1(T,B) \ne 0
+\quad\mathrm{in\ both\ uniform\ and\ dimerised\ regimes}.
+\end{equation}
+The second condition is essential: if $C_1$ were forced to zero above the
+transition, the test would no longer distinguish a lattice order parameter from
+a uniform spin-correlation channel.
+
+\section{Physical model}
+The Hamiltonian is the Step 3 model,
+\begin{equation}
+H_{\mathrm{mix}} =
+V_{BD}^{\mathrm{static}} L_{BD}
++ g_Q^{\mathrm{eff}} Q L_{BD},
+\end{equation}
+with
+\begin{equation}
+V_{BD}^{\mathrm{static}} =
+V_0 + \lambda_\delta \delta(T,B) + \lambda_C C_1(T,B).
+\end{equation}
+The dynamic lattice coupling is scaled by the spin-Peierls order parameter,
+\begin{equation}
+g_Q^{\mathrm{eff}} = g_{Q0}
+\frac{\delta(T,B)}{\delta(T_{\mathrm{ref}},B_{\mathrm{ref}})}.
+\end{equation}
+Thus the dynamic lattice channel turns off when the dimerisation turns off.
+
+\section{Trend definitions}
+The spin-Peierls transition temperature is represented phenomenologically by
+\begin{equation}
+T_{\mathrm{SP}}(B) =
+\max\left[0, T_{\mathrm{SP},0}(1-\alpha_B B^2)\right].
+\end{equation}
+The dimerisation is
+\begin{equation}
+\delta(T,B)=
+\begin{cases}
+\delta_0 \left(1-T/T_{\mathrm{SP}}(B)\right)^\beta,
+& T<T_{\mathrm{SP}}(B),\\
+0, & T\ge T_{\mathrm{SP}}(B).
+\end{cases}
+\end{equation}
+The spin-correlation proxy is not an order parameter.  It is kept finite above
+the transition and varies smoothly with temperature and field.
+
+\section{Scenarios}
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+Scenario & Regime & Lattice channel & Purpose \\
+\midrule
+\texttt{lowT\_lattice\_dynamic} & low $T$, low $B$ & on & spin-Peierls reference \\
+\texttt{highT\_lattice\_off\_C1\_finite} & high $T$ & off & uniform chain with finite $C_1$ \\
+\texttt{highB\_lattice\_suppressed} & low $T$, high $B$ & off & field-suppressed order \\
+\texttt{highT\_C1\_static} & high $T$ & off & persistent scalar $C_1$ signal \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Acceptance criteria}
+A lattice-controlled feature should be large in the low-temperature
+spin-Peierls case and suppressed in both the high-temperature and
+field-suppressed controls.  A feature that remains large in the
+\texttt{highT\_C1\_static} case is compatible with a spin-correlation channel,
+but it should not be interpreted uniquely as evidence for the dimerised phase.
+
+\section{Requested outputs}
+For each scenario, save:
+\begin{itemize}
+\item the rephasing real spectrum PDF;
+\item the pathway-resolved complex response arrays;
+\item the rephasing, unrephasing, and 1Q total components;
+\item text and JSON summaries containing $T$, $B$, $T_{\mathrm{SP}}$,
+$\delta$, $C_1$, $g_Q^{\mathrm{eff}}$, and $V_{BD}^{\mathrm{static}}$.
+\end{itemize}
+The analysis should compare finite-window integrals, full-spectrum differences,
+and trend metrics across the four scenarios.
+
+\section{Numerical results}
+The four Step 4 scenarios were generated at $\eta=0.001$ with a
+$120\times120$ frequency grid, $n_{\mathrm{bosons}}=3$, and
+$\omega_Q=0.035$ eV.  The finite-window half-width used for the aggregate
+metrics is $0.025$ eV.
+
+\begin{center}
+\begin{tabular}{lrrrrr}
+\toprule
+Scenario & $\delta$ & $C_1$ & $g_Q^{\mathrm{eff}}$ &
+$V_{BD}^{\mathrm{static}}$ & $A_{\mathrm{cross}}$ \\
+\midrule
+Low-$T$ lattice dynamic & 0.007071 & -0.378667 & 0.0100 & 0.0200 & 12.554241 \\
+High-$T$ lattice off & 0 & -0.329471 & 0 & 0.0100 & 10.919127 \\
+High-$B$ lattice suppressed & 0 & -0.346199 & 0 & 0.0100 & 10.919127 \\
+High-$T$ $C_1$ static & 0 & -0.329471 & 0 & 0.0200 & 16.266623 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The low-temperature lattice reference has finite $\delta$ and finite
+$g_Q^{\mathrm{eff}}$.  The high-temperature and high-field lattice-off controls
+both have $\delta=0$ and $g_Q^{\mathrm{eff}}=0$, while $C_1$ remains finite.
+Because these two controls also have the same $V_{BD}^{\mathrm{static}}=0.01$,
+their spectra are identical in this minimal model.  The full-spectrum relative
+maximum difference between them is exactly zero at numerical precision.
+
+The low-temperature lattice spectrum differs strongly from the high-temperature
+lattice-off control.  The full-spectrum relative maximum difference is
+$6.76\times10^{-1}$, and the main cross-window area changes from $12.554241$ to
+$10.919127$.  This confirms that the implemented lattice channel follows the
+spin-Peierls trend.
+
+The high-temperature $C_1$ static control is the key interpretive warning.  It
+keeps $\delta=0$ and $g_Q^{\mathrm{eff}}=0$, but uses finite $C_1$ to restore
+$V_{BD}^{\mathrm{static}}=0.02$.  Its main cross-window area is
+$16.266623$, larger than both lattice-off controls.  The full-spectrum relative
+maximum difference between the high-temperature lattice-off control and this
+$C_1$ static control is $5.98\times10^{-1}$.
+
+\section{Validation outcome}
+The trend-control validation passes.  The model now contains two independent
+trend channels: a dimerisation/lattice channel that vanishes above the
+spin-Peierls transition or under field suppression, and a spin-correlation
+proxy that remains finite in the uniform regime.
+
+The conclusion is therefore sharper than in Step 3.  A feature that disappears
+when $\delta(T,B)$ and $g_Q^{\mathrm{eff}}$ vanish is compatible with a
+spin-Peierls/lattice-controlled mechanism.  A feature that persists in the
+high-temperature $C_1$ static control, where $\delta=0$, cannot be assigned
+uniquely to the dimerised phase.  It may instead reflect a scalar local
+spin-correlation contribution to bright-dark mixing.
+
+\section{Conclusions and next step}
+Step 4 provides the minimal trend-level filter needed before connecting the
+model to CuGeO3 data.  The lattice channel should be judged by whether it tracks
+$\delta(T,B)$, not merely by whether the signal is present at low temperature.
+The finite-$C_1$ control shows that a nonlinear feature can remain strong even
+when the spin-Peierls order parameter is zero.
+
+The next useful calculation is to turn this discrete control into a scan:
+\begin{itemize}
+\item sweep $T$ across $T_{\mathrm{SP}}$ at fixed low field and track selected
+window integrals;
+\item sweep $B$ at fixed low temperature to check field suppression of
+$\delta(T,B)$;
+\item compare lattice-dynamic and $C_1$-static channels using the same plotted
+observables rather than only full spectra;
+\item only after that, add a momentum-sector or spinon-inspired treatment if
+the trend-level signatures remain distinct.
+\end{itemize}
+
+\end{document}

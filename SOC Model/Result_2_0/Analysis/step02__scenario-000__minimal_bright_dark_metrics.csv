@@ -1,0 +1,3 @@
+run_id,component,omega1_min_eV,omega1_max_eV,omega3_min_eV,omega3_max_eV,finite,max_abs,peak_omega1_eV,peak_omega3_eV,integral_abs,integral_real,integral_imag
+step02__scenario-000__minimal_bright_dark__V0-0p01eV,rephasing,-1.3,-0.7,0.7,1.3,True,1960962.541453883,-1.0010033444816053,1.0010033444816053,328.502658982512,0.0,23.373333736408384
+step02__scenario-000__minimal_bright_dark__V0-0p01eV,unrephasing,0.7,1.3,0.7,1.3,True,1970183.411559177,1.0010033444816053,1.0010033444816053,329.89036162189984,-0.13075451170077557,23.371841416987834

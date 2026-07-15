@@ -1,0 +1,89 @@
+{
+  "test": "etape_6",
+  "run_label": "step6_omegaQ_0p02_Eta_0p001_Vstatic_0p02_gQ_0p01_omegaQ_0p02",
+  "active_case_key": "omegaQ_0p02",
+  "scan_family": "omegaQ_scan",
+  "scan_variable": "omega_Q",
+  "scan_value": 0.02,
+  "model_parameters": {
+    "Delta_dark": 0.9,
+    "Delta_Bright": 1.0,
+    "mu_B": 1.0,
+    "mu_D": 0.0,
+    "V0": 0.01,
+    "lambda_delta": 1.414213562373095,
+    "lambda_C": 0.0,
+    "n_bosons": 3,
+    "omega_Q": 0.02,
+    "g_Q_source": "external",
+    "g_Q_external": 0.01,
+    "T_SP_0": 14.0,
+    "delta_0": 0.01,
+    "beta": 0.5,
+    "alpha_field": 0.004,
+    "T_ref": 7.0,
+    "B_ref": 0.0,
+    "C1_lowT": -0.443,
+    "C1_highT": -0.25,
+    "C1_field_scale": 0.0015,
+    "T": 7.0,
+    "B": 0.0,
+    "N_k": 1,
+    "gamma_orb": 0.0,
+    "gamma_phonon": 0.0,
+    "label": "step6_omegaQ_0p02",
+    "scan_family": "omegaQ_scan",
+    "scan_variable": "omega_Q",
+    "scan_value": 0.02
+  },
+  "solver_parameters": {
+    "T": 0.0,
+    "Eta": 0.001,
+    "backend": "dense",
+    "parallel_backend": "threading",
+    "n_jobs": -1
+  },
+  "derived": {
+    "T": 7.0,
+    "B": 0.0,
+    "T_SP": 14.0,
+    "delta": 0.007071067811865476,
+    "C1": -0.37866666666666665,
+    "V_BD_static": 0.02,
+    "omega_Q": 0.02,
+    "g_Q_eff": 0.01,
+    "E_minus": 0.8961483519286549,
+    "E_plus": 1.003851648071345,
+    "N_k": 1,
+    "weight_sum": 1.0,
+    "hilbert_dimension": 9
+  },
+  "spectrum_parameters": {
+    "N_w": 120,
+    "tau2": 3.0,
+    "omega1_min": -1.35,
+    "omega1_max": -0.65,
+    "omega3_min": 0.65,
+    "omega3_max": 1.35,
+    "plot_pathways": [
+      "R1",
+      "R2",
+      "R3"
+    ],
+    "plot_totals": [
+      "rephasing"
+    ],
+    "view": "real",
+    "normalization": "individual"
+  },
+  "numerical_observables": {
+    "rephasing_max_abs": 625696.0623610734,
+    "rephasing_l2_norm": 803047.2561892113
+  },
+  "files": {
+    "spectrum_pdf": "C:\\Users\\falve\\OneDrive\\Documents\\GitHub\\LiouvilleSolver\\SOC Model\\Result_Test\\etape_6\\Figures\\omegaQ_scan\\step6_omegaQ_0p02\\step6_omegaQ_0p02_Eta_0p001_Vstatic_0p02_gQ_0p01_omegaQ_0p02.pdf",
+    "data_npz": "C:\\Users\\falve\\OneDrive\\Documents\\GitHub\\LiouvilleSolver\\SOC Model\\Result_Test\\etape_6\\Data\\step6_omegaQ_0p02_Eta_0p001_Vstatic_0p02_gQ_0p01_omegaQ_0p02_S_data.npz",
+    "summary_txt": "C:\\Users\\falve\\OneDrive\\Documents\\GitHub\\LiouvilleSolver\\SOC Model\\Result_Test\\etape_6\\Summaries\\step6_omegaQ_0p02_Eta_0p001_Vstatic_0p02_gQ_0p01_omegaQ_0p02_results.txt"
+  },
+  "validation_status": "PENDING PHASE 2"
+}

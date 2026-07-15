@@ -1,0 +1,85 @@
+active_step: result_3_0
+source_notebook: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\etape_3\step3_dynamic_dimerisation_phonon.ipynb
+output_stem: SOC_workbench
+
+model_params:
+  B: 0.0
+  C1: 0.0
+  Delta_Bright: 1.0
+  Delta_dark: 0.9
+  J2_spin_eV: 0.0
+  J_spin_eV: 0.01
+  N_k: 1
+  N_spin: 6
+  T: 7.0
+  T_SP_0: 14.0
+  V0: 0.01
+  alpha_field: 0.004
+  beta: 0.5
+  boundary: open
+  delta_0: 0.01
+  delta_external: 0.0
+  delta_source: spin_peierls_mean_field
+  g_Q: 0.01
+  g_factor: 2.0
+  gamma_orb: 0.0
+  gamma_phonon: 0.0
+  lambda_C: -0.022573363431151242
+  lambda_delta: 0.2
+  mu_B: 1.0
+  mu_D: 0.0
+  n_bosons: 3
+  omega_Q: 0.035
+  phonon_displacement_couples_to: bright_dark
+  spin_correlation_source: exact_spin_chain
+
+derived_spin_and_projected_parameters:
+  T_SP: 14.0 K
+  delta: 0.007071067811865476
+  C1_exact: -0.4986299844578589
+  V_BD_static: 0.022669969419209637 eV
+  spin_dimension: 64
+  spin_hilbert_dimension_expected: 64
+  spin_hermitian_residual: 0.0
+  spin_ground_energy: -0.02503489613945384 eV
+  spin_gap: 0.005026951412228475 eV
+
+solver_parameters:
+  T: 0.0
+  Eta: 0.001
+  backend: dense
+  parallel_backend: threading
+  n_jobs: -1
+
+spectrum_parameters:
+  N_w: 72
+  omega1_rephasing_min: -1.35
+  omega1_rephasing_max: -0.65
+  omega1_unrephasing_min: 0.65
+  omega1_unrephasing_max: 1.35
+  omega3_min: 0.65
+  omega3_max: 1.35
+  tau2: 3.0
+
+pulse_sequence:
+  arrival_times_fs: [0.0, 100.0, 200.0]
+  protocol: third-order 1Q NQ protocol
+frequency_quadrants:
+  rephasing: omega1 < 0, omega3 > 0
+  unrephasing: omega1 > 0, omega3 > 0
+
+generated_files:
+  spectra: Data/SOC_workbench_spectra.npz
+  rephasing_real_png: Figures/SOC_workbench_rephasing_real.png
+  rephasing_real_pdf: Figures/SOC_workbench_rephasing_real.pdf
+  rephasing_imag_png: Figures/SOC_workbench_rephasing_imag.png
+  rephasing_imag_pdf: Figures/SOC_workbench_rephasing_imag.pdf
+  rephasing_abs_png: Figures/SOC_workbench_rephasing_abs.png
+  rephasing_abs_pdf: Figures/SOC_workbench_rephasing_abs.pdf
+  unrephasing_real_png: Figures/SOC_workbench_unrephasing_real.png
+  unrephasing_real_pdf: Figures/SOC_workbench_unrephasing_real.pdf
+  unrephasing_imag_png: Figures/SOC_workbench_unrephasing_imag.png
+  unrephasing_imag_pdf: Figures/SOC_workbench_unrephasing_imag.pdf
+  unrephasing_abs_png: Figures/SOC_workbench_unrephasing_abs.png
+  unrephasing_abs_pdf: Figures/SOC_workbench_unrephasing_abs.pdf
+timestamp: 2026-07-13T13:50:25

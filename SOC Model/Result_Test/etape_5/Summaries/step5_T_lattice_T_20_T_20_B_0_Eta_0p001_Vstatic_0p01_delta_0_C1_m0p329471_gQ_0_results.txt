@@ -1,0 +1,42 @@
+Test: etape_5
+Run label: step5_T_lattice_T_20_T_20_B_0_Eta_0p001_Vstatic_0p01_delta_0_C1_m0p329471_gQ_0
+Active case: T_lattice_T_20
+Scan family: temperature_lattice_dynamic
+Channel: lattice_dynamic
+
+Temperature-field scan model
+----------------------------
+H_mix = V_BD_static L_BD + g_Q_eff Q L_BD
+V_BD_static = V0 + lambda_delta * delta(T,B) + lambda_C * C1(T,B)
+T: 20.0
+B: 0.0
+T_SP: 14.0
+delta: 0.0
+C1: -0.3294705882352941
+V_BD_static: 0.01
+omega_Q: 0.035
+g_Q_eff: 0.0
+
+Solver parameters
+-----------------
+T: 0.0
+Eta: 0.001
+backend: dense
+parallel_backend: threading
+n_jobs: -1
+
+Spectrum parameters
+-------------------
+N_w: 90
+tau2: 3.0
+plot_pathways: ['R1', 'R2', 'R3']
+plot_totals: ['rephasing']
+view: real
+
+Files
+-----
+Spectrum PDF: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\etape_5\Figures\temperature_lattice_dynamic\step5_T_lattice_T_20\step5_T_lattice_T_20_T_20_B_0_Eta_0p001_Vstatic_0p01_delta_0_C1_m0p329471_gQ_0.pdf
+Spectrum data: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\etape_5\Data\step5_T_lattice_T_20_T_20_B_0_Eta_0p001_Vstatic_0p01_delta_0_C1_m0p329471_gQ_0_S_data.npz
+Summary JSON: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\etape_5\Summaries\step5_T_lattice_T_20_T_20_B_0_Eta_0p001_Vstatic_0p01_delta_0_C1_m0p329471_gQ_0_summary.json
+
+Validation status: PENDING PHASE 2

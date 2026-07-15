@@ -1,0 +1,5 @@
+PASS: delta(T,0) decreases monotonically across the temperature lattice scan.
+PASS: the high-temperature lattice endpoint has delta = 0 and g_Q_eff = 0.
+PASS: the high-field lattice endpoint suppresses delta and g_Q_eff at fixed low T.
+PASS: the high-temperature C1-static control keeps finite C1 with delta = 0.
+PASS: at high T, the C1-static cross area (18.1799) remains larger than the lattice-off area (8.5191).

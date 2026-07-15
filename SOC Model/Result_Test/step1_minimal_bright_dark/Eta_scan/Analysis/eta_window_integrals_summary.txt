@@ -1,0 +1,65 @@
+Step 1 Eta-scan finite-window analysis
+======================================
+Result root: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\step1_minimal_bright_dark\Eta_scan
+Component: S_component_rephasing
+Window half-width (eV): 0.025
+Eta values: [0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05]
+V0 values: [0.0, 0.01, 0.05]
+N_w values: [50, 80, 100, 150, 200, 300]
+
+Interpretation notes
+--------------------
+Point 1: finite-window integrals are computed around diag_minus, diag_plus, cross_plus_minus, and cross_minus_plus using the hybridized bright-dark eigenenergies E_minus/E_plus.
+Point 2: background subtraction first uses the V0=0 run at the same Eta, same N_w, and same named window. If that baseline is absent, the closest available N_w baseline at the same Eta/window is used and flagged.
+Point 3: the Eta dependence should be read from the net cross-window metrics versus Eta. If apparent cross signal is dominated by linewidth leakage, it should decrease as Eta is reduced.
+
+Cross-window net abs_area
+-------------------------
+Eta = 0.0001
+  V0=0.01, N_w=50, cross_minus_plus: abs_area=3.7719621, abs_area_net=0.22071714, max_abs=4820.4503, max_abs_net=716.72741, background=same_eta_same_N_w
+  V0=0.01, N_w=50, cross_plus_minus: abs_area=3.7719621, abs_area_net=0.22071714, max_abs=4820.4503, max_abs_net=716.72741, background=same_eta_same_N_w
+  V0=0.01, N_w=80, cross_minus_plus: abs_area=5.7947984, abs_area_net=1.3253797, max_abs=11065.42, max_abs_net=4463.4811, background=same_eta_same_N_w
+  V0=0.01, N_w=80, cross_plus_minus: abs_area=5.7947984, abs_area_net=1.3253797, max_abs=11065.42, max_abs_net=4463.4811, background=same_eta_same_N_w
+  V0=0.01, N_w=100, cross_minus_plus: abs_area=4.9377838, abs_area_net=-1.4152128, max_abs=11118.105, max_abs_net=2410.852, background=same_eta_same_N_w
+  V0=0.01, N_w=100, cross_plus_minus: abs_area=4.9377838, abs_area_net=-1.4152128, max_abs=11118.105, max_abs_net=2410.852, background=same_eta_same_N_w
+  V0=0.01, N_w=200, cross_minus_plus: abs_area=16.176409, abs_area_net=8.8244189, max_abs=358508.33, max_abs_net=341290.85, background=same_eta_same_N_w
+  V0=0.01, N_w=200, cross_plus_minus: abs_area=16.176409, abs_area_net=8.8244189, max_abs=358508.33, max_abs_net=341290.85, background=same_eta_same_N_w
+  V0=0.01, N_w=300, cross_minus_plus: abs_area=26.878437, abs_area_net=18.181309, max_abs=698109.91, max_abs_net=671751.34, background=same_eta_same_N_w
+  V0=0.01, N_w=300, cross_plus_minus: abs_area=26.878437, abs_area_net=18.181309, max_abs=698109.91, max_abs_net=671751.34, background=same_eta_same_N_w
+  V0=0.05, N_w=80, cross_minus_plus: abs_area=11.202345, abs_area_net=6.7329267, max_abs=41260.867, max_abs_net=34658.928, background=same_eta_same_N_w
+  V0=0.05, N_w=80, cross_plus_minus: abs_area=11.202345, abs_area_net=6.7329267, max_abs=41260.867, max_abs_net=34658.928, background=same_eta_same_N_w
+  V0=0.05, N_w=150, cross_minus_plus: abs_area=13.624292, abs_area_net=7.2712957, max_abs=87371.799, max_abs_net=78664.547, background=same_eta_closest_N_w
+  V0=0.05, N_w=150, cross_plus_minus: abs_area=13.624292, abs_area_net=7.2712957, max_abs=87371.799, max_abs_net=78664.547, background=same_eta_closest_N_w
+  V0=0.05, N_w=200, cross_minus_plus: abs_area=15.877137, abs_area_net=8.5251469, max_abs=164437.55, max_abs_net=147220.06, background=same_eta_same_N_w
+  V0=0.05, N_w=200, cross_plus_minus: abs_area=15.877137, abs_area_net=8.5251469, max_abs=164437.55, max_abs_net=147220.06, background=same_eta_same_N_w
+  V0=0.05, N_w=300, cross_minus_plus: abs_area=26.268923, abs_area_net=17.571795, max_abs=960156.28, max_abs_net=933797.71, background=same_eta_same_N_w
+  V0=0.05, N_w=300, cross_plus_minus: abs_area=26.268923, abs_area_net=17.571795, max_abs=960156.28, max_abs_net=933797.71, background=same_eta_same_N_w
+Eta = 0.0005
+  V0=0.01, N_w=80, cross_minus_plus: abs_area=5.6916686, abs_area_net=1.2489803, max_abs=10490.663, max_abs_net=3943.0714, background=same_eta_same_N_w
+  V0=0.01, N_w=80, cross_plus_minus: abs_area=5.6916686, abs_area_net=1.2489803, max_abs=10490.663, max_abs_net=3943.0714, background=same_eta_same_N_w
+Eta = 0.001
+  V0=0.01, N_w=50, cross_minus_plus: abs_area=3.6832641, abs_area_net=0.17236345, max_abs=4602.6712, max_abs_net=552.39219, background=same_eta_same_N_w
+  V0=0.01, N_w=50, cross_plus_minus: abs_area=3.6832641, abs_area_net=0.17236345, max_abs=4602.6712, max_abs_net=552.39219, background=same_eta_same_N_w
+  V0=0.01, N_w=80, cross_minus_plus: abs_area=5.4504421, abs_area_net=1.0873737, max_abs=9258.5966, max_abs_net=2872.5891, background=same_eta_same_N_w
+  V0=0.01, N_w=80, cross_plus_minus: abs_area=5.4504421, abs_area_net=1.0873737, max_abs=9258.5966, max_abs_net=2872.5891, background=same_eta_same_N_w
+  V0=0.01, N_w=100, cross_minus_plus: abs_area=5.10502, abs_area_net=-1.0404627, max_abs=9991.8927, max_abs_net=1719.4486, background=same_eta_same_N_w
+  V0=0.01, N_w=100, cross_plus_minus: abs_area=5.10502, abs_area_net=-1.0404627, max_abs=9991.8927, max_abs_net=1719.4486, background=same_eta_same_N_w
+  V0=0.01, N_w=200, cross_minus_plus: abs_area=7.6165925, abs_area_net=0.91348674, max_abs=22423.969, max_abs_net=8045.7928, background=same_eta_same_N_w
+  V0=0.01, N_w=200, cross_plus_minus: abs_area=7.6165925, abs_area_net=0.91348674, max_abs=22423.969, max_abs_net=8045.7928, background=same_eta_same_N_w
+  V0=0.01, N_w=300, cross_minus_plus: abs_area=7.491526, abs_area_net=0.023647028, max_abs=28641.806, max_abs_net=9881.5358, background=same_eta_same_N_w
+  V0=0.01, N_w=300, cross_plus_minus: abs_area=7.491526, abs_area_net=0.023647028, max_abs=28641.806, max_abs_net=9881.5358, background=same_eta_same_N_w
+Eta = 0.005
+  V0=0.01, N_w=80, cross_minus_plus: abs_area=3.5490448, abs_area_net=0.41327402, max_abs=4078.9566, max_abs_net=92.362204, background=same_eta_same_N_w
+  V0=0.01, N_w=80, cross_plus_minus: abs_area=3.5490448, abs_area_net=0.41327402, max_abs=4078.9566, max_abs_net=92.362204, background=same_eta_same_N_w
+  V0=0.05, N_w=80, cross_minus_plus: abs_area=4.2482601, abs_area_net=1.1124893, max_abs=7945.0559, max_abs_net=3958.4615, background=same_eta_same_N_w
+  V0=0.05, N_w=80, cross_plus_minus: abs_area=4.2482601, abs_area_net=1.1124893, max_abs=7945.0559, max_abs_net=3958.4615, background=same_eta_same_N_w
+Eta = 0.01
+  V0=0.01, N_w=80, cross_minus_plus: abs_area=2.4280011, abs_area_net=0.27519884, max_abs=2250.363, max_abs_net=-75.993004, background=same_eta_same_N_w
+  V0=0.01, N_w=80, cross_plus_minus: abs_area=2.4280011, abs_area_net=0.27519884, max_abs=2250.363, max_abs_net=-75.993004, background=same_eta_same_N_w
+  V0=0.05, N_w=80, cross_minus_plus: abs_area=2.1808533, abs_area_net=0.028051014, max_abs=2629.8449, max_abs_net=303.48893, background=same_eta_same_N_w
+  V0=0.05, N_w=80, cross_plus_minus: abs_area=2.1808533, abs_area_net=0.028051014, max_abs=2629.8449, max_abs_net=303.48893, background=same_eta_same_N_w
+Eta = 0.05
+  V0=0.01, N_w=80, cross_minus_plus: abs_area=0.58659232, abs_area_net=0.074229967, max_abs=413.0655, max_abs_net=-10.679902, background=same_eta_same_N_w
+  V0=0.01, N_w=80, cross_plus_minus: abs_area=0.58659232, abs_area_net=0.074229967, max_abs=413.0655, max_abs_net=-10.679902, background=same_eta_same_N_w
+  V0=0.05, N_w=80, cross_minus_plus: abs_area=0.38297471, abs_area_net=-0.12938764, max_abs=232.12765, max_abs_net=-191.61775, background=same_eta_same_N_w
+  V0=0.05, N_w=80, cross_plus_minus: abs_area=0.38297471, abs_area_net=-0.12938764, max_abs=232.12765, max_abs_net=-191.61775, background=same_eta_same_N_w

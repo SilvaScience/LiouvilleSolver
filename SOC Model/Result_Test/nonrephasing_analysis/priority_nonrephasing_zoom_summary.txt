@@ -1,0 +1,15 @@
+Corrected nonrephasing zoom metrics
+===================================
+Rephasing is evaluated on omega1 < 0.
+Unrephasing is evaluated on omega1 > 0.
+
+etape_6 gQ_0: max NR/R=1.01771, L2 NR/R=1.01779, area NR/R=1.01833, NR peak=(1.0038516, 1.0038516)
+etape_6 gQ_0p01: max NR/R=1.03674, L2 NR/R=1.04072, area NR/R=1.04775, NR peak=(1.0048516, 1.0048516)
+etape_6 omegaQ_0p07: max NR/R=1.05098, L2 NR/R=1.05388, area NR/R=1.07309, NR peak=(1.0058516, 1.0058516)
+etape_3 static_dimerisation: max NR/R=1.01771, L2 NR/R=1.01779, area NR/R=1.01833, NR peak=(1.0038516, 1.0038516)
+etape_3 dynamic_dimerisation_phonon: max NR/R=1.03674, L2 NR/R=1.04072, area NR/R=1.04775, NR peak=(1.0048516, 1.0048516)
+etape_5 T_lattice_T_7: max NR/R=1.03674, L2 NR/R=1.04072, area NR/R=1.04775, NR peak=(1.0048516, 1.0048516)
+etape_5 T_lattice_T_20: max NR/R=1.0047, L2 NR/R=1.00473, area NR/R=1.00489, NR peak=(1.0009902, 1.0009902)
+etape_5 T_C1_static_T_20: max NR/R=1.01771, L2 NR/R=1.01779, area NR/R=1.01833, NR peak=(1.0038516, 1.0038516)
+etape_2 dimerisation_control: max NR/R=1.01771, L2 NR/R=1.01779, area NR/R=1.01833, NR peak=(1.0038516, 1.0038516)
+etape_2 spin_correlation_control: max NR/R=1.01771, L2 NR/R=1.01779, area NR/R=1.01833, NR peak=(1.0038516, 1.0038516)

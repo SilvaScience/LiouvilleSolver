@@ -1,0 +1,185 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs}
+
+\title{Step 3 Validation Protocol: Dynamic Dimerisation/Phonon Coordinate}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Purpose of the test}
+Step 2 showed that a scalar effective mixing,
+\begin{equation}
+V_{BD}^{\mathrm{eff}} =
+V_0 + \lambda_\delta \delta + \lambda_C C_1,
+\end{equation}
+can detect enhanced bright-dark mixing but cannot identify whether the
+enhancement comes from spin-Peierls dimerisation or local spin correlations.
+The purpose of Step 3 is to add a dynamic dimerisation/phonon coordinate and
+test whether this creates a spectroscopic signature that a static $C_1$ scalar
+control cannot reproduce.
+
+\section{Physical model}
+The orbital sector is the same minimal bright/dark model used in Steps 1 and
+2.  The Hilbert space contains a ground state $|g\rangle$, a dark excited state
+$|D\rangle$, a bright excited state $|B\rangle$, and a truncated harmonic
+coordinate with annihilation operator $a$.  The phonon displacement is
+\begin{equation}
+Q = a + a^\dagger.
+\end{equation}
+The Step 3 mixing Hamiltonian is
+\begin{equation}
+H_{\mathrm{mix}} =
+V_{BD}^{\mathrm{static}} L_{BD}
++ g_Q Q L_{BD},
+\end{equation}
+where
+\begin{equation}
+L_{BD} = |D\rangle\langle B| + |B\rangle\langle D|
+\end{equation}
+and
+\begin{equation}
+V_{BD}^{\mathrm{static}} =
+V_0 + \lambda_\delta \delta + \lambda_C C_1.
+\end{equation}
+The new ingredient is not another scalar amplitude; it is the operator-valued
+term $g_Q Q L_{BD}$.
+
+\section{Expected results}
+At matched $V_{BD}^{\mathrm{static}}$, the static dimerisation and static
+spin-correlation controls should remain equivalent, reproducing the degeneracy
+found in Step 2.  The dynamic dimerisation/phonon case is expected to differ
+because it can mix phonon manifolds.  Possible signatures include phonon
+sidebands, modified pathway amplitudes, altered peak positions, or changes in
+rephasing/unrephasing balance.
+
+\section{Numerical procedure}
+Run one scenario at a time by setting \texttt{STEP3\_ACTIVE\_CASE} or by
+editing \texttt{active\_case\_key} in the notebook.  The default scenarios are:
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Scenario & Purpose & Dynamic phonon term \\
+\midrule
+\texttt{static\_spin\_correlation} & scalar $C_1$ control & off \\
+\texttt{static\_dimerisation} & scalar $\delta$ control & off \\
+\texttt{dynamic\_dimerisation\_phonon} & dynamic lattice control & on \\
+\bottomrule
+\end{tabular}
+\end{center}
+The third-order rephasing 1Q spectrum is generated using the same NQ protocol
+as in Steps 1 and 2.  The frequency window is widened to leave room for phonon
+sideband structure.
+
+\section{Acceptance criteria}
+The first criterion is that the two static controls remain identical or nearly
+identical at matched $V_{BD}^{\mathrm{static}}$.  This confirms that the Step 2
+degeneracy is reproduced.
+
+The second criterion is that the dynamic dimerisation/phonon case differs from
+the static controls in at least one observable: cross-window area,
+cross/diagonal ratio, pathway-resolved amplitude, peak position, linewidth,
+or sideband intensity.  If the dynamic case remains indistinguishable, then the
+chosen $g_Q$, phonon energy, Hilbert-space truncation, or observable is not
+sufficient to isolate lattice dynamics.
+
+\section{Requested figures and data}
+For each run, save:
+\begin{itemize}
+\item the rephasing real spectrum PDF;
+\item the pathway-resolved complex response arrays;
+\item the total rephasing, unrephasing, and 1Q components;
+\item text and JSON summaries containing $V_{BD}^{\mathrm{static}}$, $g_Q$,
+$\omega_Q$, $\delta$, and $C_1$.
+\end{itemize}
+Phase 2 analysis should compare finite-window integrals, cross/diagonal ratios,
+pairwise spectrum differences, and possible sideband windows offset by
+$\omega_Q$.
+
+\section{Interpretation of possible failures}
+If the dynamic phonon case differs only by an overall amplitude, the observable
+may still be insensitive to true lattice dynamics.  If the static controls do
+not match at equal $V_{BD}^{\mathrm{static}}$, the model implementation should
+be checked before interpreting the dynamic case.  If sidebands are absent, the
+phonon coupling may be too weak, the frequency window too narrow, or the
+truncated phonon basis too small.
+
+\section{Numerical results}
+The three Step 3 scenarios were generated at $\eta=0.001$ with a
+$140\times140$ frequency grid, $n_{\mathrm{bosons}}=3$, and
+$\omega_Q=0.035$ eV.  The finite-window half-width used for the aggregate
+metrics is $0.025$ eV.  The two static controls were run at matched
+$V_{BD}^{\mathrm{static}}=0.02$.
+
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+Scenario & $V_{BD}^{\mathrm{static}}$ & $g_Q$ &
+$A_{\mathrm{cross}}$ & $A_{\mathrm{cross}}/A_{\mathrm{diag}}$ \\
+\midrule
+Static spin correlation & 0.0200 & 0 & 14.160315 & 0.142697 \\
+Static dimerisation & 0.0200 & 0 & 14.160315 & 0.142697 \\
+Dynamic dimerisation phonon & 0.0200 & 0.0100 & 11.761513 & 0.149235 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The static dimerisation and static spin-correlation spectra are identical to
+numerical precision.  Their relative maximum full-spectrum difference is
+$1.10\times10^{-17}$.  This reproduces the Step 2 scalar degeneracy inside the
+larger phonon Hilbert space.
+
+The dynamic dimerisation/phonon spectrum differs strongly from the static
+dimerisation control at the same $V_{BD}^{\mathrm{static}}$.  The relative
+maximum full-spectrum difference is $5.46\times10^{-1}$.  The main cross-window
+area decreases from $14.160315$ to $11.761513$, while the cross/diagonal ratio
+increases from $0.142697$ to $0.149235$.
+
+The sideband-window metric is qualitative because the finite windows can include
+tails from nearby resonances.  Nevertheless, it also changes between the static
+and dynamic cases: the sideband/main-cross ratio changes from $2.21297$ for the
+static controls to $2.41282$ for the dynamic phonon case.
+
+\section{Validation outcome}
+The first criterion passes.  The two static controls are identical at matched
+$V_{BD}^{\mathrm{static}}$ within relative maximum difference
+$1.10\times10^{-17}$.  This confirms that simply embedding the scalar model in
+a larger phonon Hilbert space does not by itself break the degeneracy between
+$\delta$ and $C_1$.
+
+The second criterion also passes.  Adding the dynamic term $g_Q Q L_{BD}$
+produces a distinct nonlinear spectrum relative to the static dimerisation
+control, with relative maximum full-spectrum difference $5.46\times10^{-1}$.
+Therefore an explicit dimerisation/phonon coordinate provides a viable route to
+separate lattice-driven spin-Peierls physics from a purely static local
+spin-correlation control.
+
+\section{Conclusions and next step}
+Step 3 resolves the main limitation of Step 2 at the model level.  A scalar
+renormalisation of bright-dark mixing cannot identify the microscopic origin of
+the signal, but an operator-valued phonon coordinate can generate a distinct
+spectral response.  This does not yet prove that a specific feature in CuGeO3 is
+phonon-driven, but it establishes a workable modelling criterion: lattice
+physics must enter through a dynamical or sector-specific degree of freedom,
+not only through a scalar $V_{BD}^{\mathrm{eff}}$.
+
+The next useful calculation is not to increase grid convergence immediately.
+Instead, the next step should scan the dynamical parameters one at a time:
+\begin{itemize}
+\item $g_Q$ to determine the onset and approximate scaling of the dynamic
+phonon signature;
+\item $\omega_Q$ to check whether sideband displacement follows the phonon
+energy;
+\item rephasing versus unrephasing totals to see whether the dynamic coordinate
+changes pathway balance;
+\item real, imaginary, and absolute spectra to identify the most robust
+observable.
+\end{itemize}
+After that, the model should be connected to temperature and field trends by
+using $\delta(T,B)$ for the dynamic lattice channel and $C_1(T,B)$ for the
+static spin-correlation control.
+
+\end{document}

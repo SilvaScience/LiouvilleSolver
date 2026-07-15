@@ -1,0 +1,2 @@
+PASS: Static dimerisation and static C1 controls are identical at matched V_BD_static within relative max difference 1.097e-17; the Step 2 scalar degeneracy is reproduced.
+PASS: The dynamic phonon coordinate produces a distinct spectrum relative to the static dimerisation control; relative max difference 5.457e-01.

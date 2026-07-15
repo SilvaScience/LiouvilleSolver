@@ -1,0 +1,192 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs}
+
+\title{Step 2 Validation Protocol: Separating Constant SOC, Dimerisation, and Local Spin-Correlation Controls}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Purpose of the test}
+The purpose of this step is to determine whether the minimal bright/dark
+spectroscopy model can distinguish three phenomenological mechanisms for the
+effective bright-dark mixing:
+\begin{align}
+V_{BD}^{\mathrm{eff}} &= V_0,\\
+V_{BD}^{\mathrm{eff}} &= V_0 + \lambda_\delta \delta,\\
+V_{BD}^{\mathrm{eff}} &= V_0 + \lambda_C C_1.
+\end{align}
+The test is not a microscopic calculation of CuGeO3.  It is a controlled
+spectroscopic check built on the Step 1 model.
+
+\section{Physical model}
+The Hilbert space contains a ground state, a dark excited state, and a bright
+excited state.  The bright state carries the optical dipole by default.  The
+dark state becomes visible only through bright-dark mixing.  The effective
+mixing is
+\begin{equation}
+V_{BD}^{\mathrm{eff}} =
+V_0 + \lambda_\delta \delta + \lambda_C C_1.
+\end{equation}
+Here $\delta$ is a spin-Peierls/lattice dimerisation order parameter, while
+$C_1=\langle S_i\cdot S_{i+1}\rangle$ is a local spin correlation that can be
+nonzero even in the uniform chain.
+
+\section{Expected results}
+If $V_0$ alone is active, the cross-peak signal should reproduce the qualitative
+Step 1 bright/dark result.  If only $\lambda_\delta\delta$ is varied, changes in
+the cross peaks should track the dimerisation amplitude.  If only
+$\lambda_C C_1$ is varied, cross-peak changes can remain present even when
+$\delta=0$, which would distinguish spin-correlation control from a purely
+spin-Peierls order parameter effect.
+
+\section{Numerical procedure}
+Run one scenario at a time by changing \texttt{active\_case\_key} in the
+notebook or script.  The third-order rephasing 1Q spectrum is generated with
+the same NQ protocol used in Step 1.  Each run writes a spectrum PDF, an NPZ
+file containing the complex response arrays, and text/JSON summaries.
+
+\section{Acceptance criteria}
+This step is qualitative and comparative.  The model is considered useful for
+Step 2 if the three controls produce distinguishable changes in at least one of:
+cross-peak area, cross/diagonal ratio, peak position, or pathway-resolved
+amplitude.  Absolute convergence in frequency-grid resolution is not required
+for this first separation test.
+
+\section{Requested figures and data}
+For each scenario, save the rephasing real spectrum, the pathway-resolved
+response arrays, the total rephasing component, and the run parameters.  Later
+Phase 2 analysis should compare cross-peak finite-window integrals and
+cross/diagonal ratios across the three scenarios.
+
+\section{Interpretation of possible failures}
+If all three controls produce nearly identical spectra at matched
+$V_{BD}^{\mathrm{eff}}$, then the current observable is sensitive only to the
+total effective mixing, not to its microscopic origin.  If the dimerisation and
+spin-correlation controls differ only through amplitude, additional observables
+such as temperature/field trends, unrephasing pathways, or dynamic phonon
+coupling may be required.
+
+\section{Numerical results}
+The three requested scenarios were generated at $\eta=0.001$ with a
+$100\times100$ frequency grid.  The finite-window half-width used for the
+aggregate metrics is $0.025$ eV.  The reported cross area is the sum of the
+two cross windows, and the ratio is the cross-window area divided by the sum
+of the two diagonal-window areas.
+
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+Scenario & $V_{BD}^{\mathrm{eff}}$ & $\delta$ & $C_1$ &
+$A_{\mathrm{cross}}/A_{\mathrm{diag}}$ \\
+\midrule
+Constant SOC & 0.0100 & 0 & 0 & 0.120590 \\
+Dimerisation control & 0.0200 & 0.0500 & 0 & 0.105788 \\
+Spin-correlation control & 0.0200 & 0 & -0.443 & 0.105788 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The summed cross-window finite-area values are $10.210040$ for constant SOC
+and $13.682378$ for both enhanced-mixing controls.  The direct spectrum
+difference between the dimerisation and spin-correlation controls at matched
+$V_{BD}^{\mathrm{eff}}=0.02$ has relative maximum difference
+$2.62\times10^{-17}$.
+
+\section{Validation outcome}
+The first criterion passes: the model remains sensitive to the effective
+bright-dark mixing, since the constant-SOC case and the enhanced-mixing cases
+produce distinguishable cross-window amplitudes.
+
+The microscopic-origin criterion is inconclusive in this scalar model.  The
+dimerisation and spin-correlation controls are numerically identical at matched
+$V_{BD}^{\mathrm{eff}}$, because $\delta$ and $C_1$ enter the Hamiltonian only
+through the same scalar effective mixing.  Therefore this Step 2 model can
+separate weak and enhanced bright-dark mixing, but it cannot by itself assign
+the enhancement to spin-Peierls dimerisation rather than to local spin
+correlations.
+
+\section{Conclusions}
+This step gives a useful negative control.  The nonlinear response is clearly
+sensitive to the magnitude of the effective bright-dark mixing: increasing
+$V_{BD}^{\mathrm{eff}}$ from $0.01$ to $0.02$ changes the cross-window signal
+and the full complex spectrum.  This confirms that the Step 1 observable remains
+usable when the mixing is promoted from a fixed SOC parameter to an effective
+control parameter.
+
+However, the present implementation cannot distinguish the microscopic origin
+of the enhancement.  In the Hamiltonian used here, $\delta$ and $C_1$ only enter
+through the single number $V_{BD}^{\mathrm{eff}}$.  Consequently, a
+dimerisation-driven enhancement and a local-spin-correlation-driven enhancement
+are exactly equivalent when they produce the same $V_{BD}^{\mathrm{eff}}$.  The
+matched comparison gives a relative maximum spectral difference of
+$2.62\times10^{-17}$, which is numerical zero for the present calculation.
+
+The physical conclusion is therefore limited but important: a temperature- or
+field-dependent cross peak cannot be assigned to SOC, dimerisation, phonons, or
+spin correlations from this scalar-mixing model alone.  The model can detect an
+enhanced bright-dark mixing channel, but it cannot identify whether the
+enhancement is caused by spin-Peierls lattice order or by correlations already
+present in the uniform spin chain.
+
+\section{Proposed next steps}
+\subsection{Step 3A: add a dynamic dimerisation/phonon coordinate}
+The most direct next step is to give the dimerisation channel a dynamical
+signature rather than only a scalar amplitude.  A minimal implementation would
+keep the bright/dark sector but add an explicit phonon coordinate $Q$:
+\begin{equation}
+H_{\mathrm{mix}} =
+\left(V_0 + \lambda_\delta \delta\right)
+\left(|D\rangle\langle B| + |B\rangle\langle D|\right)
++ g_Q Q
+\left(|D\rangle\langle B| + |B\rangle\langle D|\right).
+\end{equation}
+This should create phonon sideband structure, modified pathway phases, or
+additional dephasing/lineshape changes that a static $C_1$ control does not
+produce.  This is the cleanest route for separating lattice-driven
+spin-Peierls physics from a purely scalar SOC enhancement.
+
+\subsection{Step 3B: add independent temperature and field trends}
+The second control should be a trend-level comparison:
+\begin{align}
+\delta(T,B) &\rightarrow 0 \quad \text{above the spin-Peierls transition},\\
+C_1(T,B) &\neq 0 \quad \text{in both uniform and dimerised regimes}.
+\end{align}
+If a spectral feature follows $\delta(T,B)$ and vanishes above the transition,
+it is compatible with spin-Peierls/lattice control.  If it persists when
+$\delta=0$ but $C_1$ remains finite, it should not be attributed uniquely to
+the dimerised phase.
+
+\subsection{Step 3C: introduce a k- or bond-sector distinction}
+The third step is to make the dimerised and uniform spin-chain controls act on
+different sectors.  For example, a dimerised phase can fold the Brillouin zone
+or mix $k$ and $k+\pi$, while a uniform-chain correlation control should preserve
+the original translation symmetry.  This would test whether rephasing and
+unrephasing spectra are sensitive to a genuine spin-Peierls sector structure,
+not only to a scalar change in $V_{BD}^{\mathrm{eff}}$.
+
+\subsection{Step 3D: compare more observables than cross-peak area}
+The Step 2 area metric is useful but not sufficient.  Future runs should compare
+at least:
+\begin{itemize}
+\item rephasing versus unrephasing totals;
+\item real, imaginary, and absolute spectra;
+\item cross/diagonal ratios;
+\item pathway-resolved amplitudes;
+\item peak positions and linewidths;
+\item possible phonon sidebands or asymmetric lineshapes.
+\end{itemize}
+The goal is to find an observable that changes under dimerisation/phonon
+dynamics but does not change under a purely static $C_1$ scalar control.
+
+\subsection{Recommended order}
+The recommended next model is Step 3A: keep the same bright/dark model and add
+one explicit dimerisation/phonon coordinate.  This is the smallest change that
+can break the degeneracy found in Step 2.  After that, Step 3B should test
+whether the resulting spectral signatures follow realistic temperature and
+field trends for $\delta(T,B)$ and $C_1(T,B)$.
+
+\end{document}

@@ -1,0 +1,14 @@
+Zoom spectra generated for document plotting.
+Zoom half-width (eV): 0.04
+Zoom N per branch: 161
+
+etape_6 gQ_0: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\nonrephasing_analysis\ZoomData\etape_6\gQ_0
+etape_6 gQ_0p01: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\nonrephasing_analysis\ZoomData\etape_6\gQ_0p01
+etape_6 omegaQ_0p07: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\nonrephasing_analysis\ZoomData\etape_6\omegaQ_0p07
+etape_3 static_dimerisation: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\nonrephasing_analysis\ZoomData\etape_3\static_dimerisation
+etape_3 dynamic_dimerisation_phonon: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\nonrephasing_analysis\ZoomData\etape_3\dynamic_dimerisation_phonon
+etape_5 T_lattice_T_7: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\nonrephasing_analysis\ZoomData\etape_5\T_lattice_T_7
+etape_5 T_lattice_T_20: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\nonrephasing_analysis\ZoomData\etape_5\T_lattice_T_20
+etape_5 T_C1_static_T_20: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\nonrephasing_analysis\ZoomData\etape_5\T_C1_static_T_20
+etape_2 dimerisation_control: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\nonrephasing_analysis\ZoomData\etape_2\dimerisation_control
+etape_2 spin_correlation_control: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\nonrephasing_analysis\ZoomData\etape_2\spin_correlation_control

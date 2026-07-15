@@ -1,0 +1,72 @@
+Test: etape_3
+Run label: step3_static_dimerisation_Eta_0p001_Vstatic_0p02_delta_0p05_C1_0_gQ_0
+Active case: static_dimerisation
+
+Dynamic dimerisation model
+--------------------------
+H_mix = V_BD_static L_BD + g_Q Q L_BD
+V_BD_static = V0 + lambda_delta * delta + lambda_C * C1
+V0: 0.01
+lambda_delta: 0.2
+delta: 0.05
+lambda_C: 0.0
+C1: 0.0
+V_BD_static: 0.020000000000000004
+omega_Q: 0.035
+g_Q: 0.0
+n_bosons: 3
+
+Model parameters
+----------------
+Delta_dark: 0.9
+Delta_Bright: 1.0
+mu_B: 1.0
+mu_D: 0.0
+V0: 0.01
+lambda_delta: 0.2
+lambda_C: 0.0
+delta_source: external
+delta_external: 0.05
+C1: 0.0
+n_bosons: 3
+omega_Q: 0.035
+g_Q: 0.0
+phonon_displacement_couples_to: bright_dark
+T: 1.0
+T_SP_0: 14.0
+B: 0.0
+delta_0: 0.01
+beta: 0.5
+N_k: 1
+gamma_orb: 0.0
+gamma_phonon: 0.0
+label: step3_static_dimerisation
+
+Solver parameters
+-----------------
+T: 0.0
+Eta: 0.001
+backend: dense
+parallel_backend: threading
+n_jobs: -1
+
+Spectrum parameters
+-------------------
+N_w: 140
+tau2: 3.0
+omega1_min: -1.35
+omega1_max: -0.65
+omega3_min: 0.65
+omega3_max: 1.35
+plot_pathways: ['R1', 'R2', 'R3']
+plot_totals: ['rephasing']
+view: real
+normalization: individual
+
+Files
+-----
+Spectrum PDF: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\etape_3\Figures\step3_static_dimerisation\step3_static_dimerisation_Eta_0p001_Vstatic_0p02_delta_0p05_C1_0_gQ_0.pdf
+Spectrum data: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\etape_3\Data\step3_static_dimerisation_Eta_0p001_Vstatic_0p02_delta_0p05_C1_0_gQ_0_S_data.npz
+Summary JSON: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\etape_3\Summaries\step3_static_dimerisation_Eta_0p001_Vstatic_0p02_delta_0p05_C1_0_gQ_0_summary.json
+
+Validation status: PENDING PHASE 2

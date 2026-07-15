@@ -1,0 +1,42 @@
+Test: etape_5
+Run label: step5_T_C1_static_T_4_T_4_B_0_Eta_0p001_Vstatic_0p0221441_delta_0p00845154_C1_m0p400111_gQ_0
+Active case: T_C1_static_T_4
+Scan family: temperature_C1_static
+Channel: C1_static
+
+Temperature-field scan model
+----------------------------
+H_mix = V_BD_static L_BD + g_Q_eff Q L_BD
+V_BD_static = V0 + lambda_delta * delta(T,B) + lambda_C * C1(T,B)
+T: 4.0
+B: 0.0
+T_SP: 14.0
+delta: 0.008451542547285166
+C1: -0.40011111111111114
+V_BD_static: 0.02214406157630582
+omega_Q: 0.035
+g_Q_eff: 0.0
+
+Solver parameters
+-----------------
+T: 0.0
+Eta: 0.001
+backend: dense
+parallel_backend: threading
+n_jobs: -1
+
+Spectrum parameters
+-------------------
+N_w: 90
+tau2: 3.0
+plot_pathways: ['R1', 'R2', 'R3']
+plot_totals: ['rephasing']
+view: real
+
+Files
+-----
+Spectrum PDF: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\etape_5\Figures\temperature_C1_static\step5_T_C1_static_T_4\step5_T_C1_static_T_4_T_4_B_0_Eta_0p001_Vstatic_0p0221441_delta_0p00845154_C1_m0p400111_gQ_0.pdf
+Spectrum data: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\etape_5\Data\step5_T_C1_static_T_4_T_4_B_0_Eta_0p001_Vstatic_0p0221441_delta_0p00845154_C1_m0p400111_gQ_0_S_data.npz
+Summary JSON: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\etape_5\Summaries\step5_T_C1_static_T_4_T_4_B_0_Eta_0p001_Vstatic_0p0221441_delta_0p00845154_C1_m0p400111_gQ_0_summary.json
+
+Validation status: PENDING PHASE 2

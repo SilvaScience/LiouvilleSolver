@@ -1,0 +1,24 @@
+Step 3 analysis: dynamic dimerisation/phonon coordinate
+=======================================================
+Result root: C:\Users\falve\OneDrive\Documents\GitHub\LiouvilleSolver\SOC Model\Result_Test\etape_3
+Component: S_component_rephasing
+Window half-width (eV): 0.025
+
+Main metrics
+------------
+dynamic_dimerisation_phonon: V_BD_static=0.02, delta=0.05, C1=0, g_Q=0.01, cross_abs_area_sum=11.761513, cross_to_diag_ratio=0.14923482, sideband_to_main_cross_ratio=2.4128199, max_abs=14145.644
+static_dimerisation: V_BD_static=0.02, delta=0.05, C1=0, g_Q=0, cross_abs_area_sum=14.160315, cross_to_diag_ratio=0.14269696, sideband_to_main_cross_ratio=2.2129695, max_abs=29148.202
+static_spin_correlation: V_BD_static=0.02, delta=0, C1=-0.443, g_Q=0, cross_abs_area_sum=14.160315, cross_to_diag_ratio=0.14269696, sideband_to_main_cross_ratio=2.2129695, max_abs=29148.202
+
+Pairwise spectrum differences
+-----------------------------
+dynamic_dimerisation_phonon vs static_dimerisation: max_abs_difference=364806.91, relative_max_difference=0.54568042, l2_difference=422273.04
+dynamic_dimerisation_phonon vs static_spin_correlation: max_abs_difference=364806.91, relative_max_difference=0.54568042, l2_difference=422273.04
+static_dimerisation vs static_spin_correlation: max_abs_difference=7.3325807e-12, relative_max_difference=1.0968119e-17, l2_difference=1.5340329e-11
+
+Interpretation
+--------------
+The two static controls test whether the Step 2 scalar degeneracy is reproduced inside the enlarged phonon Hilbert space.
+Their relative max difference is 1.097e-17.
+The dynamic dimerisation case then adds g_Q Q L_BD at the same static mixing. Its difference from the static dimerisation control tests whether the explicit phonon coordinate creates new spectral information.
+The dynamic-vs-static relative max difference is 5.457e-01.

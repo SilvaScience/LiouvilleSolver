@@ -1,0 +1,2 @@
+PASS: Constant SOC and enhanced V_BD_eff controls produce distinguishable cross-window amplitudes; the model remains sensitive to effective bright-dark mixing.
+INCONCLUSIVE: Dimerisation and C1 controls at matched V_BD_eff are numerically identical within relative max difference 2.623e-17; this scalar model cannot identify the microscopic origin of the mixing.

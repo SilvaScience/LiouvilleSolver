@@ -1,0 +1,71 @@
+{
+  "test": "etape_3",
+  "run_label": "step3_static_dimerisation_Eta_0p001_Vstatic_0p02_delta_0p05_C1_0_gQ_0",
+  "active_case_key": "static_dimerisation",
+  "model_parameters": {
+    "Delta_dark": 0.9,
+    "Delta_Bright": 1.0,
+    "mu_B": 1.0,
+    "mu_D": 0.0,
+    "V0": 0.01,
+    "lambda_delta": 0.2,
+    "lambda_C": 0.0,
+    "delta_source": "external",
+    "delta_external": 0.05,
+    "C1": 0.0,
+    "n_bosons": 3,
+    "omega_Q": 0.035,
+    "g_Q": 0.0,
+    "phonon_displacement_couples_to": "bright_dark",
+    "T": 1.0,
+    "T_SP_0": 14.0,
+    "B": 0.0,
+    "delta_0": 0.01,
+    "beta": 0.5,
+    "N_k": 1,
+    "gamma_orb": 0.0,
+    "gamma_phonon": 0.0,
+    "label": "step3_static_dimerisation"
+  },
+  "solver_parameters": {
+    "T": 0.0,
+    "Eta": 0.001,
+    "backend": "dense",
+    "parallel_backend": "threading",
+    "n_jobs": -1
+  },
+  "derived": {
+    "delta": 0.05,
+    "C1": 0.0,
+    "V_BD_static": 0.020000000000000004,
+    "omega_Q": 0.035,
+    "g_Q": 0.0,
+    "N_k": 1,
+    "weight_sum": 1.0,
+    "hilbert_dimension": 9
+  },
+  "spectrum_parameters": {
+    "N_w": 161,
+    "tau2": 3.0,
+    "omega1_min": -1.04385164807,
+    "omega1_max": 1.04385164807,
+    "omega3_min": 0.9638516480699999,
+    "omega3_max": 1.04385164807,
+    "plot_pathways": [
+      "R1",
+      "R2",
+      "R3"
+    ],
+    "plot_totals": [
+      "rephasing"
+    ],
+    "view": "real",
+    "normalization": "individual"
+  },
+  "files": {
+    "spectrum_pdf": "C:\\Users\\falve\\OneDrive\\Documents\\GitHub\\LiouvilleSolver\\SOC Model\\Result_Test\\nonrephasing_analysis\\ZoomData\\etape_3\\static_dimerisation\\Figures\\step3_static_dimerisation\\step3_static_dimerisation_Eta_0p001_Vstatic_0p02_delta_0p05_C1_0_gQ_0.pdf",
+    "data_npz": "C:\\Users\\falve\\OneDrive\\Documents\\GitHub\\LiouvilleSolver\\SOC Model\\Result_Test\\nonrephasing_analysis\\ZoomData\\etape_3\\static_dimerisation\\Data\\step3_static_dimerisation_Eta_0p001_Vstatic_0p02_delta_0p05_C1_0_gQ_0_S_data.npz",
+    "summary_txt": "C:\\Users\\falve\\OneDrive\\Documents\\GitHub\\LiouvilleSolver\\SOC Model\\Result_Test\\nonrephasing_analysis\\ZoomData\\etape_3\\static_dimerisation\\Summaries\\step3_static_dimerisation_Eta_0p001_Vstatic_0p02_delta_0p05_C1_0_gQ_0_results.txt"
+  },
+  "validation_status": "PENDING PHASE 2"
+}
