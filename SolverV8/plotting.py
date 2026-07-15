@@ -419,8 +419,8 @@ class SpectroscopyPlotter:
             output_directory = Path(output_directory)
             output_directory.mkdir(parents=True, exist_ok=True)
             spectrum_pdf = output_directory / spectrum_pdf_name
-            if spectrum_pdf.suffix.lower() != ".pdf":
-                spectrum_pdf = spectrum_pdf.with_suffix(".pdf")
+            if spectrum_pdf.suffix.lower() != ".png":
+                spectrum_pdf = spectrum_pdf.with_suffix(".png")
             figure.savefig(spectrum_pdf, bbox_inches="tight")
 
         diagrams = {}
