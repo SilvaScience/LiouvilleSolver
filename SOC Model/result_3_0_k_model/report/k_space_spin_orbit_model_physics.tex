@@ -1,0 +1,869 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue
+}
+
+\newcommand{\ket}[1]{\left|#1\right\rangle}
+\newcommand{\bra}[1]{\left\langle #1\right|}
+\newcommand{\braket}[2]{\left\langle #1 \middle| #2 \right\rangle}
+\newcommand{\op}[2]{\left|#1\right\rangle\left\langle #2\right|}
+\newcommand{\needcite}{\textbf{[need citation]}}
+\newcommand{\approxbox}[1]{%
+    \par\medskip
+    \noindent
+    \fcolorbox{black}{gray!10}{%
+        \begin{minipage}{0.96\linewidth}
+        \textbf{Approximation / limitation.} #1
+        \end{minipage}
+    }
+    \par\medskip
+}
+
+\title{Effective Bright--Dark Spin-Orbit Model for Probing the Spin Sector of a Spin-Peierls Chain by Multidimensional Spectroscopy}
+\author{}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Physical Motivation and Scientific Question}
+
+The centrals questions of the model are:
+\begin{quote}
+Can multidimensional optical spectroscopy, through spin-orbit coupling, be used to probe the dynamics of the spin sector in a Spin-Peierls chain?
+\end{quote}
+
+\begin{quote}
+Can the coherence and ephasing between optically bright and nominally dark states seve as a direct probe of many-body quantum correlations in a nonclassically ordered spin system?
+\end{quote}
+
+\begin{quote}
+Are bright-dark cross peaks a signature of coherent eigenstate mixing?
+\end{quote}
+
+
+\begin{quote}
+What microscopic qunatity does the cross-peak amplitude measure?
+\end{quote}
+
+\begin{quote}
+Does magnetic field tune coherent mixing or only shift energie?
+\end{quote}
+
+\begin{quote}Can nonlinear spectroscopy distinguish thermal from nonthermal state?
+
+\end{quote}
+
+\begin{quote}
+Do cross peaks encode short-range spin correlation?
+\end{quote}
+
+\begin{quote}
+What is the role of the detection in accessing dark state?
+\end{quote}
+
+\begin{quote}
+Are the ovbserved correlations robust to experimental and numerical articfact?
+\end{quote}
+
+
+The physical difficulty is that visible light primarily couples to electric dipole-active optical excitations. The spin sector is not directly dipole active. A purely magnetic excitation therefore does not usually appear as a strong optical transition. The working hypothesis of the model is that spin-orbit coupling (SOC), combined with the Spin-Peierls distortion, opens an indirect optical channel. The broader use of multidimensional optical spectroscopy to resolve coherent pathways and cross peaks follows the standard nonlinear-spectroscopy framework \cite{Mukamel1995,CundiffMukamel2013}:
+\begin{equation}
+\text{spin sector}
+\longrightarrow
+\delta,\ C_1
+\longrightarrow
+V_{\mathrm{BD}},\ \omega_Q(k),\ g_Q(k)
+\longrightarrow
+S(\omega_1,\omega_3).
+\end{equation}
+
+Here \(S(\omega_1,\omega_3)\) is the computed two-dimensional optical response. The role of the spin chain is not to appear explicitly in the optical Hilbert space. Instead, it determines effective parameters that enter a reduced bright--dark--mode Hamiltonian. This is why the calculation of the Spin-Peierls order parameter \(\delta\) and the nearest-neighbor spin correlation \(C_1\) is essential: they provide the bridge between the microscopic spin chain and the optical response.
+
+\begin{center}
+\begin{tabular}{>{\centering\arraybackslash}p{0.22\linewidth} p{0.66\linewidth}}
+\toprule
+Symbol & Meaning \\
+\midrule
+\(S(\omega_1,\omega_3)\) & Multidimensional optical response calculated by the solver. \\
+\(\ket{B}\) & Effective bright excitation, directly coupled to the optical dipole. \\
+\(\ket{D}\) & Effective dark excitation, weakly or not directly dipole active. \\
+Spin sector & Magnetic degrees of freedom of the Spin-Peierls chain. \\
+SOC & Spin-orbit coupling, which mixes bright and dark optical sectors. \\
+\(\delta\) & Spin-Peierls dimerization order parameter. \\
+\(C_1\) & Nearest-neighbor spin correlation extracted from the finite spin chain. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\approxbox{The model is effective. It does not solve a full microscopic Hamiltonian containing electronic orbitals, lattice distortion, spin-orbit coupling, and optical fields simultaneously. Instead, it encodes the influence of the spin sector into a few parameters of a reduced optical Hamiltonian.}
+
+\section{Finite Spin Chain and Calculated Spin Observables}
+
+The spin sector is represented in the site basis by a finite spin-\(\frac12\) chain. This choice is motivated by the standard Spin-Peierls description of quasi-one-dimensional spin-\(\frac12\) chains and by the experimental identification of CuGeO\(_3\) as an inorganic Spin-Peierls compound \cite{CrossFisher1979,Hase1993}. The Hamiltonian used in the code is
+\begin{equation}
+H_{\mathrm{spin}}
+=
+\sum_{\langle i,j\rangle}
+J_i\,\bm{S}_i\cdot\bm{S}_j
++
+J_2
+\sum_{\langle\langle i,j\rangle\rangle}
+\bm{S}_i\cdot\bm{S}_j
++
+g\mu_B B\sum_i S_i^z .
+\end{equation}
+
+The nearest-neighbor exchange is dimerized:
+\begin{equation}
+J_i=J\left[1+(-1)^i\delta\right].
+\end{equation}
+
+Thus the Spin-Peierls phase is represented by alternating strong and weak bonds. The code diagonalizes this finite Hamiltonian exactly and computes thermal expectation values. The main spin observable passed to the optical model is
+\begin{equation}
+C_1
+=
+\frac{1}{N_{\mathrm{bonds}}}
+\sum_i
+\left\langle
+\bm{S}_i\cdot\bm{S}_{i+1}
+\right\rangle_T .
+\end{equation}
+
+This quantity measures the average nearest-neighbor magnetic correlation. It enters the optical sector because the bright--dark mixing is assumed to be sensitive to the magnetic background. The finite-chain calculation also provides the spin gap,
+\begin{equation}
+\Delta_{\mathrm{spin}}=E_1-E_0,
+\end{equation}
+which is useful as a diagnostic of the spin sector.
+
+\begin{center}
+\begin{tabular}{>{\centering\arraybackslash}p{0.22\linewidth} p{0.66\linewidth}}
+\toprule
+Variable & Role in the model \\
+\midrule
+\(J\) & Nearest-neighbor exchange scale of the spin chain. \\
+\(J_2\) & Next-nearest-neighbor exchange. \\
+\(B\) & Applied magnetic field. \\
+\(g\) & Magnetic \(g\)-factor in the Zeeman term. \\
+\(N_{\mathrm{spin}}\) & Number of spins in the finite chain. \\
+boundary & Open or periodic boundary condition used for the finite chain. \\
+\(\delta\) & Alternating dimerization of nearest-neighbor exchange. \\
+\(C_1\) & Average nearest-neighbor spin correlation used in \(V_{\mathrm{BD}}\). \\
+\(\Delta_{\mathrm{spin}}\) & Finite-chain spin gap \(E_1-E_0\). \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\approxbox{The spin chain is finite. Exact diagonalization is reliable and transparent for small \(N_{\mathrm{spin}}\), but finite-size effects can affect the gap and bond correlations. The calculated spin observables are then projected into an effective optical model rather than dynamically coupled to the optical response.}
+
+\section{Spin-Peierls Order Parameter and Its Role in Bright--Dark Mixing}
+
+The code uses a mean-field-like expression for the Spin-Peierls transition temperature. This is a phenomenological implementation of the Spin-Peierls transition rather than a microscopic derivation from a spin-phonon Hamiltonian \cite{CrossFisher1979,Hase1993}:
+\begin{equation}
+T_{\mathrm{SP}}(B)
+=
+T_{\mathrm{SP},0}
+\left(1-\alpha_{\mathrm{field}}B^2\right),
+\end{equation}
+with the additional condition that \(T_{\mathrm{SP}}\) is not allowed to become negative.
+
+The dimerization is then
+\begin{equation}
+\delta(T,B)
+=
+\begin{cases}
+\delta_0
+\left(1-\dfrac{T}{T_{\mathrm{SP}}(B)}\right)^\beta,
+& T<T_{\mathrm{SP}}(B),\\[1.2ex]
+0,
+& T\ge T_{\mathrm{SP}}(B).
+\end{cases}
+\end{equation}
+
+The role of \(\delta\) is twofold. First, it dimerizes the spin chain by producing alternating exchange constants \(J(1+\delta)\) and \(J(1-\delta)\). Second, it enters the optical model by modifying the effective bright--dark mixing. This second role is essential for the present purpose. In a Spin-Peierls phase, the lattice and spin backgrounds lower the translational symmetry of the chain. This symmetry lowering can relax selection rules and enhance spin-orbit-induced mixing between an optically bright excitation and a nominally dark excitation \needcite.
+
+Thus \(\delta\) is not only a structural order parameter. In this effective model it is also a control parameter for optical access to the spinorial sector:
+\begin{equation}
+\delta
+\longrightarrow
+V_{\mathrm{BD}}
+\longrightarrow
+\text{dark-state optical weight}.
+\end{equation}
+
+\begin{center}
+\begin{tabular}{>{\centering\arraybackslash}p{0.22\linewidth} p{0.66\linewidth}}
+\toprule
+Variable & Meaning \\
+\midrule
+\(T\) & Temperature at which the spin-chain observables are evaluated. \\
+\(B\) & Magnetic field. \\
+\(T_{\mathrm{SP},0}\) & Zero-field Spin-Peierls transition temperature. \\
+\(\alpha_{\mathrm{field}}\) & Field suppression coefficient for \(T_{\mathrm{SP}}(B)\). \\
+\(\delta_0\) & Dimerization amplitude scale. \\
+\(\beta\) & Critical exponent in the mean-field dimerization law. \\
+\(\delta(T,B)\) & Spin-Peierls dimerization used in both \(H_{\mathrm{spin}}\) and \(V_{\mathrm{BD}}\). \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\approxbox{The dimerization is imposed through a phenomenological temperature and field dependence. The model does not solve the lattice distortion dynamically, nor does it derive \(\delta(T,B)\) from a microscopic spin-phonon Hamiltonian.}
+
+\section{Effective Bright, Dark, and Dipole Sectors}
+
+The optical Hilbert space is reduced to three effective orbital states:
+\begin{equation}
+\ket{g},\qquad \ket{B},\qquad \ket{D}.
+\end{equation}
+
+The state \(\ket{g}\) is the effective optical ground state. The state \(\ket{B}\) is an optically bright excitation, while \(\ket{D}\) is an optically dark or weakly allowed excitation. These states should not be interpreted as full valence or conduction bands. They are effective excitations used to describe the part of the optical response relevant to the SOC-enabled bright--dark mixing.
+
+The dipole operator used in the model is
+\begin{equation}
+\mu
+=
+\mu_B
+\left(
+\op{g}{B}+\op{B}{g}
+\right)
++
+\mu_D
+\left(
+\op{g}{D}+\op{D}{g}
+\right).
+\end{equation}
+
+In the current parameter regime, \(\mu_D=0\). Therefore the dark state is not directly optically active. It gains optical weight only when it is mixed with \(\ket{B}\) by the static or dynamic bright--dark coupling.
+
+\begin{center}
+\begin{tabular}{>{\centering\arraybackslash}p{0.22\linewidth} p{0.66\linewidth}}
+\toprule
+Variable & Meaning \\
+\midrule
+\(\ket{g}\) & Effective optical ground state. \\
+\(\ket{B}\) & Bright excitation, directly coupled to the dipole. \\
+\(\ket{D}\) & Dark excitation, optically inactive unless mixed with \(\ket{B}\). \\
+\(E_B\) & Bare bright excitation energy. \\
+\(E_D\) & Bare dark excitation energy. \\
+\(\mu_B\) & Bright-state dipole matrix element. \\
+\(\mu_D\) & Dark-state dipole matrix element. Usually set to zero here. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\approxbox{The optical sector is a three-state effective model, not a full band-structure calculation. The visible photon momentum selection rule \(q_{\mathrm{photon}}\simeq0\) is not represented through a complete excitonic momentum construction.}
+
+\section{Bright--Dark Mixing and the Role of \texorpdfstring{\(V_0\), \(\lambda_\delta\), and \(\lambda_C\)}{V0, lambda-delta, and lambda-C}}
+
+The central SOC-sensitive parameter of the optical model is the static bright--dark mixing. In the current document this is a phenomenological ansatz, not a parameter derived from an explicit microscopic \(\lambda\bm{L}\cdot\bm{S}\) Hamiltonian:
+\begin{equation}
+\label{eq:vbd-linear-ansatz}
+V_{\mathrm{BD}}^0
+=
+V_0+\lambda_\delta\delta+\lambda_C C_1.
+\end{equation}
+
+This expression is the main bridge between the spin calculation and the optical Hamiltonian. Each term has a distinct interpretation:
+\begin{itemize}
+    \item \(V_0\) is a background bright--dark mixing that is present independently of the Spin-Peierls order.
+    \item \(\lambda_\delta\) measures how strongly the bright--dark mixing responds to the Spin-Peierls dimerization.
+    \item \(\lambda_C\) measures how strongly the bright--dark mixing responds to the magnetic nearest-neighbor correlation \(C_1\).
+\end{itemize}
+
+The reason for calculating \(\delta\) and \(C_1\) is therefore not only diagnostic. They determine the effective optical mixing:
+\begin{equation}
+(\delta,C_1)
+\longrightarrow
+V_{\mathrm{BD}}^0
+\longrightarrow
+\text{dark-state visibility in optical spectroscopy}.
+\end{equation}
+
+This is the mechanism by which the multidimensional optical response can become sensitive to the spinorial sector. If the spin chain changes with temperature, magnetic field, or frustration, then \(C_1\) and \(\delta\) change. Through the parameters \(\lambda_\delta\) and \(\lambda_C\), those changes modify the optical response. The specific linear decomposition in Eq.~\eqref{eq:vbd-linear-ansatz} is a modeling assumption \needcite.
+
+\begin{center}
+\begin{tabular}{>{\centering\arraybackslash}p{0.22\linewidth} p{0.66\linewidth}}
+\toprule
+Variable & Meaning \\
+\midrule
+\(V_0\) & Spin-orbit or symmetry-allowed background bright--dark mixing. \\
+\(\lambda_\delta\) & Sensitivity of bright--dark mixing to Spin-Peierls dimerization. \\
+\(\lambda_C\) & Sensitivity of bright--dark mixing to spin correlations. \\
+\(\delta\) & Spin-Peierls dimerization calculated from the mean-field law. \\
+\(C_1\) & Spin correlation calculated by exact diagonalization. \\
+\(V_{\mathrm{BD}}^0\) & Effective static bright--dark coupling. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\approxbox{\(V_{\mathrm{BD}}^0\) is phenomenological. The coefficients \(V_0\), \(\lambda_\delta\), and \(\lambda_C\) are not yet derived from a microscopic SOC Hamiltonian such as \(\lambda\bm{L}\cdot\bm{S}\). They encode the expected symmetry and correlation dependence at the effective-model level.}
+
+\section{Dispersive Spin-Peierls Mode and Spin-Sector Dynamics}
+
+The model introduces a dispersive Spin-Peierls-like mode. Dispersive magnetic excitations in CuGeO\(_3\) motivate this part of the effective model \cite{Ain1997}, but the specific analytic form below is a simplified ansatz:
+\begin{equation}
+\omega_{\mathrm{SP}}(k)
+=
+\sqrt{
+\Delta_{\mathrm{SP}}^2
++
+\left(v\sin k\right)^2
+}.
+\end{equation}
+
+The gap and velocity used in the code are
+\begin{equation}
+\Delta_{\mathrm{SP}}
+\sim
+2J\delta^{2/3},
+\qquad
+v=\frac{\pi J}{2}.
+\end{equation}
+The scaling \(\Delta_{\mathrm{SP}}\sim2J\delta^{2/3}\) and the simple velocity estimate are used as effective model inputs here \needcite.
+
+The oscillator frequency entering the optical Hamiltonian is then
+\begin{equation}
+\omega_Q(k)
+=
+\omega_Q
++
+s\left[
+\omega_{\mathrm{SP}}(k)-\omega_{\mathrm{SP}}(0)
+\right],
+\end{equation}
+where \(s=\texttt{spin\_mode\_dispersion\_scale}\).
+
+This part of the model is designed to represent the possibility that the optical excitation is dressed by, or coupled to, a dispersive spin/Spin-Peierls mode. In this interpretation, the most physically relevant use of \(k\) is not necessarily as the total momentum of a directly created optical exciton. Rather, \(k\) labels the spin-sector mode that influences the optical response through SOC-enabled coupling.
+
+\begin{center}
+\begin{tabular}{>{\centering\arraybackslash}p{0.22\linewidth} p{0.66\linewidth}}
+\toprule
+Variable & Meaning \\
+\midrule
+\(k\) & Momentum label of the dispersive effective spin/Spin-Peierls mode. \\
+\(N_k\) & Number of \(k\)-points used in the numerical integration. \\
+\(w_k\) & Integration weight, currently \(w_k=1/N_k\). \\
+\(\omega_{\mathrm{SP}}(k)\) & Effective dispersive Spin-Peierls mode. \\
+\(\omega_Q(k)\) & Oscillator frequency used in the bright--dark--mode Hamiltonian. \\
+\(s\) & Scale factor controlling how strongly the mode dispersion enters \(\omega_Q(k)\). \\
+\(\Delta_{\mathrm{SP}}\) & Spin-Peierls mode gap scale. \\
+\(v\) & Effective spin-mode velocity. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\approxbox{The dispersion is effective. It is not a full dynamic spin structure factor \(S(q,\omega)\). The momentum \(k\) should therefore be interpreted carefully: it labels the modeled spin-mode contribution rather than a fully microscopic optical transition momentum.}
+
+\section{Dynamic Coupling \texorpdfstring{\(g_Q(k)\)}{gQ(k)}}
+
+The dynamic bright--dark coupling is modulated as
+\begin{equation}
+g_Q(k)
+=
+g_Q\left[1+A_Q\cos k\right],
+\end{equation}
+where \(A_Q=\texttt{g\_Q\_k\_modulation}\).
+This cosine modulation is a phenomenological momentum form factor rather than a microscopic matrix element \needcite.
+
+The corresponding interaction term is
+\begin{equation}
+H_{\mathrm{dyn}}(k)
+=
+g_Q(k)L_{\mathrm{BD}}(a+a^\dagger),
+\end{equation}
+with
+\begin{equation}
+L_{\mathrm{BD}}
+=
+\op{D}{B}+\op{B}{D}.
+\end{equation}
+
+The parameter \(A_Q\) does not primarily move the resonance energies. Instead, it redistributes the coupling strength over the \(k\)-resolved spin-mode sector:
+\begin{equation}
+g_Q(0)=g_Q(1+A_Q),
+\qquad
+g_Q(\pi)=g_Q(1-A_Q).
+\end{equation}
+
+Therefore, increasing \(A_Q\) makes the dynamic coupling more selective in \(k\). In an integrated response, this can reduce the total intensity even when the peak positions remain almost unchanged.
+
+\begin{center}
+\begin{tabular}{>{\centering\arraybackslash}p{0.22\linewidth} p{0.66\linewidth}}
+\toprule
+Variable & Meaning \\
+\midrule
+\(g_Q\) & Base strength of the dynamic mode-assisted bright--dark coupling. \\
+\(A_Q\) & Amplitude of the \(k\)-dependent modulation of \(g_Q(k)\). \\
+\(g_Q(k)\) & Momentum-dependent dynamic coupling. \\
+\(g_Q(0)\) & Coupling to the center of the modeled \(k\)-sector. \\
+\(g_Q(\pi)\) & Coupling to the zone-edge part of the modeled \(k\)-sector. \\
+\(L_{\mathrm{BD}}\) & Bright--dark mixing operator. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\approxbox{The \(\cos k\) form is phenomenological. It represents a simple factor form for a momentum-selective coupling, but it is not yet derived from a microscopic spin-orbit or spin-phonon matrix element.}
+
+\section{Final Effective Hamiltonian}
+
+The central version of the model is
+\begin{equation}
+H(k)
+=
+E_D\op{D}{D}
++
+E_B\op{B}{B}
++
+\omega_Q(k)a^\dagger a
++
+V_{\mathrm{BD}}^0 L_{\mathrm{BD}}
++
+g_Q(k)L_{\mathrm{BD}}(a+a^\dagger).
+\end{equation}
+
+Here
+\begin{equation}
+L_{\mathrm{BD}}
+=
+\op{D}{B}+\op{B}{D}.
+\end{equation}
+
+This form emphasizes the interpretation currently favored for the model: the optical bright and dark energies \(E_B\) and \(E_D\) are kept independent of \(k\), while the dispersive part is assigned to the spin/Spin-Peierls mode and to the momentum dependence of its coupling to the bright--dark sector.
+
+The code also contains optional finite-neighbor dispersions:
+\begin{equation}
+E_B(k)
+=
+E_B+2\sum_{r}t_{B,r}\cos(rk),
+\end{equation}
+\begin{equation}
+E_D(k)
+=
+E_D+2\sum_{r}t_{D,r}\cos(rk).
+\end{equation}
+These are useful for exploratory studies of bright or dark exciton bands, but they are not the central interpretation when the goal is to study spin-sector dynamics through SOC.
+
+\begin{center}
+\begin{tabular}{>{\centering\arraybackslash}p{0.22\linewidth} p{0.66\linewidth}}
+\toprule
+Hamiltonian block & Physical role \\
+\midrule
+\(E_D\op{D}{D}\) & Bare dark excitation energy. \\
+\(E_B\op{B}{B}\) & Bare bright excitation energy. \\
+\(\omega_Q(k)a^\dagger a\) & Dispersive Spin-Peierls-like mode. \\
+\(V_{\mathrm{BD}}^0L_{\mathrm{BD}}\) & Static SOC-enabled bright--dark mixing. \\
+\(g_Q(k)L_{\mathrm{BD}}(a+a^\dagger)\) & Dynamic mode-assisted bright--dark coupling. \\
+\(E_B(k),E_D(k)\) & Optional bright/dark exciton dispersions. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\approxbox{This is a reduced Hamiltonian. It does not explicitly include a full \(k\leftrightarrow k+\pi\) zone-folding treatment of the Spin-Peierls phase, nor does it include a full microscopic orbital basis.}
+
+\section{Multidimensional Response Calculation}
+
+For each \(k\), the solver diagonalizes \(H(k)\). The dipole operator is transformed to the eigenbasis and split into raising and lowering parts, denoted schematically by \(\mu^+\) and \(\mu^-\). The Liouville-space generator used in the dense backend is
+\begin{equation}
+\mathcal{L}
+=
+H_L-H_R,
+\end{equation}
+with optional Lindblad terms when dissipation is included. In the present scans, the dissipation rates are set to zero.
+
+The frequency-domain propagator is
+\begin{equation}
+G(\omega)
+=
+\left[
+(\omega+i\eta)I-\mathcal{L}
+\right]^{-1},
+\end{equation}
+where \(\eta\) is the phenomenological broadening.
+
+The selected third-order pathways are generated by the UFSS-style interaction sequence in the notebook. The current calculations use the \(R1\) and \(R2\) pathways for a one-quantum protocol. The final signal is integrated over the modeled \(k\)-sector:
+\begin{equation}
+S(\omega_1,\omega_3)
+=
+\sum_k w_k S_k(\omega_1,\omega_3).
+\end{equation}
+
+\begin{center}
+\begin{tabular}{>{\centering\arraybackslash}p{0.22\linewidth} p{0.66\linewidth}}
+\toprule
+Variable & Meaning \\
+\midrule
+\(\omega_1\) & Coherence-frequency axis. \\
+\(\omega_3\) & Detection-frequency axis. \\
+\(t_2\) & Population-time delay. \\
+\(\eta\) & Spectral broadening parameter in the resolvent. \\
+\(R1,R2\) & Selected third-order pathways. \\
+\(w_k\) & Numerical integration weights over \(k\). \\
+\(S_k\) & \(k\)-resolved pathway response. \\
+\(S\) & Integrated multidimensional response. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\approxbox{The \(k\)-integration is phenomenological in the present model. It should not be interpreted as a complete treatment of optical momentum conservation. A fully microscopic excitonic model would distinguish photon momentum, exciton center-of-mass momentum, and internal relative momentum.}
+
+\section{Recommended Observables}
+
+Because normalized contour plots can hide amplitude changes, the model should be analyzed using scalar observables in addition to figures. Useful quantities include
+\begin{equation}
+I_{\max}(A_Q)
+=
+\max_{\omega_1,\omega_3}
+\left|S(\omega_1,\omega_3;A_Q)\right|,
+\end{equation}
+\begin{equation}
+I_{\mathrm{int}}(A_Q)
+=
+\int d\omega_1\,d\omega_3\,
+\left|S(\omega_1,\omega_3;A_Q)\right|,
+\end{equation}
+and pathway-resolved intensities
+\begin{equation}
+I_{R1},\qquad I_{R2}.
+\end{equation}
+
+Difference maps are also useful:
+\begin{equation}
+\Delta S_{A_Q}
+=
+S(A_Q)-S(0).
+\end{equation}
+
+These observables help answer the central question more quantitatively: whether the multidimensional optical response contains measurable signatures of the spin-sector dynamics encoded by \(\omega_Q(k)\), \(g_Q(k)\), \(\delta\), and \(C_1\).
+
+\begin{center}
+\begin{tabular}{>{\centering\arraybackslash}p{0.22\linewidth} p{0.66\linewidth}}
+\toprule
+Observable & Purpose \\
+\midrule
+\(I_{\max}\) & Tracks the strongest spectral feature. \\
+\(I_{\mathrm{int}}\) & Tracks total spectral weight. \\
+\(I_{R1}\) & Pathway-specific intensity for \(R1\). \\
+\(I_{R2}\) & Pathway-specific intensity for \(R2\). \\
+\(I_{R1}/I_{R2}\) & Tests whether modulation affects pathways differently. \\
+\(\Delta S_{A_Q}\) & Reveals where in the spectrum the modulation acts. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\approxbox{Contour plots with panel-wise normalization are useful for shape comparison but can hide absolute intensity changes. Quantitative conclusions should therefore be based on non-normalized spectra or scalar observables.}
+
+\section{Modelisation Idea}
+
+This final section is intended as a living record of modeling choices. Each subsection follows the same structure: first the limitation or conceptual problem, then a summary of the physical discussion, and finally possible modeling options.
+
+\subsection{Crystal-Field Relaxation of Selection Rules and Bright--Dark Mixing}
+
+\paragraph{Limitation.}
+
+The current model uses a single effective bright--dark mixing parameter,
+\begin{equation}
+V_{\mathrm{BD}}
+=
+V_0+\lambda_\delta\delta+\lambda_C C_1,
+\end{equation}
+to control how a nominally dark state acquires optical visibility. This is useful phenomenologically, but it can mix together several physically distinct mechanisms.
+
+In particular, for a material such as CuGeO\(_3\), local \(d\)-\(d\) transitions are generally electric-dipole forbidden in the simplest atomic or centrosymmetric picture. This follows the usual parity selection-rule argument for electric-dipole transitions \cite{LaporteMeggers1925}. In real crystals, however, these transitions can become weakly allowed because the crystal field lowers the symmetry and mixes \(d\)-like states with opposite-parity components, for example \(p\)-like character. Optical spectroscopy and ab initio work on CuGeO\(_3\) support treating such local \(d\)-\(d\) excitations as experimentally relevant but weakly allowed features \cite{Damascelli2000,Huang2011}. This relaxation of selection rules is not necessarily the same physical mechanism as Spin-Peierls-induced or spin-correlation-induced bright--dark mixing.
+
+Thus the limitation is that \(V_0\) can be ambiguous. It may represent a genuine background SOC-induced bright--dark mixing, but it may also be used to mimic crystal-field relaxation of dipole selection rules. These are not identical effects.
+
+\paragraph{Summary.}
+
+A transition between two pure \(d\)-like states is weak or forbidden for electric-dipole coupling because the dipole operator is odd under parity and obeys orbital selection constraints \cite{LaporteMeggers1925}. In a crystal, the local environment can relax these rules. A schematic way to write this is
+\begin{equation}
+\ket{\widetilde d}
+=
+\ket{d}
++
+\epsilon_p\ket{p}
++\cdots,
+\end{equation}
+so that a dipole matrix element that would vanish for pure \(d\)-states can become finite:
+\begin{equation}
+\bra{\widetilde d_f}\hat{\mu}\ket{\widetilde d_i}
+\neq 0.
+\end{equation}
+
+There are two different effective ways to represent this in a reduced model.
+
+First, one can give the dark state a small direct dipole:
+\begin{equation}
+\mu_D\neq0.
+\end{equation}
+In that case, the optical activity of the nominally dark \(d\)-like excitation is encoded directly in the dipole operator:
+\begin{equation}
+\mu
+=
+\mu_B(\op{g}{B}+\op{B}{g})
++
+\mu_D(\op{g}{D}+\op{D}{g}).
+\end{equation}
+This is the most direct representation of selection-rule relaxation by the crystal field.
+
+Second, one can keep \(\mu_D=0\), but allow the dark state to mix with a bright state:
+\begin{equation}
+\ket{\widetilde D}
+\approx
+\ket{D}
++
+\frac{V_{\mathrm{BD}}}{E_D-E_B}\ket{B}.
+\end{equation}
+Then the dark state acquires an effective dipole,
+\begin{equation}
+\mu_D^{\mathrm{eff}}
+\approx
+\frac{V_{\mathrm{BD}}}{E_D-E_B}\mu_B.
+\end{equation}
+In this interpretation, a nonzero \(V_0\) may represent a background crystal-field or SOC-induced hybridization with a bright configuration.
+
+The important point is that the crystal field primarily sets the local orbital energies and splittings, such as \(E_B\) and \(E_D\). It only contributes to \(V_0\) if the local symmetry also allows hybridization between the dark and bright characters. If the crystal field merely lifts degeneracies but does not mix the relevant symmetry sectors, then it should not automatically be represented as \(V_0\) \needcite.
+
+\paragraph{Solutions / options.}
+
+Several modeling choices are possible, depending on the physical question.
+
+\begin{enumerate}
+    \item \textbf{Direct crystal-field-allowed dark dipole.}
+    Represent the weakly allowed \(d\)-\(d\) transition by a small direct dipole:
+    \begin{equation}
+    \mu_D=\mu_D^{\mathrm{CF}},
+    \qquad
+    V_0=0.
+    \end{equation}
+    This option is appropriate if the main purpose of the crystal field is to relax optical selection rules directly.
+
+    \item \textbf{Background bright--dark hybridization.}
+    Keep \(\mu_D=0\), but allow
+    \begin{equation}
+    V_0=V_{\mathrm{BD}}^{\mathrm{CF/SOC}}\neq0.
+    \end{equation}
+    This option is appropriate if the crystal field and local SOC mix the nominally dark state with an optically bright configuration.
+
+    \item \textbf{Strict Spin-Peierls/SOC activation.}
+    Set the background mixing to zero:
+    \begin{equation}
+    V_0=0,
+    \end{equation}
+    and let the optical activation arise only through
+    \begin{equation}
+    V_{\mathrm{BD}}
+    =
+    \lambda_\delta\delta+\lambda_C C_1.
+    \end{equation}
+    This is the cleanest option if the goal is to isolate the Spin-Peierls and magnetic-correlation contributions.
+
+    \item \textbf{Separated baseline and spin-dependent contributions.}
+    Use distinct parameters for the crystal-field baseline and for the spin-dependent mixing:
+    \begin{equation}
+    \mu_D=\mu_D^{\mathrm{CF}},
+    \end{equation}
+    \begin{equation}
+    V_{\mathrm{BD}}
+    =
+    V_{\mathrm{SOC},0}
+    +
+    \lambda_\delta\delta
+    +
+    \lambda_C(C_1-C_1^{\mathrm{ref}}).
+    \end{equation}
+    This option is the most explicit. It separates a weak crystal-field-allowed optical channel from additional SOC/Spin-Peierls modulation of the bright--dark mixing.
+\end{enumerate}
+
+For the present scientific question, the most transparent path is to compare at least two scenarios:
+\begin{equation}
+\text{Scenario A:}\qquad \mu_D^{\mathrm{CF}}\neq0,\quad V_0=0,
+\end{equation}
+and
+\begin{equation}
+\text{Scenario B:}\qquad \mu_D=0,\quad V_0\neq0.
+\end{equation}
+If both reproduce similar spectra, then the current observable may not distinguish direct crystal-field relaxation from bright--dark hybridization. If they produce different pathway intensities or different temperature/field trends, then multidimensional spectroscopy may help separate these mechanisms.
+
+\subsection{Effective Versus Explicit Spin-Orbit Coupling}
+
+\paragraph{Limitation.}
+
+In the present model, the effect of spin-orbit coupling is encoded through effective bright--dark mixing parameters such as \(V_{\mathrm{BD}}\) and \(g_Q(k)\). This is useful for exploring spectral consequences, but it does not explicitly contain a spinor degree of freedom in the optical Hilbert space. Therefore, the model cannot yet represent a microscopic term of the form
+\begin{equation}
+H_{\mathrm{SOC}}
+=
+\lambda\,\bm{L}\cdot\bm{S}
+=
+\lambda
+\left(
+L_xS_x+L_yS_y+L_zS_z
+\right)
+\end{equation}
+as an operator acting on orbital and spin states.
+
+The conceptual limitation is that \(V_{\mathrm{BD}}\) plays the role of a phenomenological mixing amplitude, while \(\lambda\bm{L}\cdot\bm{S}\) would generate this mixing dynamically from orbital angular momentum and spin. If both a large \(V_{\mathrm{BD}}\) and a large explicit SOC term are included at the same time, the model may double-count the same physical mechanism.
+
+\paragraph{Summary.}
+
+To include spin-orbit coupling more explicitly, the optical basis must at least be doubled by a spin-\(\frac12\) degree of freedom:
+\begin{equation}
+\ket{g},\ket{D},\ket{B}
+\quad
+\longrightarrow
+\quad
+\ket{g,\uparrow},\ket{g,\downarrow},
+\ket{D,\uparrow},\ket{D,\downarrow},
+\ket{B,\uparrow},\ket{B,\downarrow}.
+\end{equation}
+
+The minimal spinor Hilbert space is therefore
+\begin{equation}
+\mathcal{H}_{\mathrm{orb-spin}}
+=
+\mathcal{H}_{\mathrm{orb}}\otimes\mathcal{H}_{s=1/2}.
+\end{equation}
+With the truncated bosonic mode included,
+\begin{equation}
+\mathcal{H}
+=
+\mathcal{H}_{\mathrm{orb}}
+\otimes
+\mathcal{H}_{s=1/2}
+\otimes
+\mathcal{H}_{\mathrm{ph}}.
+\end{equation}
+
+The crucial additional ingredient is the definition of the orbital angular momentum matrices \(L_x,L_y,L_z\). This is straightforward only if the orbital basis is a real microscopic basis, for example the five Cu \(d\)-orbitals. If the basis remains the effective \((g,D,B)\) basis, then the matrices \(L_\alpha\) must themselves be interpreted as effective operators.
+
+There are therefore two natural routes.
+
+\subparagraph{Route 1: effective spinor bright--dark model.}
+
+The three effective optical states are kept, but each is given an explicit spin:
+\begin{equation}
+(g,D,B)\otimes(\uparrow,\downarrow).
+\end{equation}
+One then introduces effective angular momentum matrices
+\begin{equation}
+\bm{L}^{\mathrm{eff}}
+=
+\left(
+L_x^{\mathrm{eff}},
+L_y^{\mathrm{eff}},
+L_z^{\mathrm{eff}}
+\right)
+\end{equation}
+in the reduced \((g,D,B)\) space. The SOC term becomes
+\begin{equation}
+H_{\mathrm{SOC}}^{\mathrm{eff}}
+=
+\lambda_{\mathrm{eff}}
+\sum_{\alpha=x,y,z}
+L_\alpha^{\mathrm{eff}}\otimes S_\alpha.
+\end{equation}
+
+The Spin-Peierls and magnetic-correlation effects can then be placed in the effective SOC strength:
+\begin{equation}
+\lambda_{\mathrm{eff}}
+=
+\lambda_0+\lambda_\delta\delta+\lambda_C C_1,
+\end{equation}
+or in a mode-modulated term,
+\begin{equation}
+H_{\mathrm{SOC-mode}}(k)
+=
+g_\lambda(k)(a+a^\dagger)
+\sum_{\alpha=x,y,z}
+L_\alpha^{\mathrm{eff}}\otimes S_\alpha.
+\end{equation}
+
+This route preserves the reduced character of the current model while allowing spin-conserving and spin-mixing optical pathways to emerge from an explicit spinor Hamiltonian.
+
+\subparagraph{Route 2: microscopic \(d\)-orbital model.}
+
+The effective \((g,D,B)\) basis is replaced by a more microscopic Cu \(d\)-orbital basis:
+\begin{equation}
+\left\{
+d_{x^2-y^2},
+d_{xy},
+d_{xz},
+d_{yz},
+d_{z^2}
+\right\}.
+\end{equation}
+The model then contains
+\begin{equation}
+H_{\mathrm{CF}}+\lambda\bm{L}\cdot\bm{S},
+\end{equation}
+where \(H_{\mathrm{CF}}\) is the crystal-field Hamiltonian and \(\bm{L}\) is the true \(l=2\) orbital angular momentum operator projected into the \(d\)-orbital basis.
+
+This route is physically cleaner for discussing crystal-field splittings, intra-\(d\)-shell transitions, and selection-rule relaxation. Ab initio calculations of \(d\)-\(d\) excitations in quasi-one-dimensional Cu \(d^9\) materials provide the more appropriate reference level for such a microscopic route \cite{Huang2011}. It is also more complex. One must define the local Cu coordination, the dipole operator, possible odd-parity admixtures, and the connection between local \(d\)-orbital excitations and the measured optical response.
+
+\paragraph{Solutions / options.}
+
+\begin{enumerate}
+    \item \textbf{Keep the present effective model as the baseline.}
+    Continue using
+    \begin{equation}
+    V_{\mathrm{BD}}
+    =
+    V_0+\lambda_\delta\delta+\lambda_C C_1
+    \end{equation}
+    as a compact phenomenological representation of SOC-enabled bright--dark mixing. This is the simplest model for scans and interpretation.
+
+    \item \textbf{Build the effective spinor model first.}
+    Extend the current basis to
+    \begin{equation}
+    (g,D,B)\otimes(\uparrow,\downarrow)
+    \end{equation}
+    and replace part, or all, of \(V_{\mathrm{BD}}\) by an explicit
+    \begin{equation}
+    \lambda_{\mathrm{eff}}\bm{L}^{\mathrm{eff}}\cdot\bm{S}.
+    \end{equation}
+    This is the recommended next step if the goal is to test how explicit spinor mixing affects the multidimensional pathways.
+
+    \item \textbf{Avoid double counting.}
+    If an explicit SOC term is introduced, one should not keep a large independent \(V_{\mathrm{BD}}\) unless it is clearly interpreted as a non-SOC residual mixing. A cleaner decomposition would be
+    \begin{equation}
+    V_{\mathrm{BD}}\rightarrow V_{\mathrm{res}},
+    \qquad
+    H_{\mathrm{SOC}}
+    =
+    \lambda_{\mathrm{eff}}\bm{L}^{\mathrm{eff}}\cdot\bm{S}.
+    \end{equation}
+
+    \item \textbf{Move to the microscopic \(d\)-orbital model only after the effective spinor model is understood.}
+    The full \(d\)-orbital route is better suited to crystal-field physics and \(d\)-\(d\) selection rules, but it introduces more parameters and a larger Hilbert space.
+\end{enumerate}
+
+The estimated Hilbert-space sizes are:
+\begin{center}
+\begin{tabular}{>{\centering\arraybackslash}p{0.34\linewidth} >{\centering\arraybackslash}p{0.22\linewidth} >{\centering\arraybackslash}p{0.22\linewidth}}
+\toprule
+Model & Hilbert dimension per \(k\) for \(n_{\mathrm{bosons}}=3\) & Liouville dimension per \(k\) \\
+\midrule
+Current \((g,D,B)\otimes\mathrm{phonon}\) model & \(3\times3=9\) & \(9^2=81\) \\
+Route 1 effective spinor model & \(3\times2\times3=18\) & \(18^2=324\) \\
+Route 2 five-\(d\)-orbital spinor model & \(5\times2\times3=30\) & \(30^2=900\) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Because the dense Liouville inversions scale roughly as a high power of the Hilbert dimension, the route 1 model is expected to be significantly more expensive than the current model but still practical. The route 2 model is feasible for modest grids, but it should be introduced only after the smaller spinor model has clarified which observables are actually sensitive to explicit SOC.
+
+\bibliographystyle{unsrt}
+\bibliography{k_space_spin_orbit_model_physics}
+
+\end{document}

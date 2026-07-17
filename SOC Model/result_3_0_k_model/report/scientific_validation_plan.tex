@@ -1,0 +1,686 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\setlength{\tabcolsep}{4pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue
+}
+
+\newcommand{\ket}[1]{\left|#1\right\rangle}
+\newcommand{\bra}[1]{\left\langle #1\right|}
+\newcommand{\op}[2]{\left|#1\right\rangle\left\langle #2\right|}
+\newcommand{\needcite}{\textbf{[need citation]}}
+\newcommand{\testbox}[1]{%
+    \par\medskip
+    \noindent
+    \fcolorbox{black}{gray!8}{%
+        \begin{minipage}{0.96\linewidth}
+        \textbf{Point de test.} #1
+        \end{minipage}
+    }
+    \par\medskip
+}
+\newcommand{\decisionbox}[1]{%
+    \par\medskip
+    \noindent
+    \fcolorbox{black}{yellow!12}{%
+        \begin{minipage}{0.96\linewidth}
+        \textbf{Critere de decision.} #1
+        \end{minipage}
+    }
+    \par\medskip
+}
+
+\title{Plan de validation scientifique du modele bright--dark pour sonder le secteur spinoriel d'une chaine Spin-Peierls}
+\author{}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Objectif du plan}
+
+Le but n'est pas seulement de produire des spectres. Le but est de construire une suite de tests permettant de repondre, de facon falsifiable, a la question centrale:
+\begin{quote}
+Est-ce que la spectroscopie multidimensionnelle optique, via un couplage spin-orbite effectif, peut sonder la dynamique du secteur de spin dans une chaine Spin-Peierls?
+\end{quote}
+
+Le modele courant est un modele effectif. Il ne contient pas encore un Hamiltonien microscopique complet avec orbitales \(d\), champ cristallin, spin-orbite explicite, phonons et chaine de spin dynamique. Le plan de match doit donc separer trois niveaux:
+\begin{enumerate}
+    \item \textbf{Ce que le solveur calcule vraiment}: une reponse optique multidimensionnelle d'un Hamiltonien bright--dark--mode.
+    \item \textbf{Ce que les parametres encodent}: \(\delta\), \(C_1\), \(V_{\mathrm{BD}}\), \(\omega_Q(k)\), \(g_Q(k)\).
+    \item \textbf{Ce qu'on veut inferer physiquement}: correlations de spin, dynamique Spin-Peierls, effet du champ magnetique, coherence bright--dark, et role du SOC.
+\end{enumerate}
+
+La strategie est d'ajouter une seule couche physique a la fois. Chaque couche doit avoir un controle ou la signature attendue disparait. Si une signature est deja presente dans un modele plus simple, elle ne peut pas etre attribuee sans ambiguite au mecanisme plus complexe.
+
+\section{Modele de reference a valider}
+
+Le Hamiltonien effectif cible est
+\begin{equation}
+H(k)
+=
+E_D\op{D}{D}
++
+E_B\op{B}{B}
++
+\omega_Q(k)a^\dagger a
++
+V_{\mathrm{BD}}^0 L_{\mathrm{BD}}
++
+g_Q(k)L_{\mathrm{BD}}(a+a^\dagger),
+\end{equation}
+avec
+\begin{equation}
+L_{\mathrm{BD}}
+=
+\op{D}{B}+\op{B}{D},
+\end{equation}
+et
+\begin{equation}
+V_{\mathrm{BD}}^0
+=
+V_0+\lambda_\delta\delta+\lambda_C C_1.
+\end{equation}
+
+La partie dispersive est
+\begin{equation}
+\omega_Q(k)
+=
+\omega_Q
++
+s\left[\omega_{\mathrm{SP}}(k)-\omega_{\mathrm{SP}}(0)\right],
+\end{equation}
+et le couplage dynamique est
+\begin{equation}
+g_Q(k)
+=
+g_Q\left(1+A_Q\cos k\right).
+\end{equation}
+
+Le modele doit etre interprete comme une chaine d'inference:
+\begin{equation}
+\text{spin chain}
+\rightarrow
+(\delta,C_1,\Delta_{\mathrm{spin}})
+\rightarrow
+(V_{\mathrm{BD}},\omega_Q(k),g_Q(k))
+\rightarrow
+S(\omega_1,\omega_3).
+\end{equation}
+
+\section{Questions scientifiques et observables cibles}
+
+\begin{longtable}{>{\centering\arraybackslash}p{0.07\linewidth} p{0.34\linewidth} p{0.27\linewidth} p{0.22\linewidth}}
+\toprule
+ID & Question scientifique & Observable principale & Controle indispensable \\
+\midrule
+\endhead
+Q1 & La spectroscopie multidimensionnelle peut-elle sonder le secteur spin via SOC? & Variation de \(S(\omega_1,\omega_3)\), pics croises, intensites integrees, phases. & Desactiver le lien spin--optique: \(\lambda_\delta=\lambda_C=g_Q=0\). \\
+Q2 & La coherence bright--dark est-elle un indicateur de correlations quantiques? & Amplitude et phase des pics croises \(B\leftrightarrow D\), oscillations en \(t_2\). & Comparer un modele avec \(C_1\) fixe a un modele ou \(C_1(T,B)\) varie. \\
+Q3 & Les pics croises sont-ils une signature de melange coherent d'etats propres? & Scaling des pics croises avec \(V_{\mathrm{BD}}\), analyse des vecteurs propres. & \(\mu_D=0\), \(V_{\mathrm{BD}}=0\): pic croise doit disparaitre. \\
+Q4 & Quelle quantite microscopique l'amplitude de pic croise mesure-t-elle? & Derivees \(\partial I/\partial \delta\), \(\partial I/\partial C_1\), \(\partial I/\partial g_Q\). & Scans independants de \(\delta\), \(C_1\), \(g_Q\). \\
+Q5 & Le champ magnetique modifie-t-il le melange coherent ou seulement les energies? & Deplacement des pics versus variation d'intensite. & Comparer champ dans \(H_{\mathrm{spin}}\), dans \(T_{\mathrm{SP}}(B)\), et dans les energies optiques separement. \\
+Q6 & Peut-on distinguer un etat thermique d'un etat non thermique? & Spectres calcules avec populations thermiques versus populations imposees. & Meme Hamiltonien, seulement la distribution initiale change. \\
+Q7 & Les pics croises encodent-ils les correlations de spin a courte portee? & Correlation entre \(I_{\mathrm{cross}}\) et \(C_1\). & Garder \(\delta\) fixe et varier uniquement \(C_1\), puis l'inverse. \\
+Q8 & Quel est le role de la detection dans l'acces a l'etat dark? & Comparaison excitation/detection via \(\mu_B\), \(\mu_D\), et melange eigenstate. & Comparer \(\mu_D=0\) et \(\mu_D\neq0\). \\
+Q9 & Les correlations observees sont-elles robustes aux artefacts numeriques? & Convergence en \(N_k\), \(\eta\), grille de frequences, normalisation, taille de chaine. & Reproduire les tendances avec plusieurs resolutions. \\
+\bottomrule
+\end{longtable}
+
+\section{Principes generaux de validation}
+
+\subsection{Ajouter les ingredients un par un}
+
+L'ordre de validation recommande est:
+\begin{equation}
+\begin{aligned}
+&\text{bright/dark minimal}
+\rightarrow
+\text{mode bosonique}
+\rightarrow
+\text{spin observables}
+\\
+&\rightarrow
+k\text{-dispersion}
+\rightarrow
+\text{champ/temperature}
+\rightarrow
+\text{SOC explicite}.
+\end{aligned}
+\end{equation}
+
+Chaque etape doit conserver les resultats de l'etape precedente comme controle. Une nouvelle signature n'est interpretable que si elle est absente dans le controle correspondant.
+
+\subsection{Toujours garder des spectres non normalises}
+
+Les figures normalisees par panneau sont utiles pour voir les formes. Elles ne permettent pas de conclure sur l'intensite absolue. Pour chaque spectre, il faut sauvegarder au minimum:
+\begin{equation}
+S_{R1}^{\mathrm{real}},\quad
+S_{R1}^{\mathrm{imag}},\quad
+|S_{R1}|,\quad
+S_{R2}^{\mathrm{real}},\quad
+S_{R2}^{\mathrm{imag}},\quad
+|S_{R2}|,
+\end{equation}
+avec et sans normalisation.
+
+\subsection{Mesurer des scalaires, pas seulement regarder des contours}
+
+Les observables minimales sont:
+\begin{align}
+I_{\max} &= \max_{\omega_1,\omega_3}|S(\omega_1,\omega_3)|,\\
+I_{\mathrm{int}} &= \int d\omega_1\,d\omega_3\,|S(\omega_1,\omega_3)|,\\
+I_{\mathrm{cross}} &= \int_{\Omega_{\mathrm{cross}}} d\omega_1\,d\omega_3\,|S(\omega_1,\omega_3)|,\\
+I_{\mathrm{diag}} &= \int_{\Omega_{\mathrm{diag}}} d\omega_1\,d\omega_3\,|S(\omega_1,\omega_3)|,\\
+R_{\mathrm{cross}} &= I_{\mathrm{cross}}/I_{\mathrm{diag}}.
+\end{align}
+
+Il faut aussi conserver les positions des maxima:
+\begin{equation}
+(\omega_1^\ast,\omega_3^\ast)
+=
+\arg\max_{\omega_1,\omega_3}|S(\omega_1,\omega_3)|.
+\end{equation}
+
+\section{Etape 0 -- Hygiene numerique et conventions}
+
+\subsection{Objectif}
+
+Avant d'interpreter la physique, il faut verifier que les conventions numeriques ne creent pas les signatures. Cette etape ne repond pas encore a la question physique; elle evite de construire une interpretation sur un artefact.
+
+\subsection{Tests}
+
+\testbox{\textbf{T0.1 -- Controle de normalisation.} Pour un meme jeu de parametres, produire les spectres avec normalisation globale, normalisation par panneau et aucune normalisation. Les formes peuvent se ressembler, mais les conclusions sur l'intensite doivent etre tirees uniquement des spectres non normalises.}
+
+\testbox{\textbf{T0.2 -- Convergence en grille de frequences.} Refaire un spectre representatif avec au moins trois resolutions de grille. Les positions de pics et les integrales dans des fenetres fixes doivent converger.}
+
+\testbox{\textbf{T0.3 -- Convergence en broadening \(\eta\).} Tester plusieurs valeurs de \(\eta\). Une signature physique robuste doit se deformer continument avec \(\eta\), pas apparaitre ou disparaitre de facon discontinue.}
+
+\testbox{\textbf{T0.4 -- Controle des voies \(R1\) et \(R2\).} Sauvegarder separement \(R1\), \(R2\), et leur somme. Une variation attribuee a la physique doit etre localisable: soit elle touche les deux voies de facon coherente, soit elle revele une asymetrie interpretable.}
+
+\decisionbox{On passe a l'etape 1 seulement si les spectres non normalises, les positions de pics et les intensites integrees sont numeriquement stables pour le modele minimal.}
+
+\section{Etape 1 -- Systeme optique minimal sans mode et sans spin}
+
+\subsection{Systeme minimal}
+
+Le premier systeme doit etre le plus petit possible:
+\begin{equation}
+\mathcal{H}_0
+=
+\mathrm{span}\{\ket{g},\ket{B},\ket{D}\}.
+\end{equation}
+On impose:
+\begin{equation}
+N_k=1,\qquad
+g_Q=0,\qquad
+\omega_Q \text{ absent},\qquad
+\mu_D=0.
+\end{equation}
+Le Hamiltonien optique est
+\begin{equation}
+H_0
+=
+E_B\op{B}{B}
++
+E_D\op{D}{D}
++
+V_{\mathrm{BD}}L_{\mathrm{BD}}.
+\end{equation}
+
+\subsection{Pourquoi commencer ici}
+
+Ce systeme isole le mecanisme le plus fondamental: un etat dark devient-il visible parce qu'il est melange avec un etat bright? Si cette etape n'est pas comprise, les scans avec \(\delta\), \(C_1\), \(k\) et \(g_Q(k)\) seront ambigus.
+
+\subsection{Tests}
+
+\testbox{\textbf{T1.1 -- Dark state strictement invisible.} Fixer \(\mu_D=0\) et \(V_{\mathrm{BD}}=0\). Le spectre ne doit contenir que les signatures associees a \(\ket{B}\). Toute signature de \(\ket{D}\) dans ce controle indique un probleme de dipole, de base, de fenetre spectrale ou de voie optique.}
+
+\testbox{\textbf{T1.2 -- Apparition controlee du pic dark.} Scanner \(V_{\mathrm{BD}}\) sur une echelle logarithmique, par exemple \(10^{-5}\) a \(10^{-1}\) eV si numeriquement raisonnable. Mesurer \(I_D\), \(I_{\mathrm{cross}}\), \(R_{\mathrm{cross}}\).}
+
+\testbox{\textbf{T1.3 -- Loi d'echelle du melange.} Pour \(|V_{\mathrm{BD}}|\ll|E_D-E_B|\), le poids bright de l'etat dark doit suivre l'ordre de grandeur
+\begin{equation}
+\left|\frac{V_{\mathrm{BD}}}{E_D-E_B}\right|^2.
+\end{equation}
+La pente log--log de l'intensite dark ou du pic croise doit donc etre mesuree empiriquement. Selon la voie optique et l'observable choisie, la pente peut etre lineaire ou quadratique en \(V_{\mathrm{BD}}\); il faut la documenter plutot que la supposer.}
+
+\testbox{\textbf{T1.4 -- Dependence au detuning.} Repeter le scan pour plusieurs \(\Delta_{BD}=E_D-E_B\). Si le signal dark vient bien du melange, il doit augmenter lorsque \(|\Delta_{BD}|\) diminue, toutes choses egales par ailleurs.}
+
+\testbox{\textbf{T1.5 -- Signe de \(V_{\mathrm{BD}}\).} Comparer \(+V_{\mathrm{BD}}\) et \(-V_{\mathrm{BD}}\). Les intensites absolues peuvent etre presque identiques, mais les parties reelles/imaginaires et les phases peuvent changer. Cette comparaison aide a distinguer une signature d'intensite d'une signature de coherence.}
+
+\decisionbox{Cette etape repond partiellement a Q3. Si les pics croises disparaissent quand \(V_{\mathrm{BD}}=0\) et croissent de facon systematique avec \(V_{\mathrm{BD}}\), alors ils sont compatibles avec un melange coherent bright--dark. Sinon, ils ne peuvent pas etre interpretes comme preuve de SOC ou de correlations de spin.}
+
+\section{Etape 2 -- Ajouter un mode local sans dependance en \texorpdfstring{\(k\)}{k}}
+
+\subsection{Systeme}
+
+On ajoute un mode tronque:
+\begin{equation}
+\mathcal{H}_1
+=
+\mathrm{span}\{\ket{g},\ket{B},\ket{D}\}
+\otimes
+\mathcal{H}_{\mathrm{ph}},
+\end{equation}
+mais on garde:
+\begin{equation}
+N_k=1,\qquad
+\omega_Q(k)=\omega_Q,\qquad
+g_Q(k)=g_Q.
+\end{equation}
+
+Le Hamiltonien devient:
+\begin{equation}
+H_1
+=
+E_B\op{B}{B}
++
+E_D\op{D}{D}
++
+\omega_Q a^\dagger a
++
+V_{\mathrm{BD}}L_{\mathrm{BD}}
++
+g_Q L_{\mathrm{BD}}(a+a^\dagger).
+\end{equation}
+
+\subsection{Objectif}
+
+Cette etape separe le melange statique \(V_{\mathrm{BD}}\) du melange dynamique assiste par le mode \(g_Q\). Elle permet de savoir si les structures dans le spectre viennent d'un simple hybridization bright--dark ou d'un couplage a une coordonnee collective.
+
+\subsection{Tests}
+
+\testbox{\textbf{T2.1 -- Controle sans mode dynamique.} Fixer \(g_Q=0\) et comparer au resultat de l'etape 1. Les differences doivent venir uniquement de l'espace de Hilbert plus grand, pas d'un nouveau couplage physique.}
+
+\testbox{\textbf{T2.2 -- Activation de \(g_Q\).} Scanner \(g_Q\) a \(V_{\mathrm{BD}}\) fixe. Mesurer l'apparition de satellites, de deformation des pics, et de changements de phase dans \(R1\) et \(R2\).}
+
+\testbox{\textbf{T2.3 -- Controle \(V_{\mathrm{BD}}=0\), \(g_Q\neq0\).} Ce test est important: si le mode dynamique seul peut produire un signal dark, alors l'acces dark ne depend pas seulement du melange statique. Si le signal disparait, le mode agit surtout comme modulation du melange deja present.}
+
+\testbox{\textbf{T2.4 -- Convergence en troncature bosonique.} Refaire le test pour \(n_{\mathrm{bosons}}=2,3,4,\ldots\). Les intensites et positions de pics doivent converger dans la fenetre d'energie utilisee.}
+
+\decisionbox{Cette etape repond a la difference entre melange statique et couplage dynamique. On ne doit pas introduire \(k\) avant d'avoir identifie ce que \(g_Q\) fait deja dans un modele a un seul mode.}
+
+\section{Etape 3 -- Brancher \texorpdfstring{\(\delta\)}{delta} et \texorpdfstring{\(C_1\)}{C1} sans dispersion}
+
+\subsection{Systeme}
+
+On garde \(N_k=1\) et on remplace le parametre libre \(V_{\mathrm{BD}}\) par
+\begin{equation}
+V_{\mathrm{BD}}
+=
+V_0+\lambda_\delta\delta+\lambda_C C_1.
+\end{equation}
+Au debut, \(\delta\) et \(C_1\) doivent etre controles manuellement, sans encore utiliser toute la chaine de spin.
+
+\subsection{Objectif}
+
+Cette etape repond directement a Q4 et Q7: est-ce que le spectre mesure plutot \(\delta\), \(C_1\), ou seulement la combinaison effective \(V_{\mathrm{BD}}\)?
+
+\subsection{Tests}
+
+\testbox{\textbf{T3.1 -- Scan de \(\delta\) seul.} Fixer \(C_1=C_1^{\mathrm{ref}}\), \(\lambda_C=0\), et scanner \(\delta\). Mesurer \(I_{\mathrm{cross}}(\delta)\), \(I_D(\delta)\), et les positions de pics.}
+
+\testbox{\textbf{T3.2 -- Scan de \(C_1\) seul.} Fixer \(\delta=\delta^{\mathrm{ref}}\), \(\lambda_\delta=0\), et scanner \(C_1\). Mesurer les memes observables.}
+
+\testbox{\textbf{T3.3 -- Degenerescence des parametres.} Comparer deux jeux \((\delta,C_1)\) qui donnent le meme \(V_{\mathrm{BD}}\). Si les spectres sont identiques, le modele optique ne distingue pas \(\delta\) et \(C_1\); il mesure seulement \(V_{\mathrm{BD}}\).}
+
+\testbox{\textbf{T3.4 -- Sensibilites locales.} Calculer numeriquement:
+\begin{equation}
+\frac{\partial I_{\mathrm{cross}}}{\partial \delta},
+\qquad
+\frac{\partial I_{\mathrm{cross}}}{\partial C_1},
+\qquad
+\frac{\partial \phi_{\mathrm{cross}}}{\partial \delta},
+\qquad
+\frac{\partial \phi_{\mathrm{cross}}}{\partial C_1}.
+\end{equation}
+Les phases peuvent contenir une information differente de l'intensite.}
+
+\decisionbox{Si deux couples \((\delta,C_1)\) avec le meme \(V_{\mathrm{BD}}\) produisent le meme spectre, alors la spectroscopie ne mesure pas separement \(\delta\) et \(C_1\) dans ce modele. Pour les separer, il faudra ajouter un canal ou \(\delta\) et \(C_1\) affectent des termes differents: par exemple \(\omega_Q(k)\), \(g_Q(k)\), ou les dephasages.}
+
+\section{Etape 4 -- Introduire la chaine de spin finie}
+
+\subsection{Systeme}
+
+On calcule maintenant \(\delta(T,B)\), \(C_1(T,B)\), et \(\Delta_{\mathrm{spin}}\) a partir du secteur spin:
+\begin{equation}
+H_{\mathrm{spin}}
+=
+\sum_i J_i\bm{S}_i\cdot\bm{S}_{i+1}
++
+J_2\sum_i\bm{S}_i\cdot\bm{S}_{i+2}
++
+g\mu_BB\sum_iS_i^z.
+\end{equation}
+
+\subsection{Objectif}
+
+L'objectif est de verifier que la dependance temperature/champ du spectre provient bien des observables de spin et pas d'une variation arbitraire des parametres optiques.
+
+\subsection{Tests}
+
+\testbox{\textbf{T4.1 -- Validation de \(C_1\).} Avant tout spectre optique, tracer \(C_1(T)\), \(C_1(B)\), \(\delta(T,B)\), et \(\Delta_{\mathrm{spin}}(T,B)\). Verifier qu'ils varient dans le sens physiquement attendu.}
+
+\testbox{\textbf{T4.2 -- Taille de chaine.} Repeter les observables de spin pour plusieurs \(N_{\mathrm{spin}}\). Les tendances qualitatives de \(C_1\) et \(\Delta_{\mathrm{spin}}\) doivent etre robustes.}
+
+\testbox{\textbf{T4.3 -- Conditions aux bords.} Comparer open et periodic si le code le permet. Si \(C_1\) change beaucoup, l'interpretation optique doit inclure l'incertitude de taille finie.}
+
+\testbox{\textbf{T4.4 -- Controle optique a \(V_{\mathrm{BD}}\) fixe.} Faire varier \(T\) et \(B\) dans la chaine de spin, mais forcer \(V_{\mathrm{BD}}\) a rester constant dans le modele optique. Si le spectre change encore, il y a un autre canal de dependance a \(T,B\) qu'il faut identifier.}
+
+\testbox{\textbf{T4.5 -- Controle spin--optique active.} Comparer avec le cas complet ou \(V_{\mathrm{BD}}(T,B)=V_0+\lambda_\delta\delta(T,B)+\lambda_CC_1(T,B)\). La difference entre T4.4 et T4.5 isole l'effet du couplage spin--optique.}
+
+\decisionbox{Cette etape est le premier vrai test de Q1 et Q7. Si les changements spectraux suivent \(C_1(T,B)\) ou \(\delta(T,B)\) de facon monotone et disparaissent lorsque \(\lambda_\delta=\lambda_C=0\), alors le modele supporte l'idee que la reponse optique sonde le secteur spin.}
+
+\section{Etape 5 -- Champ magnetique: melange coherent ou simple deplacement d'energie}
+
+\subsection{Objectif}
+
+La question Q5 demande si le champ magnetique tune le melange coherent ou seulement les energies. Il faut donc decomposer artificiellement les canaux par lesquels \(B\) entre dans le modele.
+
+\subsection{Scenarios}
+
+\begin{longtable}{>{\centering\arraybackslash}p{0.12\linewidth} p{0.36\linewidth} p{0.38\linewidth}}
+\toprule
+Scenario & Ce qui depend de \(B\) & Interpretation testee \\
+\midrule
+\endhead
+B0 & Rien. & Controle numerique. \\
+B1 & \(T_{\mathrm{SP}}(B)\) et \(\delta(T,B)\) seulement. & Le champ affecte la dimerisation. \\
+B2 & \(C_1(B)\) seulement. & Le champ affecte les correlations magnetiques. \\
+B3 & Energies optiques \(E_B,E_D\) seulement. & Le champ deplace les resonances sans changer le melange. \\
+B4 & Tout actif. & Modele complet. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Tests}
+
+\testbox{\textbf{T5.1 -- Deplacement versus intensite.} Pour chaque scenario, extraire \((\omega_1^\ast,\omega_3^\ast)\), \(I_{\mathrm{cross}}\), \(I_{\mathrm{diag}}\), et \(R_{\mathrm{cross}}\). Un pur deplacement d'energie doit surtout changer les positions; un changement de melange doit surtout changer les intensites relatives et les phases.}
+
+\testbox{\textbf{T5.2 -- Phase du pic croise.} Le champ peut modifier la phase meme si l'intensite change peu. Il faut donc conserver les parties reelles et imaginaires, pas seulement \(|S|\).}
+
+\testbox{\textbf{T5.3 -- Derivees en champ.} Calculer
+\begin{equation}
+\frac{dI_{\mathrm{cross}}}{dB},
+\qquad
+\frac{d\omega^\ast}{dB},
+\qquad
+\frac{dR_{\mathrm{cross}}}{dB}.
+\end{equation}
+Ces trois derivees permettent de distinguer une modulation de couplage d'un simple shift spectral.}
+
+\decisionbox{Si \(B\) change surtout les positions, le modele indique un effet energetique. Si \(B\) change surtout \(R_{\mathrm{cross}}\), les phases ou le ratio \(R1/R2\), il y a evidence d'une modulation du melange coherent.}
+
+\section{Etape 6 -- Temperature et transition Spin-Peierls}
+
+\subsection{Objectif}
+
+La transition Spin-Peierls fournit un controle naturel: au-dessus de \(T_{\mathrm{SP}}\), \(\delta=0\). Si le signal attribue a la dimerisation persiste inchangé au-dessus de \(T_{\mathrm{SP}}\), l'attribution est faible.
+
+\subsection{Tests}
+
+\testbox{\textbf{T6.1 -- Scan autour de \(T_{\mathrm{SP}}\).} Calculer des spectres pour \(T<T_{\mathrm{SP}}\), \(T\simeq T_{\mathrm{SP}}\), et \(T>T_{\mathrm{SP}}\). Extraire \(I_{\mathrm{cross}}\), \(R_{\mathrm{cross}}\), et les phases.}
+
+\testbox{\textbf{T6.2 -- Separation \(\delta\) versus \(C_1\).} Au-dessus de \(T_{\mathrm{SP}}\), \(\delta=0\) mais \(C_1\) peut rester non nul. Cette region teste si le spectre est sensible aux correlations de spin sans dimerisation.}
+
+\testbox{\textbf{T6.3 -- Controle \(\lambda_C=0\).} Si \(\lambda_C=0\), le signal spin-dependant doit s'effondrer avec \(\delta\) a la transition. Si un signal persiste, il vient d'un autre mecanisme.}
+
+\testbox{\textbf{T6.4 -- Controle \(\lambda_\delta=0\).} Si \(\lambda_\delta=0\), le spectre peut rester sensible a \(C_1\) meme au-dessus de \(T_{\mathrm{SP}}\). C'est le test central pour savoir si les correlations a courte portee sont optiquement visibles.}
+
+\decisionbox{Cette etape repond a Q2 et Q7. Le meilleur resultat serait une signature qui distingue clairement la dimerisation longue portee \(\delta\) des correlations courtes portees \(C_1\).}
+
+\section{Etape 7 -- Ajouter la dispersion du secteur spin}
+
+\subsection{Systeme}
+
+On active:
+\begin{equation}
+N_k>1,
+\qquad
+s=\texttt{spin\_mode\_dispersion\_scale}>0,
+\qquad
+A_Q=0.
+\end{equation}
+Les energies \(E_B\) et \(E_D\) doivent rester independantes de \(k\) au depart.
+
+\subsection{Objectif}
+
+Cette etape teste l'idee que \(k\) represente principalement le secteur spin/Spin-Peierls, et non une bande optique \(d\). Elle doit montrer si la dynamique dispersive du spin laisse une empreinte mesurable dans le spectre 2D.
+
+\subsection{Tests}
+
+\testbox{\textbf{T7.1 -- Convergence en \(N_k\).} Calculer \(N_k=1,5,10,25,50,100\). Les intensites integrees doivent converger. Si la structure change fortement entre \(50\) et \(100\), le modele n'est pas encore numeriquement stable.}
+
+\testbox{\textbf{T7.2 -- Scan de \(s\).} Scanner \(s=0,0.25,0.5,1,2\). Le cas \(s=0\) est le controle sans dispersion.}
+
+\testbox{\textbf{T7.3 -- Decomposition \(k\)-resolue.} Sauvegarder ou reconstruire \(S_k(\omega_1,\omega_3)\) pour quelques valeurs representatives de \(k\). Cela permet de savoir si le spectre integre cache des contributions opposees.}
+
+\testbox{\textbf{T7.4 -- Conservation des energies optiques plates.} Garder \(t_{B,r}=t_{D,r}=0\). Si on active les dispersions optiques trop tot, on ne saura plus si les changements viennent du spin ou des bandes optiques.}
+
+\decisionbox{On peut dire que la dynamique spin-sectorielle est visible seulement si \(s\) modifie des observables scalaires ou des formes spectrales de facon robuste, et si cet effet disparait quand \(s=0\).}
+
+\section{Etape 8 -- Modulation \texorpdfstring{\(g_Q(k)\)}{gQ(k)}}
+
+\subsection{Objectif}
+
+Le parametre \(A_Q=\texttt{g\_Q\_k\_modulation}\) ne doit pas necessairement deplacer les pics. Il redistribue le couplage dynamique sur le secteur \(k\). On doit donc chercher des variations d'intensite, de poids spectral et de contributions \(k\)-resolues, pas seulement des changements visuels de contours normalises.
+
+\subsection{Tests}
+
+\testbox{\textbf{T8.1 -- Scan non normalise de \(A_Q\).} Utiliser \(A_Q=0,0.001,0.005,0.01,0.05,0.1,0.25,0.5,0.75\). Pour chaque point, mesurer \(I_{\max}\), \(I_{\mathrm{int}}\), \(I_{\mathrm{cross}}\), \(R_{\mathrm{cross}}\), et \(I_{R1}/I_{R2}\).}
+
+\testbox{\textbf{T8.2 -- Difference maps.} Calculer
+\begin{equation}
+\Delta S(A_Q)=S(A_Q)-S(0).
+\end{equation}
+Les cartes de difference doivent etre non normalisees ou normalisees par une echelle commune.}
+
+\testbox{\textbf{T8.3 -- Contributions par region de \(k\).} Comparer les contributions proches de \(k=0\), \(k=\pi/2\), et \(k=\pi\). Comme \(g_Q(k)=g_Q(1+A_Q\cos k)\), \(A_Q\) renforce une region et affaiblit l'autre.}
+
+\testbox{\textbf{T8.4 -- Controle de signe.} Tester aussi \(A_Q<0\). Si le modele est coherent, \(A_Q>0\) et \(A_Q<0\) doivent redistribuer le poids vers des regions opposees de \(k\).}
+
+\decisionbox{Si \(A_Q\) diminue progressivement l'intensite totale sans deplacer les pics, ce n'est pas un echec: c'est compatible avec une modulation de poids spectral. Pour l'interpreter physiquement, il faut montrer quelle region de \(k\) perd ou gagne du poids.}
+
+\section{Etape 9 -- Acces direct au dark state versus melange bright--dark}
+
+\subsection{Objectif}
+
+La discussion sur les transitions \(d\)-\(d\), les regles de selection et le champ cristallin montre qu'il faut distinguer deux mecanismes:
+\begin{align}
+\text{canal direct:}\quad & \mu_D\neq0,\quad V_0=0,\\
+\text{canal par melange:}\quad & \mu_D=0,\quad V_0\neq0.
+\end{align}
+
+\subsection{Tests}
+
+\testbox{\textbf{T9.1 -- Scenario A: dark dipole direct.} Fixer \(V_0=0\), \(\lambda_\delta=\lambda_C=0\), mais \(\mu_D\neq0\). Mesurer les pics dark et cross.}
+
+\testbox{\textbf{T9.2 -- Scenario B: melange bright--dark.} Fixer \(\mu_D=0\), \(V_0\neq0\). Ajuster \(V_0\) pour obtenir une intensite dark comparable au scenario A.}
+
+\testbox{\textbf{T9.3 -- Discrimination par pathways.} Comparer \(R1\), \(R2\), phases et ratios de pics. Deux mecanismes qui donnent la meme intensite lineaire peuvent donner des reponses 2D differentes.}
+
+\testbox{\textbf{T9.4 -- Dependence temperature/champ.} Si le canal direct \(\mu_D\) est purement crystal-field, il ne devrait pas suivre fortement \(\delta(T,B)\) ou \(C_1(T,B)\), sauf hypothese supplementaire. Le canal par melange spin-dependant devrait suivre ces variables.}
+
+\decisionbox{Cette etape repond a Q8 et clarifie le sens physique de \(V_0\). Si les scenarios A et B sont indiscernables dans les observables choisies, le modele ne peut pas conclure que le signal dark vient du SOC plutot que d'un dipole direct faiblement permis.}
+
+\section{Etape 10 -- Etats thermiques versus non thermiques}
+
+\subsection{Objectif}
+
+La question Q6 exige de changer la population initiale sans changer l'Hamiltonien. Sinon, on ne sait pas si la difference vient d'un etat non thermique ou d'un changement de parametres.
+
+\subsection{Tests}
+
+\testbox{\textbf{T10.1 -- Etat thermique de reference.} Utiliser les populations de Boltzmann pour une temperature \(T\).}
+
+\testbox{\textbf{T10.2 -- Population non thermique simple.} Construire une distribution ou certains niveaux bright/dark ou certains niveaux du mode sont surpeuples. Garder le meme Hamiltonien et les memes dipoles.}
+
+\testbox{\textbf{T10.3 -- Comparaison a energie moyenne egale.} Comparer un etat thermique et un etat non thermique ayant une energie moyenne similaire. Si les spectres different, la spectroscopie est sensible a la structure de population, pas seulement a l'energie.}
+
+\testbox{\textbf{T10.4 -- Dependence en \(t_2\).} Si le code permet un scan du temps population \(t_2\), chercher des oscillations ou dephasages differents entre l'etat thermique et l'etat non thermique.}
+
+\decisionbox{On peut affirmer une sensibilite aux etats non thermiques seulement si deux etats avec parametres Hamiltoniens identiques produisent des signatures 2D distinctes et robustes.}
+
+\section{Etape 11 -- Robustesse et artefacts}
+
+\subsection{Objectif}
+
+Avant de conclure, il faut montrer que les tendances ne dependent pas d'un choix numerique arbitraire.
+
+\subsection{Tests}
+
+\testbox{\textbf{T11.1 -- Robustesse a \(\eta\).} Les tendances de \(I_{\mathrm{cross}}\), \(R_{\mathrm{cross}}\), et des positions de pics doivent survivre a des variations raisonnables du broadening.}
+
+\testbox{\textbf{T11.2 -- Robustesse a la grille.} Repeter les resultats principaux avec une grille de frequences plus fine et une fenetre spectrale un peu plus large.}
+
+\testbox{\textbf{T11.3 -- Robustesse a \(N_k\).} Les conclusions sur \(A_Q\), \(s\), et \(\omega_Q(k)\) doivent etre stables en augmentant \(N_k\).}
+
+\testbox{\textbf{T11.4 -- Robustesse a la taille de chaine.} Les conclusions liees a \(C_1\) et \(\Delta_{\mathrm{spin}}\) doivent etre comparees pour plusieurs tailles de chaine.}
+
+\testbox{\textbf{T11.5 -- Robustesse aux fenetres d'integration.} Les integrales \(I_{\mathrm{cross}}\) et \(I_{\mathrm{diag}}\) doivent etre recalculees avec des fenetres legerement differentes.}
+
+\decisionbox{Une conclusion scientifique doit etre classee comme robuste seulement si elle survit a au moins trois controles: non-normalisation, convergence numerique, et controle physique ou le mecanisme est desactive.}
+
+\section{Etape 12 -- Extension vers SOC explicite}
+
+\subsection{Pourquoi ne pas commencer par la}
+
+Un Hamiltonien explicite
+\begin{equation}
+H_{\mathrm{SOC}}=\lambda\bm{L}\cdot\bm{S}
+\end{equation}
+est plus physique, mais il augmente la taille de l'espace de Hilbert et introduit de nouveaux choix: matrices \(L_\alpha\), base orbitale, dipoles, champ cristallin, et possible double comptage avec \(V_{\mathrm{BD}}\).
+
+\subsection{Route 1: modele spinoriel effectif}
+
+La premiere extension raisonnable est:
+\begin{equation}
+(g,D,B)\otimes(\uparrow,\downarrow)\otimes\mathcal{H}_{\mathrm{ph}}.
+\end{equation}
+Pour \(n_{\mathrm{bosons}}=3\), la dimension Hilbert par \(k\) passe de \(9\) a \(18\), et la dimension de Liouville de \(81\) a \(324\).
+
+\testbox{\textbf{T12.1 -- Recuperer le modele effectif.} Choisir des matrices \(L_\alpha^{\mathrm{eff}}\) simples et verifier qu'a faible \(\lambda_{\mathrm{eff}}\), les signatures ressemblent au modele avec \(V_{\mathrm{BD}}\).}
+
+\testbox{\textbf{T12.2 -- Eviter le double comptage.} Quand \(H_{\mathrm{SOC}}\) est actif, remplacer \(V_{\mathrm{BD}}\) par un residu \(V_{\mathrm{res}}\), ou le fixer a zero dans le premier test.}
+
+\testbox{\textbf{T12.3 -- Signatures spin-flip.} Verifier si de nouvelles voies apparaissent lorsque \(S_x\) et \(S_y\) sont actifs. Ces voies seraient absentes dans un modele bright--dark scalaire.}
+
+\subsection{Route 2: modele orbital \texorpdfstring{\(d\)}{d} microscopique}
+
+La route plus complete est:
+\begin{equation}
+\{d_{x^2-y^2},d_{xy},d_{xz},d_{yz},d_{z^2}\}
+\otimes
+(\uparrow,\downarrow)
+\otimes
+\mathcal{H}_{\mathrm{ph}}.
+\end{equation}
+Pour \(n_{\mathrm{bosons}}=3\), la dimension Hilbert par \(k\) est environ \(30\), et la dimension de Liouville environ \(900\).
+
+\decisionbox{La route 2 ne devrait etre entreprise qu'apres avoir identifie, avec la route 1, quelle observable 2D est vraiment sensible au spin explicite. Sinon, le modele microscopique risque d'ajouter des parametres sans augmenter le pouvoir de conclusion.}
+
+\section{Ordre recommande des calculs}
+
+\begin{longtable}{>{\centering\arraybackslash}p{0.08\linewidth} p{0.28\linewidth} p{0.32\linewidth} p{0.20\linewidth}}
+\toprule
+Priorite & Calcul & Pourquoi & Question cible \\
+\midrule
+\endhead
+1 & \(V_{\mathrm{BD}}\) scan, \(\mu_D=0\), \(g_Q=0\), \(N_k=1\). & Prouver que les pics croises viennent du melange. & Q3 \\
+2 & \(g_Q\) scan, \(N_k=1\). & Separer melange statique et mode dynamique. & Q1, Q3 \\
+3 & Scans manuels \(\delta\), \(C_1\). & Savoir si le spectre mesure \(V_{\mathrm{BD}}\) seulement ou distingue ses composantes. & Q4, Q7 \\
+4 & Chaine de spin finie: \(C_1(T,B)\), \(\delta(T,B)\). & Brancher le modele optique sur des observables spin. & Q1, Q7 \\
+5 & Scan temperature autour de \(T_{\mathrm{SP}}\). & Utiliser la transition comme controle physique. & Q2, Q7 \\
+6 & Decomposition du champ magnetique. & Distinguer shift energetique et changement de melange. & Q5 \\
+7 & Activer \(\omega_Q(k)\), \(A_Q=0\). & Tester la dynamique dispersive du spin. & Q1 \\
+8 & Scanner \(A_Q\). & Tester la redistribution du couplage dans \(k\). & Q1, Q9 \\
+9 & Comparer \(\mu_D\neq0\) versus \(V_0\neq0\). & Distinguer dipole direct et hybridization. & Q8 \\
+10 & Etats non thermiques. & Tester la sensibilite aux populations. & Q6 \\
+11 & Modele spinoriel effectif. & Remplacer \(V_{\mathrm{BD}}\) par SOC explicite. & Q1--Q8 \\
+\bottomrule
+\end{longtable}
+
+\section{Criteres de conclusion}
+
+\subsection{Conclusion forte}
+
+On pourra soutenir fortement que la spectroscopie multidimensionnelle sonde le secteur spin si les conditions suivantes sont satisfaites:
+\begin{enumerate}
+    \item Les pics croises disparaissent lorsque le melange bright--dark et le canal dark direct sont desactives.
+    \item Les pics croises suivent systematiquement \(\delta\), \(C_1\), ou \(\omega_Q(k)\) lorsque ces quantites sont activees separement.
+    \item Les tendances persistent sans normalisation de panneau.
+    \item Les tendances convergent en grille, \(N_k\), \(\eta\), et taille de chaine.
+    \item Un controle avec \(\lambda_\delta=\lambda_C=g_Q=0\) elimine la signature spin-dependante.
+\end{enumerate}
+
+\subsection{Conclusion moderee}
+
+La conclusion sera moderee si les spectres sont sensibles a \(V_{\mathrm{BD}}\), mais ne permettent pas de separer \(\delta\) et \(C_1\). Dans ce cas, le modele montre que la spectroscopie peut sonder un parametre effectif de melange, mais pas encore identifier sa source microscopique.
+
+\subsection{Conclusion faible ou negative}
+
+La conclusion sera faible si:
+\begin{enumerate}
+    \item les memes signatures apparaissent avec \(\mu_D\neq0\) et sans couplage spin;
+    \item les signatures disparaissent sous de faibles changements de normalisation ou de grille;
+    \item les variations de champ ou temperature deplacent seulement les pics sans changer les ratios de pics croises;
+    \item les effets attribues a \(k\) ne convergent pas avec \(N_k\).
+\end{enumerate}
+
+\section{Livrables recommandes}
+
+Pour chaque etape importante, sauvegarder:
+\begin{enumerate}
+    \item les spectres bruts en format numerique;
+    \item les figures non normalisees;
+    \item les figures normalisees seulement pour comparaison visuelle;
+    \item un fichier de parametres complet;
+    \item une table CSV des observables scalaires;
+    \item une courte note indiquant quel mecanisme etait actif ou desactive.
+\end{enumerate}
+
+La table minimale des observables devrait contenir:
+\begin{equation}
+I_{\max},\quad
+I_{\mathrm{int}},\quad
+I_{\mathrm{cross}},\quad
+I_{\mathrm{diag}},\quad
+R_{\mathrm{cross}},\quad
+I_{R1},\quad
+I_{R2},\quad
+\omega_1^\ast,\quad
+\omega_3^\ast.
+\end{equation}
+
+\section{Prochaine action concrete}
+
+Le prochain calcul a faire devrait etre l'etape 1:
+\begin{equation}
+N_k=1,\qquad
+g_Q=0,\qquad
+\mu_D=0,\qquad
+V_{\mathrm{BD}}\ \text{scanne manuellement}.
+\end{equation}
+
+Ce calcul est le plus petit test possible du coeur du modele. Il permet de repondre a la question:
+\begin{quote}
+Les pics croises que nous observons sont-ils vraiment generes par un melange coherent bright--dark?
+\end{quote}
+
+Sans cette validation, il serait premature d'interpreter les scans en \(g_Q(k)\), \(\delta\), \(C_1\), \(T\), ou \(B\) comme une signature du secteur de spin.
+
+\end{document}

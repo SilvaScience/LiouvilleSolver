@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: k_space_spin_orbit_model_physics.aux
+Reallocating 'name_of_file' (item size: 1) to 6 items.
+The style file: unsrt.bst
+Reallocating 'name_of_file' (item size: 1) to 33 items.
+Database file #1: k_space_spin_orbit_model_physics.bib
+You've used 8 entries,
+            1791 wiz_defined-function locations,
+            506 strings with 5033 characters,
+and the built_in function-call counts, 1964 in all, are:
+= -- 174
+> -- 96
+< -- 0
++ -- 35
+- -- 27
+* -- 151
+:= -- 327
+add.period$ -- 24
+call.type$ -- 8
+change.case$ -- 7
+chr.to.int$ -- 0
+cite$ -- 8
+duplicate$ -- 73
+empty$ -- 184
+format.name$ -- 27
+if$ -- 418
+int.to.chr$ -- 0
+int.to.str$ -- 8
+missing$ -- 9
+newline$ -- 43
+num.names$ -- 8
+pop$ -- 13
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 26
+stack$ -- 0
+substring$ -- 170
+swap$ -- 8
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 20
+width$ -- 9
+write$ -- 90
