@@ -10,6 +10,13 @@ from .models import (
 from .plotting import SpectroscopyPlotter
 from .protocols import standard_nq_protocol
 from .solver import LiouvilleSpectroscopySolver
+from .export import (
+    build_mechanism_note,
+    extract_spectrum_profile,
+    extract_spectrum_observables,
+    make_run_id,
+    save_spectrum_bundle,
+)
 
 __all__ = [
     "FrequencyPathway",
@@ -19,5 +26,10 @@ __all__ = [
     "SpectroscopyPlotter",
     "SpectroscopyProtocol",
     "SpectrumResult",
+    "build_mechanism_note",
+    "extract_spectrum_profile",
+    "extract_spectrum_observables",
+    "make_run_id",
+    "save_spectrum_bundle",
     "standard_nq_protocol",
 ]

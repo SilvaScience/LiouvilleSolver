@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import Normalize, TwoSlopeNorm
 import numpy as np
 
+from .export import extract_spectrum_profile
 from .models import PathwayPlotResult, SpectrumResult
 
 
@@ -512,6 +513,39 @@ class SpectroscopyPlotter:
         if len(result.axis_names) != 2 or len(result.axis_values) != 2:
             raise ValueError("A two-frequency SpectrumResult is required.")
 
+        selected, x_values, y_values, default_labels = self.select_spectrum_result_data(
+            result,
+            spectra=spectra,
+            names=names,
+            totals=totals,
+        )
+        if title_list is None:
+            title_list = tuple(selected)
+        if labels is None:
+            labels = default_labels
+        kwargs.setdefault("plot_sum", False)
+        return self.plot_contourf_multi_spectra(
+            list(selected.values()),
+            x_values=x_values,
+            y_values=y_values,
+            labels=labels,
+            title_list=title_list,
+            **kwargs,
+        )
+
+    def select_spectrum_result_data(
+        self,
+        result,
+        spectra="components",
+        names=None,
+        totals="auto",
+    ):
+        """Select plottable spectra and axes from a two-frequency result."""
+        if not isinstance(result, SpectrumResult):
+            raise TypeError("result must be a SpectrumResult.")
+        if len(result.axis_names) != 2 or len(result.axis_values) != 2:
+            raise ValueError("A two-frequency SpectrumResult is required.")
+
         source_key = str(spectra).lower() if isinstance(spectra, str) else None
         if source_key == "components":
             source = result.components
@@ -539,22 +573,69 @@ class SpectroscopyPlotter:
                     f"expected {expected_shape}."
                 )
 
-        if title_list is None:
-            title_list = tuple(selected)
-        if labels is None:
-            labels = (
-                result.axis_names[1],
-                result.axis_names[0],
-            )
-        kwargs.setdefault("plot_sum", False)
-        return self.plot_contourf_multi_spectra(
-            list(selected.values()),
-            x_values=x_values,
-            y_values=y_values,
-            labels=labels,
-            title_list=title_list,
-            **kwargs,
+        labels = (
+            result.axis_names[1],
+            result.axis_names[0],
         )
+        return selected, x_values, y_values, labels
+
+    def plot_spectrum_profile(
+        self,
+        result,
+        *,
+        spectra="pathways",
+        names=("R1", "R2"),
+        quantity="abs",
+        cut="omega3",
+        window=None,
+        center=None,
+        half_length=None,
+        frequency=None,
+        width=None,
+        diagonal="rephasing",
+        quadrant=None,
+        offset=0.0,
+        num_points=None,
+        ax=None,
+        label=None,
+        show=True,
+        **plot_kwargs,
+    ):
+        """Plot a one-dimensional profile extracted from a spectrum result."""
+        profile = extract_spectrum_profile(
+            result,
+            spectra=spectra,
+            names=names,
+            detection_phase=self.detection_phase,
+            quantity=quantity,
+            cut=cut,
+            window=window,
+            center=center,
+            half_length=half_length,
+            frequency=frequency,
+            width=width,
+            diagonal=diagonal,
+            quadrant=quadrant,
+            offset=offset,
+            num_points=num_points,
+        )
+        if ax is None:
+            figure, ax = plt.subplots(figsize=plot_kwargs.pop("figsize", (6, 4)))
+        else:
+            figure = ax.figure
+
+        if label is None:
+            label = f"{profile['cut']} {profile['quantity']}"
+        ax.plot(profile["axis"], profile["intensity"], label=label, **plot_kwargs)
+        ax.set_xlabel(profile["axis_name"])
+        ax.set_ylabel(f"{profile['quantity']} intensity")
+        if label:
+            ax.legend()
+        ax.tick_params(direction="in", top=True, right=True)
+        figure.tight_layout()
+        if show:
+            plt.show()
+        return figure, ax, profile
 
     @staticmethod
     def _selected_pathway_names(result, pathways):
@@ -838,8 +919,8 @@ class SpectroscopyPlotter:
             output_directory = Path(output_directory)
             output_directory.mkdir(parents=True, exist_ok=True)
             spectrum_pdf = output_directory / spectrum_pdf_name
-            if spectrum_pdf.suffix.lower() != ".png":
-                spectrum_pdf = spectrum_pdf.with_suffix(".png")
+            # if spectrum_pdf.suffix.lower() != ".pdf":
+            #     spectrum_pdf = spectrum_pdf.with_suffix(".pdf")
             figure.savefig(spectrum_pdf, bbox_inches="tight")
 
         diagrams = {}
@@ -858,6 +939,7 @@ class SpectroscopyPlotter:
             plt.show()
         else:
             plt.close()
+
         return PathwayPlotResult(
             figure=figure,
             axes=axes,
