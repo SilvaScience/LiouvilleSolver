@@ -12,6 +12,7 @@ from .protocols import standard_nq_protocol
 from .solver import LiouvilleSpectroscopySolver
 from .export import (
     build_mechanism_note,
+    find_spectrum_feature_centers,
     extract_spectrum_profile,
     extract_spectrum_observables,
     make_run_id,
@@ -27,6 +28,7 @@ __all__ = [
     "SpectroscopyProtocol",
     "SpectrumResult",
     "build_mechanism_note",
+    "find_spectrum_feature_centers",
     "extract_spectrum_profile",
     "extract_spectrum_observables",
     "make_run_id",

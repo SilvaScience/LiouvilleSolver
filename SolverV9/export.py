@@ -160,6 +160,58 @@ def _center_coordinates(center, axis_names):
     return float(y_center), float(x_center)
 
 
+def _bilinear_interpolate_grid(y_values, x_values, values, y_points, x_points):
+    """Sample a rectilinear 2D grid at continuous coordinates."""
+    y_values = np.asarray(y_values, dtype=float)
+    x_values = np.asarray(x_values, dtype=float)
+    values = np.asarray(values)
+    y_points = np.asarray(y_points, dtype=float)
+    x_points = np.asarray(x_points, dtype=float)
+
+    if y_values.size < 2 or x_values.size < 2:
+        raise ValueError("Interpolation requires at least two samples on each axis.")
+    if np.any(np.diff(y_values) <= 0.0) or np.any(np.diff(x_values) <= 0.0):
+        raise ValueError("Interpolation requires strictly increasing frequency axes.")
+
+    flat_y = y_points.ravel()
+    flat_x = x_points.ravel()
+    valid = (
+        (flat_y >= y_values[0])
+        & (flat_y <= y_values[-1])
+        & (flat_x >= x_values[0])
+        & (flat_x <= x_values[-1])
+    )
+    out = np.full(flat_y.shape, np.nan, dtype=float)
+    if not np.any(valid):
+        return out.reshape(y_points.shape)
+
+    y_valid = flat_y[valid]
+    x_valid = flat_x[valid]
+    yi = np.searchsorted(y_values, y_valid, side="right") - 1
+    xi = np.searchsorted(x_values, x_valid, side="right") - 1
+    yi = np.clip(yi, 0, y_values.size - 2)
+    xi = np.clip(xi, 0, x_values.size - 2)
+
+    y0 = y_values[yi]
+    y1 = y_values[yi + 1]
+    x0 = x_values[xi]
+    x1 = x_values[xi + 1]
+    ty = (y_valid - y0) / (y1 - y0)
+    tx = (x_valid - x0) / (x1 - x0)
+
+    v00 = values[yi, xi]
+    v01 = values[yi, xi + 1]
+    v10 = values[yi + 1, xi]
+    v11 = values[yi + 1, xi + 1]
+    out[valid] = (
+        (1.0 - ty) * (1.0 - tx) * v00
+        + (1.0 - ty) * tx * v01
+        + ty * (1.0 - tx) * v10
+        + ty * tx * v11
+    )
+    return out.reshape(y_points.shape)
+
+
 def _local_line_profile(
     values,
     y_values,
@@ -202,29 +254,40 @@ def _local_line_profile(
         raise ValueError("diagonal must be 'rephasing' or 'unrephasing'.")
 
     y_center, x_center = _center_coordinates(center, axis_names)
-    dy = y_values[:, None] - y_center
-    dx = x_values[None, :] - x_center
     direction_y, direction_x = direction
-    along = 0.5 * (direction_y * dy + direction_x * dx)
-    transverse = 0.5 * (direction_y * dy - direction_x * dx)
 
     half_length = float(half_length)
     width = float(width)
-    strip_mask = (
-        (np.abs(along) <= half_length)
-        & (np.abs(transverse) <= 0.5 * width)
-    )
-    if not np.any(strip_mask):
-        raise ValueError("No samples fall inside the requested local line cut.")
-
     n_points = int(num_points or max(x_values.size, y_values.size))
     profile_axis = np.linspace(-half_length, half_length, n_points)
-    bin_width = (2.0 * half_length) / max(n_points - 1, 1)
-    cell_area = _axis_step(y_values) * _axis_step(x_values)
-    profile_values = np.zeros_like(profile_axis)
-    for index, axis_value in enumerate(profile_axis):
-        bin_mask = np.abs(along - axis_value) <= 0.5 * bin_width
-        profile_values[index] = np.sum(values[strip_mask & bin_mask]) * cell_area
+    min_step = min(_axis_step(y_values), _axis_step(x_values))
+    n_transverse = max(5, int(np.ceil(width / min_step)) * 4 + 1)
+    if n_transverse % 2 == 0:
+        n_transverse += 1
+    transverse_axis = np.linspace(-0.5 * width, 0.5 * width, n_transverse)
+
+    along_grid = profile_axis[:, None]
+    transverse_grid = transverse_axis[None, :]
+    sample_y = y_center + direction_y * (along_grid + transverse_grid)
+    sample_x = x_center + direction_x * (along_grid - transverse_grid)
+    sampled = _bilinear_interpolate_grid(
+        y_values,
+        x_values,
+        values,
+        sample_y,
+        sample_x,
+    )
+    if np.all(np.isnan(sampled)):
+        raise ValueError("No samples fall inside the requested local line cut.")
+    # Average over the transverse strip without changing the spectrum units.
+    # The width smooths the slice but should not rescale the peak amplitude.
+    valid_counts = np.sum(np.isfinite(sampled), axis=1)
+    profile_values = np.divide(
+        np.nansum(sampled, axis=1),
+        valid_counts,
+        out=np.full(profile_axis.shape, np.nan, dtype=float),
+        where=valid_counts > 0,
+    )
     omega1_line = y_center + direction_y * profile_axis
     omega3_line = x_center + direction_x * profile_axis
 
@@ -325,10 +388,14 @@ def _profile_scalar_observables(profile, prefix):
     if axis.size == 0 or intensity.size == 0:
         raise ValueError(f"Profile {prefix!r} is empty.")
     abs_intensity = np.abs(intensity)
-    max_index = int(np.argmax(abs_intensity))
+    finite = np.isfinite(abs_intensity)
+    if not np.any(finite):
+        raise ValueError(f"Profile {prefix!r} has no finite intensity values.")
+    finite_abs = np.where(finite, abs_intensity, -np.inf)
+    max_index = int(np.argmax(finite_abs))
     values = {
-        f"{prefix}_Iint": float(np.sum(intensity)),
-        f"{prefix}_Iabsint": float(np.sum(abs_intensity)),
+        f"{prefix}_Iint": float(np.nansum(intensity)),
+        f"{prefix}_Iabsint": float(np.nansum(abs_intensity)),
         f"{prefix}_Imax": float(abs_intensity[max_index]),
         f"{prefix}_coord_star": float(axis[max_index]),
     }
@@ -343,6 +410,130 @@ def _profile_scalar_observables(profile, prefix):
     return values
 
 
+def _feature_half_widths(
+    feature_centers,
+    axis_names,
+    half_width,
+    *,
+    fraction,
+    fallback,
+):
+    if isinstance(half_width, str) and half_width.lower() == "auto":
+        coordinates = [
+            _center_coordinates(center, axis_names)
+            for center in feature_centers.values()
+        ]
+        half_widths = []
+        for axis_index in (0, 1):
+            unique = sorted({round(float(coord[axis_index]), 12) for coord in coordinates})
+            spacings = [
+                b - a
+                for a, b in zip(unique[:-1], unique[1:])
+                if b > a
+            ]
+            half_widths.append(float(fraction * min(spacings)) if spacings else float(fallback))
+        return tuple(half_widths)
+    if isinstance(half_width, dict):
+        return (
+            float(half_width.get(axis_names[0], half_width.get("omega1"))),
+            float(half_width.get(axis_names[1], half_width.get("omega3"))),
+        )
+    value = float(half_width)
+    return value, value
+
+
+def _window_from_center(center, half_widths, axis_names):
+    y_center, x_center = _center_coordinates(center, axis_names)
+    y_half_width, x_half_width = half_widths
+    return {
+        str(axis_names[0]): (y_center - y_half_width, y_center + y_half_width),
+        str(axis_names[1]): (x_center - x_half_width, x_center + x_half_width),
+    }
+
+
+def _find_feature_key(feature_mapping, *candidates):
+    by_sanitized = {
+        _sanitize_key(name).lower(): name
+        for name in feature_mapping
+    }
+    for candidate in candidates:
+        key = by_sanitized.get(_sanitize_key(candidate).lower())
+        if key is not None:
+            return key
+    return None
+
+
+def find_spectrum_feature_centers(
+    result,
+    *,
+    feature_centers,
+    spectra="pathways",
+    names=("R1", "R2"),
+    detection_phase=0.0,
+    quantity="abs",
+    search_half_width="auto",
+    search_fraction=0.2,
+    fallback_search_half_width=0.03,
+):
+    """Refine nominal feature centers by local peak search in a 2D spectrum."""
+    if not feature_centers:
+        raise ValueError("feature_centers must provide at least one nominal center.")
+
+    y_values, x_values = _require_two_frequency_result(result)
+    selected = _select_spectra(result, spectra, names)
+    expected_shape = (y_values.size, x_values.size)
+    for name, values in selected.items():
+        if values.shape != expected_shape:
+            raise ValueError(
+                f"Spectrum {name!r} has shape {values.shape}; expected {expected_shape}."
+            )
+
+    phase = np.exp(1j * (0.0 if detection_phase is None else float(detection_phase)))
+    total = sum(phase * values for values in selected.values())
+    search_values = np.abs(_quantity_values(total, quantity))
+    half_widths = _feature_half_widths(
+        feature_centers,
+        result.axis_names,
+        search_half_width,
+        fraction=float(search_fraction),
+        fallback=float(fallback_search_half_width),
+    )
+
+    centers = {}
+    for feature_name, nominal_center in feature_centers.items():
+        search_window = _window_from_center(
+            nominal_center,
+            half_widths,
+            result.axis_names,
+        )
+        mask, bounds = _window_mask(
+            search_window,
+            y_values,
+            x_values,
+            result.axis_names,
+        )
+        if not np.any(mask):
+            raise ValueError(f"No samples fall inside search window for {feature_name!r}.")
+        y_indices, x_indices = np.where(mask)
+        local_values = search_values[mask]
+        peak = int(np.argmax(local_values))
+        iy = int(y_indices[peak])
+        ix = int(x_indices[peak])
+        centers[feature_name] = {
+            "center": {
+                str(result.axis_names[0]): float(y_values[iy]),
+                str(result.axis_names[1]): float(x_values[ix]),
+            },
+            "nominal_center": {
+                str(result.axis_names[0]): float(_center_coordinates(nominal_center, result.axis_names)[0]),
+                str(result.axis_names[1]): float(_center_coordinates(nominal_center, result.axis_names)[1]),
+            },
+            "search_window": bounds,
+            "Imax": float(search_values[iy, ix]),
+        }
+    return centers
+
+
 def extract_spectrum_observables(
     result,
     *,
@@ -351,15 +542,24 @@ def extract_spectrum_observables(
     detection_phase=0.0,
     cross_window=None,
     diag_window=None,
+    feature_centers=None,
+    auto_center_features=True,
+    feature_search_half_width="auto",
+    feature_search_fraction=0.2,
+    feature_window_half_width="auto",
+    feature_window_fraction=0.25,
     feature_specs=None,
     feature_quantity="abs",
     feature_cuts=("diagonal", "off_diagonal"),
 ):
     """Return scalar observables from an unnormalized two-dimensional spectrum.
 
-    ``cross_window`` and ``diag_window`` are required.  They must define bounds
-    for both axes, for example ``{"omega1": (-1.08, -1.04),
-    "omega3": (1.04, 1.09)}``.
+    ``cross_window`` and ``diag_window`` may define bounds for both axes, for
+    example ``{"omega1": (-1.08, -1.04), "omega3": (1.04, 1.09)}``.
+    Alternatively, ``feature_centers`` may provide nominal centers named for
+    example ``Bright``, ``Cross_down``, ``Cross_up``, and ``Dark``.  In that
+    case the centers are refined by a local maximum search, and integration
+    windows are built automatically from the feature spacing.
 
     ``feature_specs`` may define local feature centers for diagonal and
     off-diagonal cut observables.  Each entry must provide ``center``,
@@ -374,17 +574,65 @@ def extract_spectrum_observables(
                 f"Spectrum {name!r} has shape {values.shape}; expected {expected_shape}."
             )
 
-    if cross_window is None or diag_window is None:
-        raise ValueError(
-            "cross_window and diag_window must be provided to compute "
-            "Icross, Idiag, and Rcross."
-        )
-
     phase = np.exp(1j * (0.0 if detection_phase is None else float(detection_phase)))
     selected = {name: phase * values for name, values in selected.items()}
     total = sum(selected.values())
     magnitude = np.abs(total)
     cell_area = _axis_step(y_values) * _axis_step(x_values)
+
+    found_features = None
+    feature_windows = {}
+    if feature_centers:
+        if auto_center_features:
+            found_features = find_spectrum_feature_centers(
+                result,
+                feature_centers=feature_centers,
+                spectra=spectra,
+                names=names,
+                detection_phase=detection_phase,
+                quantity=feature_quantity,
+                search_half_width=feature_search_half_width,
+                search_fraction=feature_search_fraction,
+            )
+        else:
+            found_features = {
+                name: {
+                    "center": {
+                        str(result.axis_names[0]): float(_center_coordinates(center, result.axis_names)[0]),
+                        str(result.axis_names[1]): float(_center_coordinates(center, result.axis_names)[1]),
+                    },
+                    "nominal_center": center,
+                    "search_window": None,
+                    "Imax": math.nan,
+                }
+                for name, center in feature_centers.items()
+            }
+        window_half_widths = _feature_half_widths(
+            feature_centers,
+            result.axis_names,
+            feature_window_half_width,
+            fraction=float(feature_window_fraction),
+            fallback=0.025,
+        )
+        for feature_name, info in found_features.items():
+            feature_windows[feature_name] = _window_from_center(
+                info["center"],
+                window_half_widths,
+                result.axis_names,
+            )
+
+        cross_key = _find_feature_key(feature_windows, "Cross_down", "Cross")
+        diag_key = _find_feature_key(feature_windows, "Bright", "Diag", "Diagonal")
+        if cross_window is None and cross_key is not None:
+            cross_window = feature_windows[cross_key]
+        if diag_window is None and diag_key is not None:
+            diag_window = feature_windows[diag_key]
+
+    if cross_window is None or diag_window is None:
+        raise ValueError(
+            "Provide cross_window and diag_window, or provide feature_centers "
+            "containing at least Bright and Cross_down."
+        )
 
     max_index = np.unravel_index(int(np.argmax(magnitude)), magnitude.shape)
     cross_mask, cross_bounds = _window_mask(
@@ -417,9 +665,87 @@ def extract_spectrum_observables(
         "cross_window": cross_bounds,
         "diag_window": diag_bounds,
     }
+
+    if found_features:
+        observables["feature_centers"] = {
+            name: info["center"]
+            for name, info in found_features.items()
+        }
+        observables["feature_search_windows"] = {
+            name: info["search_window"]
+            for name, info in found_features.items()
+        }
+        observables["feature_windows"] = feature_windows
+        for feature_name, window in feature_windows.items():
+            feature_key = _sanitize_key(feature_name)
+            feature_mask, feature_bounds = _window_mask(
+                window,
+                y_values,
+                x_values,
+                result.axis_names,
+            )
+            if np.any(feature_mask):
+                local_magnitude = magnitude[feature_mask]
+                y_indices, x_indices = np.where(feature_mask)
+                peak = int(np.argmax(local_magnitude))
+                iy = int(y_indices[peak])
+                ix = int(x_indices[peak])
+                observables[f"{feature_key}_Iint"] = float(np.sum(local_magnitude) * cell_area)
+                observables[f"{feature_key}_Imax"] = float(local_magnitude[peak])
+                observables[f"{feature_key}_omega1_star"] = float(y_values[iy])
+                observables[f"{feature_key}_omega3_star"] = float(x_values[ix])
+            else:
+                observables[f"{feature_key}_Iint"] = math.nan
+                observables[f"{feature_key}_Imax"] = math.nan
+                observables[f"{feature_key}_omega1_star"] = math.nan
+                observables[f"{feature_key}_omega3_star"] = math.nan
+            observables[f"{feature_key}_window"] = feature_bounds
+
+        bright_key = _find_feature_key(feature_windows, "Bright")
+        dark_key = _find_feature_key(feature_windows, "Dark")
+        cross_down_key = _find_feature_key(feature_windows, "Cross_down")
+        cross_up_key = _find_feature_key(feature_windows, "Cross_up")
+        if bright_key is not None and cross_down_key is not None:
+            bright_iint = observables.get(f"{_sanitize_key(bright_key)}_Iint", math.nan)
+            cross_down_iint = observables.get(f"{_sanitize_key(cross_down_key)}_Iint", math.nan)
+            observables["Rcross_down"] = (
+                float(cross_down_iint / bright_iint) if bright_iint else math.nan
+            )
+        if bright_key is not None and cross_up_key is not None:
+            bright_iint = observables.get(f"{_sanitize_key(bright_key)}_Iint", math.nan)
+            cross_up_iint = observables.get(f"{_sanitize_key(cross_up_key)}_Iint", math.nan)
+            observables["Rcross_up"] = (
+                float(cross_up_iint / bright_iint) if bright_iint else math.nan
+            )
+        cross_total = 0.0
+        cross_count = 0
+        for key in (cross_down_key, cross_up_key):
+            if key is not None:
+                value = observables.get(f"{_sanitize_key(key)}_Iint", math.nan)
+                if not math.isnan(value):
+                    cross_total += value
+                    cross_count += 1
+        diag_total = 0.0
+        diag_count = 0
+        for key in (bright_key, dark_key):
+            if key is not None:
+                value = observables.get(f"{_sanitize_key(key)}_Iint", math.nan)
+                if not math.isnan(value):
+                    diag_total += value
+                    diag_count += 1
+        if cross_count:
+            observables["Icross_total"] = float(cross_total)
+        if diag_count:
+            observables["Idiag_total"] = float(diag_total)
+        if cross_count and diag_count and diag_total:
+            observables["Rcross_total"] = float(cross_total / diag_total)
+
     if feature_specs:
         for feature_name, spec in feature_specs.items():
             feature_key = _sanitize_key(feature_name)
+            center = spec["center"]
+            if found_features and feature_name in found_features:
+                center = found_features[feature_name]["center"]
             cuts = spec.get("cuts", feature_cuts)
             if isinstance(cuts, str):
                 cuts = (cuts,)
@@ -432,7 +758,7 @@ def extract_spectrum_observables(
                     detection_phase=detection_phase,
                     quantity=spec.get("quantity", feature_quantity),
                     cut=cut,
-                    center=spec["center"],
+                    center=center,
                     half_length=spec["half_length"],
                     width=spec["width"],
                     quadrant=spec.get("quadrant", spec.get("diagonal", "rephasing")),
@@ -692,14 +1018,13 @@ def extract_spectrum_profile(
 
 def make_run_id(
     *,
-    step=20,
-    scan_name="manual",
-    index=0,
-    scenario="k_model",
+    ProjetID= 'SOC',
+    scan_name=None,
+    Scan_number=0,
     values=None,
 ):
     """Build a linked run identifier for data, figures, and analysis files."""
-    pieces = [f"step{int(step):02d}", f"{scan_name}-{int(index):03d}", str(scenario)]
+    pieces = [str(ProjetID), f"{scan_name}-{int(Scan_number):03d}"]
     if values:
         value_token = "_".join(f"{_sanitize_key(key)}-{_token(val)}" for key, val in values.items())
         pieces.append(value_token)

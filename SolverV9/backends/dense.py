@@ -4,6 +4,7 @@ from collections import OrderedDict
 import threading
 
 import numpy as np
+from scipy.linalg import expm
 
 from ..k_integration import integrate_k_response
 from ..parallel import (
@@ -159,10 +160,14 @@ class DenseLiouvilleBackend:
                     return cached
 
 
-                evals, evecs = np.linalg.eig(-1j * self._L_eff_dense * delay)
-                propagator = (
-                    evecs * np.exp(evals)[:, np.newaxis, :]
-                ) @ np.linalg.inv(evecs)
+                # A valid Lindblad generator need not be diagonalizable.  Building
+                # exp(-i L t) from eigenvectors can therefore lose trace and
+                # positivity near (or at) a Jordan block.  A direct matrix
+                # exponential remains well-defined in those cases.
+                generator = -1j * self._L_eff_dense * delay
+                propagator = np.empty_like(generator)
+                for i_k in range(self.N_k):
+                    propagator[i_k] = expm(generator[i_k])
 
 
                 self._dense_time_cache[key] = propagator

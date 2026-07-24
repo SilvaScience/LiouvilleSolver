@@ -1,0 +1,13 @@
+16h56m47
+Energies  bright=1.49070, dark=1.49070, cavity=1.48670
+detuning delta=-0.004
+light-matter coupling g=0.0015
+bright-dark coupling J=0.0004
+dephasing  excitons=0.0001, cavity=0.0006
+decay  bright=0.0005, dark=0.0001, cavity=0.0011
+binding energies  bright-bright=0.0000, dark-dark=0.0009
+swapping strength  bright-dark=0.0010, bright-cavity=0.0010
+broadening eta=1e-08
+grid size(f1,f3)=300
+population time=50
+model=rw
