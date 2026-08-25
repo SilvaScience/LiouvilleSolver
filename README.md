@@ -3,29 +3,29 @@
 **QuDPy-FDGF: A Python-Based Tool for Computing Ultrafast Nonlinear Optical
 Responses Using Frequency-Domain Green's Functions.**
 
-`projet_solver10` reste le nom de compatibilité du package Python.
+`projet_solver10` remains the compatibility name of the Python package.
 
-`projet_solver10` est un moteur générique de spectroscopie. Il ne contient
-aucun modèle physique. Un modèle externe fournit ses secteurs, ses blocs
-hamiltoniens, ses transitions, son état initial et son observable.
+`projet_solver10` is a generic spectroscopy engine. It contains no physical
+model. An external model supplies its sectors, Hamiltonian blocks,
+transitions, initial state, and observable.
 
-## Dépendances
+## Dependencies
 
 - NumPy
 - SciPy
-- Matplotlib (optionnel, pour `SpectroscopyPlotter`)
+- Matplotlib (optional, for `SpectroscopyPlotter`)
 
-## Direction des dépendances
+## Dependency direction
 
 ```text
-modèle externe  --->  contrats de projet_solver10
-script/notebook --->  modèle externe + projet_solver10
-projet_solver10 --->  aucun modèle physique
+external model  --->  projet_solver10 contracts
+script/notebook --->  external model + projet_solver10
+projet_solver10 --->  no physical model
 ```
 
-Le solver ne doit jamais importer une classe comme `SpinOrbitalModel`.
+The solver must never import a class such as `SpinOrbitalModel`.
 
-## Contrat minimal d'un modèle
+## Minimal model contract
 
 ```python
 class MyModel:
@@ -40,43 +40,43 @@ class MyModel:
         ...
 
     def transition_blocks(self, operator_name, direction, source):
-        # direction vaut "plus" ou "minus"
+        # direction is "plus" or "minus"
         ...
 
     def observable_blocks(self, observable_name, source):
         ...
 
     def initial_condition(self, context=None):
-        # PureState(...) ou DensityState(...)
+        # PureState(...) or DensityState(...)
         ...
 
     def collapse_channels(self, context=None):
-        # tuple de CollapseChannel(name, rate, operator_blocks)
+        # Tuple of CollapseChannel(name, rate, operator_blocks)
         ...
 
     def equilibrium_state(self, context):
-        # État de Gibbs construit et sectorisé par le modèle.
+        # Gibbs state built and partitioned into sectors by the model.
         ...
 
     def requirements(self):
-        # ModelRequirements(...) ou dict
+        # ModelRequirements(...) or dict
         ...
 
     def capabilities(self):
-        # Ancienne API conservée pour compatibilité.
+        # Legacy API retained for compatibility.
         ...
 ```
 
-Chaque bloc peut être un tableau NumPy, une matrice creuse SciPy ou un
+Each block may be a NumPy array, a SciPy sparse matrix, or a
 `scipy.sparse.linalg.LinearOperator`.
 
-`initial_state()` reste accepté comme repli rétrocompatible pour un état pur.
-Le solver ne construit jamais lui-même une base thermique, ne choisit pas les
-secteurs thermiquement accessibles et n'invente aucun taux dissipatif.
+`initial_state()` remains available as a backward-compatible fallback for a
+pure state. The solver never builds a thermal basis, chooses thermally
+accessible sectors, or invents dissipative rates.
 
-## États initiaux et température
+## Initial states and temperature
 
-Un état mixte est fourni sous forme de blocs ket/bra :
+A mixed state is supplied as ket/bra blocks:
 
 ```python
 rho0 = DensityState(
@@ -89,27 +89,27 @@ rho0 = DensityState(
 )
 ```
 
-Les blocs intersectoriels permettent les cohérences bright--dark, spinorielles
-ou de moment. Le solver vérifie dimensions, hermiticité, trace et positivité
-uniquement pour cet état physique initial.
+Cross-sector blocks support bright--dark, spinor, and momentum coherences. The
+solver validates dimensions, Hermiticity, trace, and positivity only for this
+physical initial state.
 
-Le contexte thermique est transmis au modèle :
+The thermal context is passed to the model:
 
 ```python
 context = ThermodynamicContext(
     temperature=10.0,
     ensemble="canonical",
-    k_ensemble="independent",  # ou "global"
+    k_ensemble="independent",  # or "global"
 )
 solver.feed_model(model, context=context)
 ```
 
-`equilibrium_state(context)` doit retourner l'état thermique exact dans la base
-tronquée construite par le modèle.
+`equilibrium_state(context)` must return the exact thermal state in the
+truncated basis built by the model.
 
-## Convention de dynamique
+## Dynamics convention
 
-Le cœur numérique utilise le générateur temporel
+The numerical core uses the time-domain generator
 
 \[
 \mathcal A\rho=-i[H,\rho]
@@ -118,19 +118,19 @@ L_j\rho L_j^\dagger-\frac12\{L_j^\dagger L_j,\rho\}
 \right).
 \]
 
-Un intervalle temporel applique \(e^{t\mathcal A}\). Un intervalle fréquentiel
-utilise uniquement le résolvant direct
+A time interval applies \(e^{t\mathcal A}\). A frequency interval uses only the
+direct resolvent
 
 \[
 \left[(\eta-i\omega)I-\mathcal A\right]^{-1}.
 \]
 
-Aucun facteur global \(-i\) n'est inclus dans ce résolvant. Le coefficient
-perturbatif du pathway porte donc directement la convention
-\(i^n(-1)^{n_B}\), comme dans l'expansion temporelle. Aucune FFT temporelle
-n'est utilisée par V10.
+No global \(-i\) factor is included in this resolvent. The pathway's
+perturbative coefficient therefore directly carries the
+\(i^n(-1)^{n_B}\) convention, as in the time-domain expansion. No temporal FFT
+is used.
 
-Les canaux dissipatifs suivent strictement la convention `(L, gamma)` :
+Dissipative channels strictly follow the `(L, gamma)` convention:
 
 ```python
 CollapseChannel(
@@ -142,11 +142,11 @@ CollapseChannel(
 )
 ```
 
-Le taux ne doit pas être inclus une seconde fois dans l'opérateur.
+The rate must not be included a second time in the operator.
 
-## Plusieurs observables et fluorescence intégrée
+## Multiple observables and integrated fluorescence
 
-La propagation d'un pathway peut être réutilisée pour plusieurs détections :
+A pathway propagation can be reused for multiple detection schemes:
 
 ```python
 from projet_solver10 import ObservableSpec
@@ -170,19 +170,19 @@ result = solver.generate_spectrum(
 )
 ```
 
-Les noms des canaux GKSL utilisables pour un comptage sont disponibles avec
-`solver.jump_channel_names()`. Le résultat historique reste accessible dans
-`result.pathways` et `result.components`. Les sorties supplémentaires sont
-organisées par observable :
+The names of GKSL channels available for jump counting are returned by
+`solver.jump_channel_names()`. The legacy result remains available through
+`result.pathways` and `result.components`. Additional outputs are organized by
+observable:
 
 ```python
 result.observables["population_a"]["P1"]
 result.observable_components["fluorescence"]["rephasing"]
 ```
 
-Une detection d'action peut ajouter le pulse de projection apres un pathway
-a trois interactions. Le coeur du pathway est alors propage une seule fois,
-puis le quatrieme pulse est applique uniquement dans la branche de detection :
+Action detection can add a projection pulse after a three-interaction pathway.
+The pathway core is then propagated only once, and the fourth pulse is applied
+only in the detection branch:
 
 ```python
 action_population = ObservableSpec.action(
@@ -203,33 +203,32 @@ action_fluorescence = ObservableSpec.mean_jump(
 )
 ```
 
-`fourth_interaction` accepte aussi une sequence d'interactions alternatives;
-leurs contributions sont alors sommees avec les prefacteurs ket/bra
-appropries. La forme historique reste valide : si le quatrieme pulse est deja
-present dans `FrequencyPathway.interactions`, il suffit de ne pas fournir
-`fourth_interaction` dans l'observable. Les deux formulations donnent le meme
-signal.
+`fourth_interaction` also accepts a sequence of alternative interactions. Their
+contributions are summed with the appropriate ket/bra prefactors. The legacy
+form remains valid: if the fourth pulse is already included in
+`FrequencyPathway.interactions`, simply omit `fourth_interaction` from the
+observable. Both formulations produce the same signal.
 
-Une observable `operator` calcule `Tr[O rho]` à la fin du pathway. Une
-observable `jump_rate` calcule le taux instantané
+An `operator` observable computes `Tr[O rho]` at the end of the pathway. A
+`jump_rate` observable computes the instantaneous rate
 
 \[
 I_j(t)=\eta\,\gamma_j\operatorname{Tr}[L_j^\dagger L_j\rho(t)],
 \]
 
-et `integrated_jump` en calcule la moyenne intégrée sur la fenêtre demandée.
-La fenêtre est mesurée après l'état final du pathway, donc après la dernière
-interaction et la dernière propagation du protocole. Il s'agit d'un nombre
-moyen de sauts; cette API ne génère pas encore de
-trajectoires quantiques ni de distribution de comptage `P(N)`.
+and `integrated_jump` computes its integrated mean over the requested window.
+The window starts after the pathway's final state, and therefore after the
+protocol's last interaction and propagation. This is a mean jump count; the
+API does not yet generate quantum trajectories or a counting distribution
+`P(N)`.
 
-L'adaptateur `EigenbasisKModel` accepte aussi plusieurs opérateurs nommés via
-`observable_op_arrays={"P_a": ..., "P_b": ..., "P_2X": ...}`. Les opérateurs
-doivent être fournis dans la même base que le hamiltonien; l'adaptateur les
-transforme ensuite dans la base propre.
+The `EigenbasisKModel` adapter also accepts multiple named operators through
+`observable_op_arrays={"P_a": ..., "P_b": ..., "P_2X": ...}`. Operators must
+be supplied in the same basis as the Hamiltonian; the adapter then transforms
+them to the eigenbasis.
 
-La décomposition du dipôle peut rester automatique, ou être fournie
-explicitement pour suivre les manifolds UFSS :
+The dipole decomposition may remain automatic or be supplied explicitly to
+follow the UFSS manifolds:
 
 ```python
 model = EigenbasisKModel(
@@ -240,29 +239,29 @@ model = EigenbasisKModel(
 )
 ```
 
-Les deux tableaux explicites doivent être fournis ensemble et peuvent être
-en `(d, d)` ou `(N_k, d, d)`. Sans ces arguments, la séparation actuelle par
-le signe de `Delta_E` et `rwa_tol` reste inchangée.
+Both explicit arrays must be supplied together and may have shape `(d, d)` or
+`(N_k, d, d)`. Without these arguments, the current separation based on the
+sign of `Delta_E` and `rwa_tol` remains unchanged.
 
 ## Plotter V10
 
-Le plotter est séparé du calcul et accepte une configuration dictionnaire. La
-convention est `axis_values[0]` sur l'axe vertical et `axis_values[1]` sur
-l'axe horizontal, donc typiquement excitation verticale et émission
-horizontale :
+The plotter is separate from the computation and accepts a configuration
+dictionary. By convention, `axis_values[0]` is plotted on the vertical axis and
+`axis_values[1]` on the horizontal axis, typically giving vertical excitation
+and horizontal emission:
 
 ```python
 import numpy as np
 from projet_solver10 import SpectroscopyPlotter
 
-# Pour la convention 2D usuelle : real = absorptive, imag = dispersive.
+# Standard 2D convention: real = absorptive, imag = dispersive.
 plotter = SpectroscopyPlotter(detection_phase=np.pi / 2)
 plot_params = {
     "source": "pathways",
     "pathways": ["R3", "R1", "R2"],
     "totals": ["1Q"],
-    "view": "all",                 # "real", "imag", "abs" ou "all"
-    "diagonals": "auto",            # y=-x (rephasing) ou y=x (non-rephasing)
+    "view": "all",                 # "real", "imag", "abs", or "all"
+    "diagonals": "auto",            # y=-x (rephasing) or y=x (non-rephasing)
     "normalization": "row",
     "labels": ("Emission energy (eV)", "Excitation energy (eV)"),
     "title": "2D spectroscopy",
@@ -277,7 +276,7 @@ plot_params = {
 plot_result = plotter.plot_spectrum_result(result, plot_params)
 ```
 
-Pour tracer plusieurs pathways avec une seule composante :
+To plot multiple pathways with a single component:
 
 ```python
 plotter.plot_pathways(
@@ -294,7 +293,7 @@ plotter.plot_pathways(
 )
 ```
 
-Pour afficher les trois quadratures côte à côte, avec les mêmes pathways :
+To display all three quadratures side by side for the same pathways:
 
 ```python
 plotter.plot_real_imag_abs(
@@ -310,11 +309,11 @@ plotter.plot_real_imag_abs(
 )
 ```
 
-Pour une sortie supplémentaire, utiliser `source="observables"` et fournir
-`observable="fluorescence"`. La méthode `plot_pathways_multiorder` reste
-disponible comme interface courte inspirée de V9.
+For an additional output, use `source="observables"` and supply
+`observable="fluorescence"`. The `plot_pathways_multiorder` method remains
+available as a compact V9-inspired interface.
 
-## Construction
+## Setup
 
 ```python
 from projet_solver10 import SpectroscopySolver
@@ -334,60 +333,60 @@ solver.feed_model(model)
 
 ### `SparseSectorBackend`
 
-- secteurs opaques fournis par le modèle;
-- blocs hamiltoniens couplant éventuellement plusieurs secteurs;
-- propagation temporelle par Krylov;
-- branches ket/bra de rang un;
-- résolvant de Hilbert matrix-free par GMRES;
-- pathways fréquentiels exacts par action de Liouville matrix-free;
-- aucune matrice de Liouville explicite.
+- opaque sectors supplied by the model;
+- Hamiltonian blocks that may couple multiple sectors;
+- Krylov time propagation;
+- rank-one ket/bra branches;
+- matrix-free Hilbert-space resolvent solved with GMRES;
+- exact frequency-domain pathways through matrix-free Liouville action;
+- no explicit Liouville matrix.
 
-Le chemin fréquentiel utilise encore un vecteur densité de taille \(D^2\).
-Il sert de référence exacte et de sanity check, mais ne constitue pas la voie
-scalable finale pour les grands espaces spin-orbitaux. Celle-ci demandera un
-algorithme bas-rang ou une formulation par fonctions d'onde plus spécialisée.
+The frequency-domain path still uses a density vector of size \(D^2\). It
+serves as an exact reference and sanity check, but it is not the final scalable
+approach for large spin-orbital spaces. Such systems will require a low-rank
+algorithm or a more specialized wave-function formulation.
 
 ### `DenseLiouvilleBackend`
 
-- backend de référence pour les petits systèmes;
-- espace de Liouville explicite;
-- états purs ou mixtes;
-- dynamique unitaire ou Lindblad;
-- intervalles temporels et fréquentiels;
-- utile pour valider ultérieurement le backend sectorisé.
+- reference backend for small systems;
+- explicit Liouville space;
+- pure or mixed states;
+- unitary or Lindblad dynamics;
+- time- and frequency-domain intervals;
+- useful for validating the sectorized backend.
 
-### Backends non couverts par ce release
+### Backends not covered by this release
 
-`LowRankLiouvilleBackend`, ainsi que les moteurs tenpy (`TenpyDMRGEngine`,
-`TenpyTDVPEngine`) et l'orchestration many-body associée
-(`ManyBodySolver`, `ManyBodyDynamicsSolver`), vivent dans
-`experimental/` et ne sont ni importés ni exposés par
-`SpectroscopySolver` dans ce release. Ils restent importables explicitement
-(ex. `from projet_solver10.experimental.low_rank_liouville import
-LowRankLiouvilleBackend`) pour qui veut continuer à y travailler, mais ne
-sont pas maintenus ni garantis stables ici.
+`LowRankLiouvilleBackend`, the tenpy engines (`TenpyDMRGEngine` and
+`TenpyTDVPEngine`), and the associated many-body orchestration
+(`ManyBodySolver` and `ManyBodyDynamicsSolver`) live in `experimental/`. They
+are neither imported nor exposed by `SpectroscopySolver` in this release. They
+remain available through explicit imports (for example,
+`from projet_solver10.experimental.low_rank_liouville import
+LowRankLiouvilleBackend`) for continued development, but they are not
+maintained or guaranteed to be stable here.
 
-## Conventions de pathway
+## Pathway conventions
 
-- `Ku`: transition positive sur le ket;
-- `Kd`: transition négative sur le ket;
-- `Bu`: multiplication à droite par l'opérateur négatif, donc transition
-  positive sur le vecteur bra;
-- `Bd`: multiplication à droite par l'opérateur positif, donc transition
-  négative sur le vecteur bra.
+- `Ku`: positive transition on the ket;
+- `Kd`: negative transition on the ket;
+- `Bu`: right multiplication by the negative operator, producing a positive
+  transition on the bra vector;
+- `Bd`: right multiplication by the positive operator, producing a negative
+  transition on the bra vector.
 
-Un `Interaction` peut imposer un secteur source et un secteur cible. En leur
-absence, le backend applique tous les blocs déclarés par le modèle.
+An `Interaction` may specify a source sector and a target sector. If they are
+omitted, the backend applies every block declared by the model.
 
-## Limites actuelles
+## Current limitations
 
-- la construction de l'état thermique exact reste une responsabilité du modèle;
-- seule la forme GKSL/Lindblad est acceptée pour la dynamique non unitaire;
-- pas de générateur Redfield général, HEOM ou mémoire de bain;
-- le résolvant fréquentiel matrix-free utilise encore un vecteur de taille
-  \(D^2\), sans matrice \(D^2\times D^2\), dans `SparseSectorBackend`;
-- la déflation explicite du mode stationnaire et la pseudo-inverse de Drazin ne
-  sont pas encore disponibles;
-- ce release ne couvre que `DenseLiouvilleBackend` et `SparseSectorBackend`;
-  voir « Backends non couverts par ce release » ci-dessus;
-- la construction et la validation physique de la base appartiennent au modèle.
+- construction of the exact thermal state remains the model's responsibility;
+- only the GKSL/Lindblad form is supported for non-unitary dynamics;
+- no general Redfield generator, HEOM, or bath memory;
+- the matrix-free frequency-domain resolvent in `SparseSectorBackend` still
+  uses a vector of size \(D^2\), without a \(D^2\times D^2\) matrix;
+- explicit stationary-mode deflation and the Drazin pseudoinverse are not yet
+  available;
+- this release covers only `DenseLiouvilleBackend` and
+  `SparseSectorBackend`; see "Backends not covered by this release" above;
+- construction and physical validation of the basis belong to the model.
