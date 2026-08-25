@@ -1,4 +1,4 @@
-"""Public contracts between SolverV10 and external physical models.
+"""Public contracts between QuDPy-FDGF and external physical models.
 
 This module defines the accepted operator, state, thermodynamic, collapse,
 and sector-model interfaces. These contracts keep physical construction in

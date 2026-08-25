@@ -1,4 +1,4 @@
-"""Shared infrastructure for SolverV10 numerical backends.
+"""Shared infrastructure for QuDPy-FDGF numerical backends.
 
 This module validates external models, arranges Hilbert-space sectors, and
 normalizes operator actions across dense, sparse, and matrix-free inputs. It

@@ -1,6 +1,6 @@
 """Static many-body services kept separate from spectroscopy propagation.
 
-The existing Solver10 backends operate on explicit Hilbert/Liouville states.
+The existing QuDPy-FDGF backends operate on explicit Hilbert/Liouville states.
 Tensor-network ground-state engines instead return compressed-state
 observables through this independent contract.  A future dynamical MPS
 backend can build on the same registry without pretending that an MPS is a

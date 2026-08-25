@@ -1,6 +1,6 @@
 """TeNPy finite-DMRG engine for static many-body references.
 
-The engine translates SolverV10 spin-chain problems into TeNPy models, runs
+The engine translates QuDPy-FDGF spin-chain problems into TeNPy models, runs
 finite-system DMRG, and returns ground-state energies and observables through
 the common many-body result contract. TeNPy remains an optional dependency
 loaded only when this engine is used.

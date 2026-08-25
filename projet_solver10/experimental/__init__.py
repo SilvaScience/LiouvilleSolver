@@ -1,4 +1,4 @@
-"""Experimental SolverV10 features outside the standard backend release.
+"""Experimental QuDPy-FDGF features outside the standard backend release.
 
 This package contains the low-rank Liouville backend, TeNPy DMRG and TDVP
 engines, and their many-body orchestration contracts. Nothing is imported

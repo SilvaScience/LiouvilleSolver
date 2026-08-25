@@ -1,4 +1,4 @@
-"""Configurable plotting tools for SolverV10 results.
+"""Configurable plotting tools for QuDPy-FDGF results.
 
 All numerical work remains in ``SpectroscopySolver``. This module selects data
 from ``SpectrumResult``, applies display conventions, and renders one- or

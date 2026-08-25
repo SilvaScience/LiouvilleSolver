@@ -1,7 +1,7 @@
 """Minimal two-level spectroscopy example.
 
 The script builds a site-basis Hamiltonian and transition dipole, adapts them
-to the SolverV10 model contract, and computes linear absorption. It then
+to the QuDPy-FDGF model contract, and computes linear absorption. It then
 evaluates rephasing and non-rephasing third-order pathways on their physical
 frequency quadrants and renders the results with ``SpectroscopyPlotter``.
 """

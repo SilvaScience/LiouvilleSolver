@@ -1,4 +1,4 @@
-"""Public exception hierarchy for SolverV10.
+"""Public exception hierarchy for QuDPy-FDGF.
 
 Each exception identifies a distinct failure boundary: invalid external model
 contracts, unsupported capabilities, unavailable experimental features, or
@@ -8,7 +8,7 @@ single package-level error boundary.
 
 
 class SolverV10Error(Exception):
-    """Base exception raised by SolverV10."""
+    """Base exception raised by QuDPy-FDGF."""
 
 
 class ModelContractError(SolverV10Error):

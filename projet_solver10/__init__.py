@@ -1,4 +1,4 @@
-"""Public interface for the SolverV10 spectroscopy engine.
+"""Public interface for the QuDPy-FDGF spectroscopy engine.
 
 The package exposes model contracts, propagation protocols, pathway tools,
 observable definitions, numerical backends, and result containers. Its main

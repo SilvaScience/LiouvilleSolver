@@ -1,4 +1,9 @@
-# SolverV10
+# QuDPy-FDGF
+
+**QuDPy-FDGF: A Python-Based Tool for Computing Ultrafast Nonlinear Optical
+Responses Using Frequency-Domain Green's Functions.**
+
+`projet_solver10` reste le nom de compatibilité du package Python.
 
 `projet_solver10` est un moteur générique de spectroscopie. Il ne contient
 aucun modèle physique. Un modèle externe fournit ses secteurs, ses blocs

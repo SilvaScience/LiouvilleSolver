@@ -1,4 +1,4 @@
-"""Public orchestration layer for SolverV10.
+"""Public orchestration layer for QuDPy-FDGF.
 
 This module connects sector-based physical models to numerical backends.
 It selects a compatible backend, validates model requirements, and manages

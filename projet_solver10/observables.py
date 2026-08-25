@@ -1,4 +1,4 @@
-"""Observable definitions accepted by SolverV10.
+"""Observable definitions accepted by QuDPy-FDGF.
 
 The module describes final operator contractions, instantaneous GKSL jump
 rates, integrated jump counts, and optional action-detection interactions. It

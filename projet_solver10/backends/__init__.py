@@ -1,4 +1,4 @@
-"""Numerical backends included in the standard SolverV10 release.
+"""Numerical backends included in the standard QuDPy-FDGF release.
 
 This package exports the shared backend interface and the two production
 implementations: a dense Liouville backend for small reference systems and a

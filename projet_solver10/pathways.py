@@ -2,7 +2,7 @@
 
 This module represents ordered ket and bra interactions, derives signed
 coherence histories, and computes perturbative response prefactors. It also
-translates UFSS-style diagram lists into SolverV10 pathways without requiring
+translates UFSS-style diagram lists into QuDPy-FDGF pathways without requiring
 UFSS as a runtime dependency.
 """
 
@@ -161,7 +161,7 @@ def translate_ufss_diagrams(
     prefactors=None,
     detection="polarization",
 ):
-    """UFSS diagram list -> SolverV10 pathways without an UFSS dependency."""
+    """UFSS diagram list -> QuDPy-FDGF pathways without an UFSS dependency."""
     diagrams = list(diagrams)
     size = len(diagrams)
     names = list(names) if names is not None else [None] * size
