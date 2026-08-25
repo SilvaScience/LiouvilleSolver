@@ -6,6 +6,14 @@ entry point is ``SpectroscopySolver``, which connects these pieces without
 embedding system-specific physics in the solver itself.
 """
 
+from pathlib import Path
+
+# Expose root-level modules as ``projet_solver10.*`` after repository flattening.
+__path__ = [str(Path(__file__).resolve().parent)]
+if __spec__ is not None:
+    __spec__.submodule_search_locations = __path__
+__package__ = __name__
+
 from .capabilities import (
     BackendCapabilities,
     Capabilities,

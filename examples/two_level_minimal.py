@@ -17,14 +17,14 @@ def _add_project_root_to_path():
     example_file = Path(__file__).resolve()
     candidates = (example_file.parent, *example_file.parents)
     for candidate in candidates:
-        package_init = candidate / "projet_solver10" / "__init__.py"
-        if package_init.is_file():
+        package_entry = candidate / "projet_solver10.py"
+        if package_entry.is_file():
             project_root = str(candidate)
             if project_root not in sys.path:
                 sys.path.insert(0, project_root)
             return
     raise RuntimeError(
-        "Could not find a parent directory containing projet_solver10."
+        "Could not find a parent directory containing projet_solver10.py."
     )
 
 
