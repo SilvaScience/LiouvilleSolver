@@ -54,7 +54,7 @@ from .results import PathwayResult, PlotResult, SpectrumResult
 from .observables import ObservableSpec, normalize_observables
 from .plotting import SpectroscopyPlotter
 from .solver import SpectroscopySolver
-from .model_adapters import EigenbasisKModel
+from .model_adapters import EigenbasisKModel, ExcitationSectorModel
 from .generators import EvolutionGenerator
 
 __all__ = [
@@ -66,6 +66,7 @@ __all__ = [
     "DenseDensityBlock",
     "DensityState",
     "EigenbasisKModel",
+    "ExcitationSectorModel",
     "EvolutionGenerator",
     "FrequencyPathway",
     "InitialCondition",

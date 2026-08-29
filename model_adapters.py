@@ -13,7 +13,12 @@ from collections.abc import Mapping
 
 import numpy as np
 
-from .contracts import CollapseChannel, DensityState, DenseDensityBlock
+from .contracts import (
+    CollapseChannel,
+    DensityState,
+    DenseDensityBlock,
+    PureState,
+)
 from .capabilities import ModelRequirements
 
 
@@ -37,6 +42,338 @@ def _as_k_stack(array, name, expected_d=None):
             f"{name} has dimension {array.shape[1]}; expected {expected_d}."
         )
     return array
+
+
+def _as_sector_hamiltonians(blocks):
+    """Sector -> validated dense Hermitian Hamiltonian blocks."""
+    if not isinstance(blocks, Mapping) or not blocks:
+        raise TypeError("hamiltonian_blocks must be a non-empty mapping.")
+    normalized = {}
+    for sector, block in blocks.items():
+        matrix = np.asarray(block, dtype=np.complex128)
+        if matrix.ndim != 2 or matrix.shape[0] != matrix.shape[1]:
+            raise ValueError(
+                f"Hamiltonian block for sector {sector!r} must be square; "
+                f"got shape {matrix.shape}."
+            )
+        if not np.allclose(matrix, matrix.conj().T, atol=1e-12, rtol=0.0):
+            raise ValueError(
+                f"Hamiltonian block for sector {sector!r} must be Hermitian."
+            )
+        normalized[sector] = matrix
+    return normalized
+
+
+def _as_sector_operator_blocks(blocks, name, dimensions):
+    """Flat ``(target, source)`` mapping -> validated dense blocks."""
+    if not isinstance(blocks, Mapping):
+        raise TypeError(f"{name} must be a mapping.")
+    normalized = {}
+    for key, block in blocks.items():
+        if not isinstance(key, tuple) or len(key) != 2:
+            raise ValueError(
+                f"Every {name} key must be (target_sector, source_sector)."
+            )
+        target, source = key
+        if target not in dimensions:
+            raise KeyError(f"Unknown target sector {target!r} in {name}.")
+        if source not in dimensions:
+            raise KeyError(f"Unknown source sector {source!r} in {name}.")
+        matrix = np.asarray(block, dtype=np.complex128)
+        expected = (dimensions[target], dimensions[source])
+        if matrix.shape != expected:
+            raise ValueError(
+                f"{name}[{key!r}] has shape {matrix.shape}; expected "
+                f"{expected}."
+            )
+        normalized[(target, source)] = matrix
+    return normalized
+
+
+def _group_sector_operator_blocks(blocks, sectors):
+    """Flat operator blocks -> ``source -> {target: block}`` mapping."""
+    grouped = {sector: {} for sector in sectors}
+    for (target, source), block in blocks.items():
+        grouped[source][target] = block
+    return grouped
+
+
+class ExcitationSectorModel:
+    """Excitation-manifold blocks -> diagonalized ``SectorModel`` adapter.
+
+    Hamiltonians are supplied as ``{sector: H_sector}``. Raising, lowering,
+    detection, observable, and collapse operators use flat mappings with keys
+    ``(target_sector, source_sector)``. Sector dimensions may differ.
+
+    When ``lowering_blocks`` is omitted, it is constructed as the blockwise
+    adjoint of ``raising_blocks``. The default detection operator is their
+    sum. The initial condition is one eigenstate in one sector; if no sector
+    is selected explicitly, the adapter chooses the global lowest-energy
+    eigenstate.
+    """
+
+    def __init__(
+        self,
+        hamiltonian_blocks,
+        raising_blocks,
+        *,
+        lowering_blocks=None,
+        detection_blocks=None,
+        observable_op_blocks=None,
+        c_ops_raw=(),
+        initial_sector=None,
+        initial_state_index=0,
+    ):
+        hamiltonians = _as_sector_hamiltonians(hamiltonian_blocks)
+        self._sectors = tuple(hamiltonians)
+        self._dimensions = {
+            sector: matrix.shape[0]
+            for sector, matrix in hamiltonians.items()
+        }
+
+        raising_site = _as_sector_operator_blocks(
+            raising_blocks,
+            "raising_blocks",
+            self._dimensions,
+        )
+        if lowering_blocks is None:
+            lowering_site = {
+                (source, target): block.conj().T
+                for (target, source), block in raising_site.items()
+            }
+        else:
+            lowering_site = _as_sector_operator_blocks(
+                lowering_blocks,
+                "lowering_blocks",
+                self._dimensions,
+            )
+
+        self._energies = {}
+        self._transforms = {}
+        self._hamiltonian = {}
+        for sector, matrix in hamiltonians.items():
+            energies, transform = np.linalg.eigh(matrix)
+            energies = np.real_if_close(energies).real
+            self._energies[sector] = energies
+            self._transforms[sector] = transform
+            self._hamiltonian[sector] = np.diag(energies).astype(
+                np.complex128
+            )
+
+        self._raising_flat = self._transform_blocks(raising_site)
+        self._lowering_flat = self._transform_blocks(lowering_site)
+        self._raising = _group_sector_operator_blocks(
+            self._raising_flat, self._sectors
+        )
+        self._lowering = _group_sector_operator_blocks(
+            self._lowering_flat, self._sectors
+        )
+
+        if detection_blocks is None:
+            detection_site = self._combine_blocks(raising_site, lowering_site)
+        else:
+            detection_site = _as_sector_operator_blocks(
+                detection_blocks,
+                "detection_blocks",
+                self._dimensions,
+            )
+        self._detection = _group_sector_operator_blocks(
+            self._transform_blocks(detection_site), self._sectors
+        )
+
+        self._observable_inputs = {}
+        if observable_op_blocks is not None:
+            if not isinstance(observable_op_blocks, Mapping):
+                raise TypeError("observable_op_blocks must be a mapping.")
+            for name, blocks in observable_op_blocks.items():
+                self._observable_inputs[str(name)] = (
+                    _as_sector_operator_blocks(
+                        blocks,
+                        f"observable_op_blocks[{name!r}]",
+                        self._dimensions,
+                    )
+                )
+        self._observables = {
+            name: _group_sector_operator_blocks(
+                self._transform_blocks(blocks), self._sectors
+            )
+            for name, blocks in self._observable_inputs.items()
+        }
+
+        self._initial_sector = self._resolve_initial_sector(initial_sector)
+        self._initial_state_index = int(initial_state_index)
+        if not 0 <= self._initial_state_index < self.dimension(
+            self._initial_sector
+        ):
+            raise ValueError(
+                "initial_state_index is outside the selected initial sector."
+            )
+
+        self._channels = self._build_channels(c_ops_raw)
+
+    @staticmethod
+    def _combine_blocks(*block_mappings):
+        combined = {}
+        for blocks in block_mappings:
+            for key, block in blocks.items():
+                if key in combined:
+                    combined[key] = combined[key] + block
+                else:
+                    combined[key] = block.copy()
+        return combined
+
+    def _transform_blocks(self, blocks):
+        transformed = {}
+        for (target, source), block in blocks.items():
+            transformed[(target, source)] = (
+                self._transforms[target].conj().T
+                @ block
+                @ self._transforms[source]
+            )
+        return transformed
+
+    def _resolve_initial_sector(self, initial_sector):
+        if initial_sector is not None:
+            if initial_sector not in self._dimensions:
+                raise KeyError(f"Unknown initial sector {initial_sector!r}.")
+            return initial_sector
+        return min(
+            self._sectors,
+            key=lambda sector: float(self._energies[sector][0]),
+        )
+
+    def _build_channels(self, c_ops_raw):
+        channels = []
+        for index, item in enumerate(c_ops_raw):
+            if not (isinstance(item, tuple) and len(item) == 2):
+                raise ValueError(
+                    "c_ops_raw must contain (operator_blocks, gamma) pairs."
+                )
+            raw_blocks, gamma = item
+            normalized = _as_sector_operator_blocks(
+                raw_blocks,
+                f"c_ops_raw[{index}]",
+                self._dimensions,
+            )
+            transformed = _group_sector_operator_blocks(
+                self._transform_blocks(normalized), self._sectors
+            )
+            channels.append(
+                CollapseChannel(
+                    name=f"c_op_{index}",
+                    rate=float(gamma),
+                    operator_blocks=transformed,
+                )
+            )
+        return tuple(channels)
+
+    # -- SectorModel contract ------------------------------------------------
+
+    def sectors(self):
+        return self._sectors
+
+    def dimension(self, sector):
+        return self._dimensions[sector]
+
+    def hamiltonian_blocks(self, source):
+        return {source: self._hamiltonian[source]}
+
+    def transition_blocks(self, operator_name, direction, source):
+        if direction == "plus":
+            return dict(self._raising[source])
+        if direction == "minus":
+            return dict(self._lowering[source])
+        raise ValueError("direction must be 'plus' or 'minus'.")
+
+    def observable_blocks(self, observable_name, source):
+        observable_name = str(observable_name)
+        if observable_name in self._observables:
+            return dict(self._observables[observable_name][source])
+        if self._observables:
+            available = ", ".join(sorted(self._observables))
+            raise KeyError(
+                f"Unknown observable {observable_name!r}; available: "
+                f"{available}."
+            )
+        return dict(self._detection[source])
+
+    def observable_names(self):
+        if self._observables:
+            return tuple(sorted(self._observables))
+        return ("polarization",)
+
+    def transition_decomposition(self):
+        return "explicit_sector"
+
+    def initial_condition(self, context=None):
+        vector = np.zeros(
+            self.dimension(self._initial_sector), dtype=np.complex128
+        )
+        vector[self._initial_state_index] = 1.0
+        return PureState(
+            sector=self._initial_sector,
+            vector=vector,
+            energy=float(
+                self._energies[self._initial_sector][
+                    self._initial_state_index
+                ]
+            ),
+        )
+
+    def equilibrium_state(self, context):
+        temperature = float(context.temperature)
+        minimum = min(
+            float(energies[0]) for energies in self._energies.values()
+        )
+        populations = {}
+        if temperature <= 0:
+            degeneracy = sum(
+                int(
+                    np.count_nonzero(
+                        np.isclose(
+                            energies, minimum, atol=1e-12, rtol=0.0
+                        )
+                    )
+                )
+                for energies in self._energies.values()
+            )
+            for sector, energies in self._energies.items():
+                populations[sector] = (
+                    np.isclose(
+                        energies, minimum, atol=1e-12, rtol=0.0
+                    ).astype(float)
+                    / degeneracy
+                )
+        else:
+            denominator = _BOLTZMANN_EV_PER_KELVIN * temperature
+            unnormalized = {
+                sector: np.exp(-(energies - minimum) / denominator)
+                for sector, energies in self._energies.items()
+            }
+            partition = sum(values.sum() for values in unnormalized.values())
+            populations = {
+                sector: values / partition
+                for sector, values in unnormalized.items()
+            }
+        return DensityState(
+            blocks={
+                (sector, sector): DenseDensityBlock(
+                    np.diag(values.astype(np.complex128))
+                )
+                for sector, values in populations.items()
+            }
+        )
+
+    def collapse_channels(self, context=None):
+        return self._channels
+
+    def requirements(self):
+        return ModelRequirements(
+            state_kind="pure",
+            generator_kind="lindblad" if self._channels else "unitary",
+            domains=("time", "frequency"),
+            exactness="exact",
+        )
 
 
 class EigenbasisKModel:
