@@ -1,12 +1,14 @@
 import numpy as np
 
 from projet_solver10 import (
+    DensityState,
     ExcitationSectorModel,
     FrequencyPathway,
     PropagationInterval,
     PureState,
     SpectroscopyProtocol,
     SpectroscopySolver,
+    ThermodynamicContext,
 )
 
 
@@ -69,3 +71,35 @@ def test_dense_and_sparse_linear_responses_agree():
         rtol=1e-9,
         atol=1e-10,
     )
+
+
+def test_equilibrium_state_accepts_model_energy_units():
+    model = ExcitationSectorModel(
+        {0: np.array([[0.0]]), 1: np.array([[1.0]])},
+        {(1, 0): np.array([[1.0]])},
+        boltzmann_constant=0.08617333262,  # meV/K
+    )
+
+    state = model.equilibrium_state(ThermodynamicContext(temperature=4.0))
+    assert isinstance(state, DensityState)
+
+    populations = np.array(
+        [state.blocks[(sector, sector)].as_matrix()[0, 0].real for sector in (0, 1)]
+    )
+    expected_excited = np.exp(-1.0 / (0.08617333262 * 4.0))
+    expected = np.array([1.0, expected_excited]) / (1.0 + expected_excited)
+    np.testing.assert_allclose(populations, expected, rtol=1e-12, atol=1e-14)
+
+
+def test_boltzmann_constant_must_be_positive_and_finite():
+    for invalid in (0.0, -1.0, np.inf, np.nan):
+        try:
+            ExcitationSectorModel(
+                {0: np.array([[0.0]])},
+                {},
+                boltzmann_constant=invalid,
+            )
+        except ValueError as error:
+            assert "boltzmann_constant" in str(error)
+        else:
+            raise AssertionError(f"Expected invalid value {invalid!r} to fail.")

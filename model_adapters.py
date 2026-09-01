@@ -25,6 +25,14 @@ from .capabilities import ModelRequirements
 _BOLTZMANN_EV_PER_KELVIN = 8.617333262e-5
 
 
+def _validated_boltzmann_constant(value):
+    """Return a positive finite Boltzmann constant in model energy units/K."""
+    value = float(value)
+    if not np.isfinite(value) or value <= 0:
+        raise ValueError("boltzmann_constant must be positive and finite.")
+    return value
+
+
 def _as_k_stack(array, name, expected_d=None):
     """2D or 3D operator array -> normalized ``(N_k, d, d)`` stack."""
     array = np.asarray(array, dtype=np.complex128)
@@ -109,7 +117,8 @@ class ExcitationSectorModel:
     adjoint of ``raising_blocks``. The default detection operator is their
     sum. The initial condition is one eigenstate in one sector; if no sector
     is selected explicitly, the adapter chooses the global lowest-energy
-    eigenstate.
+    eigenstate. ``boltzmann_constant`` must use the same energy unit as the
+    Hamiltonian blocks; its default value is in eV/K.
     """
 
     def __init__(
@@ -123,7 +132,11 @@ class ExcitationSectorModel:
         c_ops_raw=(),
         initial_sector=None,
         initial_state_index=0,
+        boltzmann_constant=_BOLTZMANN_EV_PER_KELVIN,
     ):
+        self._boltzmann_constant = _validated_boltzmann_constant(
+            boltzmann_constant
+        )
         hamiltonians = _as_sector_hamiltonians(hamiltonian_blocks)
         self._sectors = tuple(hamiltonians)
         self._dimensions = {
@@ -345,7 +358,7 @@ class ExcitationSectorModel:
                     / degeneracy
                 )
         else:
-            denominator = _BOLTZMANN_EV_PER_KELVIN * temperature
+            denominator = self._boltzmann_constant * temperature
             unnormalized = {
                 sector: np.exp(-(energies - minimum) / denominator)
                 for sector, energies in self._energies.items()
@@ -380,6 +393,8 @@ class EigenbasisKModel:
     """Site-basis arrays -> diagonalized, sector-based k model.
 
     Optional arrays override transition splitting and k-point weights.
+    ``boltzmann_constant`` must use the same energy unit as ``H_model``; its
+    default value is in eV/K.
     """
 
     def __init__(
@@ -394,7 +409,11 @@ class EigenbasisKModel:
         j_minus_array=None,
         rwa_tol=1e-6,
         k_weights=None,
+        boltzmann_constant=_BOLTZMANN_EV_PER_KELVIN,
     ):
+        self._boltzmann_constant = _validated_boltzmann_constant(
+            boltzmann_constant
+        )
         H_stack = _as_k_stack(H_model, "H_model")
         n_k, d, _ = H_stack.shape
         interaction_stack = _as_k_stack(
@@ -603,7 +622,7 @@ class EigenbasisKModel:
             else:
                 shifted = evals - np.min(evals)
                 boltzmann = np.exp(
-                    -shifted / (_BOLTZMANN_EV_PER_KELVIN * temperature)
+                    -shifted / (self._boltzmann_constant * temperature)
                 )
                 populations = boltzmann / boltzmann.sum()
             matrix = np.diag(
