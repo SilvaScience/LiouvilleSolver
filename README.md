@@ -400,3 +400,54 @@ omitted, the backend applies every block declared by the model.
 - this release covers only `DenseLiouvilleBackend` and
   `SparseSectorBackend`; see "Backends not covered by this release" above;
 - construction and physical validation of the basis belong to the model.
+
+## Development workflow
+
+`main` holds the released state and `dev` is the integration branch. Neither
+is committed to directly.
+
+1. Branch from `dev`, naming the branch after the change:
+
+   ```bash
+   git switch dev
+   git pull
+   git switch -c perf/direct-resolvent-solve
+   ```
+
+   Prefixes in use: `feat/`, `fix/`, `perf/`, `docs/`, `chore/`.
+
+2. Commit on that branch, and run the suite before asking for a review:
+
+   ```bash
+   python -m pytest
+   ```
+
+3. Open a pull request into `dev` — never into `main`. `main` receives work
+   only from `dev`, through its own pull request.
+
+4. A maintainer reviews and merges. Nothing lands on `dev` or `main` without
+   that approval.
+
+### Enforcing this on GitHub
+
+The convention above is advisory until branch protection makes it mechanical.
+Under **Settings → Rules → Rulesets → New branch ruleset**, target `main` and
+`dev`, and enable:
+
+- **Restrict deletions** and **Block force pushes**;
+- **Require a pull request before merging**.
+
+Two practical notes for a small team:
+
+- GitHub does not let you approve your own pull request. If **Required
+  approvals** is set above zero and you are the only reviewer, you block your
+  own work. Leave it at zero: the rule still forbids direct pushes, so every
+  change arrives as a pull request that you merge yourself — and clicking
+  merge *is* the acceptance.
+- Repository administrators bypass rulesets by default. Removing yourself
+  from the bypass list closes that hole, at the cost of losing your own
+  escape hatch.
+
+Branch protection is available on public repositories on the Free plan.
+Private repositories have historically required a paid plan, so check what
+the Settings page offers for this repository.
