@@ -6,37 +6,19 @@ evaluates rephasing and non-rephasing third-order pathways on their physical
 frequency quadrants and renders the results with ``SpectroscopyPlotter``.
 """
 
-from pathlib import Path
-import sys
-
 import numpy as np
 
-
-def _add_project_root_to_path():
-    """Example path -> project root added to ``sys.path``."""
-    example_file = Path(__file__).resolve()
-    candidates = (example_file.parent, *example_file.parents)
-    for candidate in candidates:
-        package_entry = candidate / "projet_solver10.py"
-        if package_entry.is_file():
-            project_root = str(candidate)
-            if project_root not in sys.path:
-                sys.path.insert(0, project_root)
-            return
-    raise RuntimeError(
-        "Could not find a parent directory containing projet_solver10.py."
-    )
-
-
-_add_project_root_to_path()
-
-from projet_solver10 import (
+from qudpy_fdgf import (
     EigenbasisKModel,
     SpectroscopyPlotter,
     SpectroscopySolver,
 )
-from projet_solver10.pathways import FrequencyPathway
-from projet_solver10.protocols import standard_nq_protocol, PropagationInterval, SpectroscopyProtocol
+from qudpy_fdgf.pathways import FrequencyPathway
+from qudpy_fdgf.protocols import (
+    PropagationInterval,
+    SpectroscopyProtocol,
+    standard_nq_protocol,
+)
 
 # --- 1. Build site-basis Hamiltonian and dipole matrices ---
 sigma_x = np.array([[0.0, 1.0], [1.0, 0.0]], dtype=complex)

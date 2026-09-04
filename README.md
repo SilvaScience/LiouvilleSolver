@@ -3,9 +3,19 @@
 **QuDPy-FDGF: A Python-Based Tool for Computing Ultrafast Nonlinear Optical
 Responses Using Frequency-Domain Green's Functions.**
 
-`projet_solver10` remains the compatibility name of the Python package.
+The distribution is named `qudpy-fdgf` and the import name is `qudpy_fdgf`.
+Install it in editable mode from the repository root:
 
-`projet_solver10` is a generic spectroscopy engine. It contains no physical
+```bash
+pip install -e .
+```
+
+The example notebooks import the package directly and no longer manipulate
+`sys.path`, so this install is required before running them. Add the
+`examples` extra (`pip install -e '.[examples]'`) for the fifth-order
+notebook, which generates its pathways with `ufss`.
+
+`qudpy_fdgf` is a generic spectroscopy engine. It contains no physical
 model. An external model supplies its sectors, Hamiltonian blocks,
 transitions, initial state, and observable.
 
@@ -18,9 +28,9 @@ transitions, initial state, and observable.
 ## Dependency direction
 
 ```text
-external model  --->  projet_solver10 contracts
-script/notebook --->  external model + projet_solver10
-projet_solver10 --->  no physical model
+external model  --->  qudpy_fdgf contracts
+script/notebook --->  external model + qudpy_fdgf
+qudpy_fdgf --->  no physical model
 ```
 
 The solver must never import a class such as `SpinOrbitalModel`.
@@ -149,7 +159,7 @@ The rate must not be included a second time in the operator.
 A pathway propagation can be reused for multiple detection schemes:
 
 ```python
-from projet_solver10 import ObservableSpec
+from qudpy_fdgf import ObservableSpec
 
 fluorescence = ObservableSpec.mean_jump(
     "fluorescence",
@@ -252,7 +262,7 @@ and horizontal emission:
 
 ```python
 import numpy as np
-from projet_solver10 import SpectroscopyPlotter
+from qudpy_fdgf import SpectroscopyPlotter
 
 # Standard 2D convention: real = absorptive, imag = dispersive.
 plotter = SpectroscopyPlotter(detection_phase=np.pi / 2)
@@ -316,7 +326,7 @@ available as a compact V9-inspired interface.
 ## Setup
 
 ```python
-from projet_solver10 import SpectroscopySolver
+from qudpy_fdgf import SpectroscopySolver
 from my_spin_orbital_model import SpinOrbitalModel
 
 model = SpinOrbitalModel(...)
@@ -362,7 +372,7 @@ algorithm or a more specialized wave-function formulation.
 (`ManyBodySolver` and `ManyBodyDynamicsSolver`) live in `experimental/`. They
 are neither imported nor exposed by `SpectroscopySolver` in this release. They
 remain available through explicit imports (for example,
-`from projet_solver10.experimental.low_rank_liouville import
+`from qudpy_fdgf.experimental.low_rank_liouville import
 LowRankLiouvilleBackend`) for continued development, but they are not
 maintained or guaranteed to be stable here.
 

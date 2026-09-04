@@ -3,7 +3,7 @@
 This package exports the shared backend interface and the two production
 implementations: a dense Liouville backend for small reference systems and a
 sparse sector backend for matrix-free calculations. Experimental backends
-remain isolated under ``projet_solver10.experimental``.
+remain isolated under ``qudpy_fdgf.experimental``.
 """
 
 from .base import BackendBase, SectorLayout
