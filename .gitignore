@@ -1,1 +1,16 @@
+# Manuscript, figures, and local working material
 /local/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Packaging and tooling caches
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Scratch output
+/tmp/

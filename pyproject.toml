@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qudpy-fdgf"
+version = "0.1.0"
+description = "Computing ultrafast nonlinear optical responses using frequency-domain Green's functions"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "matplotlib>=3.7",
+]
+
+[project.optional-dependencies]
+# Needed by examples/chromophore_chi5_2q.ipynb, which generates its fifth-order
+# pathways with ufss.DiagramGenerator. The library itself only consumes the
+# resulting diagrams, through pathways.translate_ufss_diagrams.
+examples = ["ufss", "ipython"]
+# Only the experimental/ tensor-network modules import tenpy.
+manybody = ["physics-tenpy"]
+dev = ["pytest>=7"]
+
+[project.urls]
+Repository = "https://github.com/SilvaScience/QuDPy-FDGF"
+
+# The repository uses a flattened layout: projet_solver10.py rewrites its own
+# __path__ to its containing directory, so every sibling module has to be
+# importable as a top-level module for `projet_solver10.<name>` to resolve.
+[tool.setuptools]
+py-modules = [
+    "projet_solver10",
+    "capabilities",
+    "contracts",
+    "exceptions",
+    "generators",
+    "model_adapters",
+    "observables",
+    "pathways",
+    "plotting",
+    "protocols",
+    "results",
+    "solver",
+]
+packages = ["backends", "experimental"]
+
+[tool.pytest.ini_options]
+# testpaths points into local/, which is git-ignored; move the suite back to
+# tests/ at the repository root to make it part of the published package.
+testpaths = ["local/tests"]
+pythonpath = ["."]
