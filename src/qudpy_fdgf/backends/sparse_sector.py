@@ -10,7 +10,13 @@ from collections import OrderedDict
 import hashlib
 
 import numpy as np
-from scipy.sparse.linalg import LinearOperator, expm_multiply, gmres
+import scipy.sparse as sparse
+from scipy.sparse.linalg import (
+    LinearOperator,
+    expm_multiply,
+    gmres,
+    splu,
+)
 
 from .base import BackendBase
 from ..capabilities import BackendCapabilities, Capabilities
@@ -58,9 +64,11 @@ class SparseSectorBackend(BackendBase):
         resolvent_restart=None,
         cache_propagations=True,
         max_cache_entries=32,
+        direct_solve_max_dimension=20000,
         **options,
     ):
         super().__init__(eta=eta, **options)
+        self.direct_solve_max_dimension = int(direct_solve_max_dimension)
         self.krylov_tolerance = float(krylov_tolerance)
         self.krylov_maxiter = (
             None if krylov_maxiter is None else int(krylov_maxiter)
@@ -74,9 +82,17 @@ class SparseSectorBackend(BackendBase):
         self._liouville_time_cache = OrderedDict()
         self._liouville = None
         self._initial_density_vector = None
+        self._reset_direct_resolvent()
+
+    def _reset_direct_resolvent(self):
+        self._liouville_matrix = None
+        self._liouville_diagonal = None
+        self._assembly_attempted = False
+        self._factorization_cache = OrderedDict()
 
     def build(self, model, context=None):
         super().build(model, context=context)
+        self._reset_direct_resolvent()
         self._liouville = self.generator.linear_operator
         self._initial_density_vector = self._initial_density_matrix.reshape(
             -1, order="F"
@@ -86,6 +102,9 @@ class SparseSectorBackend(BackendBase):
     def clear_caches(self):
         self._time_cache.clear()
         self._liouville_time_cache.clear()
+        # The assembled generator depends on the model alone, so it survives;
+        # only the frequency-dependent factorizations are discarded.
+        self._factorization_cache.clear()
 
     def _apply_to_columns(self, vector, action):
         """Matrix and Hilbert action -> column-wise action."""
@@ -161,9 +180,117 @@ class SparseSectorBackend(BackendBase):
             self._liouville_time_cache.popitem(last=False)
         return propagated
 
+    def _assemble_liouville(self):
+        """Materialize the Liouville generator once, when it is small enough.
+
+        The generator is exposed matrix-free so that large sector models stay
+        tractable, but below ``direct_solve_max_dimension`` the same operator
+        can be assembled column by column and then solved directly. That
+        replaces one Krylov iteration per right-hand side with a factorization
+        reused across every frequency sample.
+        """
+        if self._assembly_attempted:
+            return self._liouville_matrix
+        self._assembly_attempted = True
+        dimension = self.layout.total_dimension**2
+        if dimension > self.direct_solve_max_dimension:
+            return None
+
+        rows = []
+        columns = []
+        values = []
+        probe = np.zeros(dimension, dtype=np.complex128)
+        for column in range(dimension):
+            probe[column] = 1.0
+            image = np.asarray(
+                self._liouville.matvec(probe), dtype=np.complex128
+            )
+            probe[column] = 0.0
+            nonzero = np.flatnonzero(image)
+            if nonzero.size:
+                rows.append(nonzero)
+                columns.append(np.full(nonzero.size, column))
+                values.append(image[nonzero])
+
+        matrix = sparse.csc_matrix(
+            (
+                np.concatenate(values) if values else np.empty(0, complex),
+                (
+                    np.concatenate(rows) if rows else np.empty(0, int),
+                    np.concatenate(columns) if columns else np.empty(0, int),
+                ),
+            ),
+            shape=(dimension, dimension),
+            dtype=np.complex128,
+        )
+        self._liouville_matrix = matrix
+
+        # A purely Hamiltonian generator expressed in the energy eigenbasis is
+        # diagonal, with the Bohr frequencies on the diagonal. Detecting that
+        # turns the resolvent into an elementwise division.
+        off_diagonal = matrix - sparse.diags(
+            matrix.diagonal(), format="csc", dtype=np.complex128
+        )
+        off_diagonal.eliminate_zeros()
+        if off_diagonal.nnz == 0:
+            self._liouville_diagonal = matrix.diagonal()
+        return matrix
+
+    def _liouville_representation(self):
+        """Report which resolvent route the Liouville pathway actually took."""
+        if not self._assembly_attempted or self._liouville_matrix is None:
+            return "matrix_free_liouville"
+        if self._liouville_diagonal is not None:
+            return "diagonal_liouville"
+        return "factorized_liouville"
+
+    def _factorized_resolvent(self, shift):
+        key = (float(np.real(shift)), float(np.imag(shift)))
+        cached = self._factorization_cache.get(key)
+        if cached is not None:
+            self._factorization_cache.move_to_end(key)
+            return cached
+        dimension = self._liouville_matrix.shape[0]
+        operator = (
+            shift
+            * sparse.identity(dimension, dtype=np.complex128, format="csc")
+            - self._liouville_matrix
+        )
+        factorization = splu(operator.tocsc())
+        self._factorization_cache[key] = factorization
+        self._factorization_cache.move_to_end(key)
+        while len(self._factorization_cache) > self.max_cache_entries:
+            self._factorization_cache.popitem(last=False)
+        return factorization
+
     def _solve_liouville_resolvent(self, density_vector, omega, eta):
         shift = self.generator.frequency_shift(omega, eta)
         dimension = self.layout.total_dimension**2
+
+        matrix = self._assemble_liouville()
+        if matrix is not None:
+            if self._liouville_diagonal is not None:
+                denominator = shift - self._liouville_diagonal
+                if not np.all(denominator):
+                    raise ConvergenceError(
+                        "Diagonal Liouville resolvent is singular at "
+                        f"omega={omega!r}, eta={eta!r}."
+                    )
+                raw_solution = density_vector / denominator
+            else:
+                raw_solution = self._factorized_resolvent(shift).solve(
+                    np.asarray(density_vector, dtype=np.complex128)
+                )
+            residual = float(
+                np.linalg.norm(
+                    shift * raw_solution
+                    - matrix @ raw_solution
+                    - density_vector
+                )
+            )
+            solution = self.generator.frequency_prefactor * raw_solution
+            return np.asarray(solution, dtype=np.complex128), residual
+
         operator = LinearOperator(
             (dimension, dimension),
             dtype=np.complex128,
@@ -335,7 +462,7 @@ class SparseSectorBackend(BackendBase):
                 if spec.kind != "integrated_jump"
             }
             values.update(self._integrated_jump_values(response, integrated))
-            representation = "matrix_free_liouville"
+            representation = self._liouville_representation()
         else:
             ket = self._initial_vector.copy()
             bra = self._initial_vector.copy()
