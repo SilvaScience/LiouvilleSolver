@@ -12,8 +12,8 @@ pip install -e .
 
 The example notebooks import the package directly and no longer manipulate
 `sys.path`, so this install is required before running them. Add the
-`examples` extra (`pip install -e '.[examples]'`) for the fifth-order
-notebook, which generates its pathways with `ufss`.
+`examples` extra (`pip install -e '.[examples]'`) to install QuTiP for the
+physical model definitions and UFSS for the fifth-order pathway example.
 
 `qudpy_fdgf` is a generic spectroscopy engine. It contains no physical
 model. An external model supplies its sectors, Hamiltonian blocks,

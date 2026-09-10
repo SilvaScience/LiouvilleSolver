@@ -16,10 +16,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# Needed by examples/chromophore_chi5_2q.ipynb, which generates its fifth-order
-# pathways with ufss.DiagramGenerator. The library itself only consumes the
-# resulting diagrams, through pathways.translate_ufss_diagrams.
-examples = ["ufss", "ipython"]
+# Needed by the example notebooks: QuTiP builds the physical operators,
+# while ufss.DiagramGenerator generates the fifth-order pathways.
+examples = ["ufss", "ipython", "qutip"]
 # Only the qudpy_fdgf.experimental tensor-network modules import tenpy.
 manybody = ["physics-tenpy"]
 dev = ["pytest>=7"]

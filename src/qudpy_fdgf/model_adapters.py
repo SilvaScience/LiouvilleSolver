@@ -33,9 +33,29 @@ def _validated_boltzmann_constant(value):
     return value
 
 
+def _as_numpy_array(value, name="array"):
+    """Convert array-like, sparse, or QuTiP operators to dense NumPy arrays.
+
+    QuTiP's ``Qobj`` intentionally does not expose its data through
+    ``np.asarray``.  Keep the optional QuTiP dependency out of the package by
+    using its public ``full()`` method through duck typing at the adapter
+    boundary.
+    """
+    if hasattr(value, "full") and callable(value.full):
+        value = value.full()
+    elif hasattr(value, "toarray") and callable(value.toarray):
+        value = value.toarray()
+    try:
+        return np.asarray(value, dtype=np.complex128)
+    except (TypeError, ValueError) as exc:
+        raise TypeError(
+            f"{name} must be convertible to a dense complex NumPy array."
+        ) from exc
+
+
 def _as_k_stack(array, name, expected_d=None):
     """2D or 3D operator array -> normalized ``(N_k, d, d)`` stack."""
-    array = np.asarray(array, dtype=np.complex128)
+    array = _as_numpy_array(array, name=name)
     if array.ndim == 2:
         if array.shape[0] != array.shape[1]:
             raise ValueError(f"{name} must be square; got shape {array.shape}.")
@@ -58,7 +78,9 @@ def _as_sector_hamiltonians(blocks):
         raise TypeError("hamiltonian_blocks must be a non-empty mapping.")
     normalized = {}
     for sector, block in blocks.items():
-        matrix = np.asarray(block, dtype=np.complex128)
+        matrix = _as_numpy_array(
+            block, name=f"hamiltonian block for sector {sector!r}"
+        )
         if matrix.ndim != 2 or matrix.shape[0] != matrix.shape[1]:
             raise ValueError(
                 f"Hamiltonian block for sector {sector!r} must be square; "
@@ -87,7 +109,7 @@ def _as_sector_operator_blocks(blocks, name, dimensions):
             raise KeyError(f"Unknown target sector {target!r} in {name}.")
         if source not in dimensions:
             raise KeyError(f"Unknown source sector {source!r} in {name}.")
-        matrix = np.asarray(block, dtype=np.complex128)
+        matrix = _as_numpy_array(block, name=f"{name}[{key!r}]")
         expected = (dimensions[target], dimensions[source])
         if matrix.shape != expected:
             raise ValueError(
