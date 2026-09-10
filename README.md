@@ -393,8 +393,10 @@ omitted, the backend applies every block declared by the model.
 - construction of the exact thermal state remains the model's responsibility;
 - only the GKSL/Lindblad form is supported for non-unitary dynamics;
 - no general Redfield generator, HEOM, or bath memory;
-- the matrix-free frequency-domain resolvent in `SparseSectorBackend` still
-  uses a vector of size \(D^2\), without a \(D^2\times D^2\) matrix;
+- above `direct_solve_max_dimension` the frequency-domain resolvent in
+  `SparseSectorBackend` stays matrix-free and iterative, using a vector of
+  size \(D^2\) without a \(D^2\times D^2\) matrix; below that threshold the
+  generator is assembled once and solved directly;
 - explicit stationary-mode deflation and the Drazin pseudoinverse are not yet
   available;
 - this release covers only `DenseLiouvilleBackend` and
